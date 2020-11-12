@@ -1,14 +1,14 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col>
+    <v-row flex>
+      <v-col cols=4>
         <action-bar />
       </v-col>
-      <v-col>
+      <v-col cols=4>
         <holdings />
       </v-col>
-      <v-col> </v-col>
-      <v-col>
+
+      <v-col cols=4>
         <charts />
       </v-col>
     </v-row>
