@@ -1,17 +1,10 @@
 <template>
 <v-card
-    :loading="loading"
+    
     class="mx-auto "
     max-width="374"
   >
-    <template slot="progress">
-      <v-progress-linear
-        color="deep-purple"
-        height="10"
-        indeterminate
-      ></v-progress-linear>
-    </template>
-
+ 
 
 
     <v-card-title>Current holdings</v-card-title>
@@ -66,7 +59,7 @@ import MarginDialog from './MarginDialog'
 export default {
   components:{MarginDialog},
     data: () => ({
-      loading: false,
+       
       selection: 1,
       holdings: [
         {name:'Stock A', units:100, value:20, gain: -70, return:0.25},
@@ -76,11 +69,7 @@ export default {
     }),
 
     methods: {
-      reserve () {
-        this.loading = true
-
-        setTimeout(() => (this.loading = false), 2000)
-      },
+ 
     },
   }
 </script>
