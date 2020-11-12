@@ -1,59 +1,41 @@
 <template>
   <v-app>
-     
+    <v-app-bar absolute color="#6A76AB" dark app>
+      <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-    <v-app-bar app>
-      <v-app-bar
-        absolute
-        color="#6A76AB"
-        dark
-         
-      >
- 
+      <v-toolbar-title>Trading app</v-toolbar-title>
 
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      <v-spacer></v-spacer>
 
-        <v-toolbar-title>Trading app</v-toolbar-title>
+      <v-btn icon>
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
 
-        <v-spacer></v-spacer>
+      <v-btn icon>
+        <v-icon>mdi-heart</v-icon>
+      </v-btn>
 
-        <v-btn icon>
-          <v-icon>mdi-magnify</v-icon>
-        </v-btn>
+      <v-btn icon>
+        <v-icon>mdi-dots-vertical</v-icon>
+      </v-btn>
 
-        <v-btn icon>
-          <v-icon>mdi-heart</v-icon>
-        </v-btn>
-
-        <v-btn icon>
-          <v-icon>mdi-dots-vertical</v-icon>
-        </v-btn>
-
-        <template v-slot:extension>
-          <v-tabs align-with-title>
-            <v-tab to="/">
-              Home 
-            </v-tab>
-            <v-tab  to="/about">
-              About 
-            </v-tab>
-            <v-tab>Tab 3</v-tab>
-          </v-tabs>
-        </template>
-      </v-app-bar>
+      <template v-slot:extension>
+        <v-tabs align-with-title>
+          <v-tab to="/bank">
+            Bank
+          </v-tab>
+          <v-tab to="/trade">
+            Trading
+          </v-tab>
+          <v-tab to='/work'>Work</v-tab>
+        </v-tabs>
+      </template>
     </v-app-bar>
-     <v-main>
-    <v-sheet
-      id="scrolling-techniques-3"
-      class="overflow-y-auto"
-      max-height="600"
-    >
-      <v-container style="height: 1000px;">
-            <router-view></router-view>
+    <v-main>
+      <v-container fluid>
+        <router-view></router-view>
       </v-container>
-    </v-sheet>
     </v-main>
-    
 
     <v-footer app>
       <!-- -->
