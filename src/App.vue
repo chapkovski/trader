@@ -1,44 +1,85 @@
 <template>
-  <!-- App.vue -->
+  <v-app>
+     
 
-<v-app>
-  <v-navigation-drawer app>
-    <!-- -->
-  </v-navigation-drawer>
+    <v-app-bar app>
+      <v-app-bar
+        absolute
+        color="#6A76AB"
+        dark
+         
+      >
+ 
 
-  <v-app-bar app>
-    <!-- -->
-  </v-app-bar>
+        <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-  <!-- Sizes your content based upon application components -->
-  <v-main>
+        <v-toolbar-title>Trading app</v-toolbar-title>
 
-    <!-- Provides the application the proper gutter -->
-    <v-container fluid>
+        <v-spacer></v-spacer>
 
-      <!-- If using vue-router -->
-      <router-view></router-view>
-    </v-container>
-  </v-main>
+        <v-btn icon>
+          <v-icon>mdi-magnify</v-icon>
+        </v-btn>
 
-  <v-footer app>
-    <!-- -->
-  </v-footer>
-</v-app>
+        <v-btn icon>
+          <v-icon>mdi-heart</v-icon>
+        </v-btn>
+
+        <v-btn icon>
+          <v-icon>mdi-dots-vertical</v-icon>
+        </v-btn>
+
+        <template v-slot:extension>
+          <v-tabs align-with-title>
+            <v-tab to="/">
+              Home 
+            </v-tab>
+            <v-tab  to="/about">
+              About 
+            </v-tab>
+            <v-tab>Tab 3</v-tab>
+          </v-tabs>
+        </template>
+      </v-app-bar>
+    </v-app-bar>
+     <v-main>
+    <v-sheet
+      id="scrolling-techniques-3"
+      class="overflow-y-auto"
+      max-height="600"
+    >
+      <v-container style="height: 1000px;">
+            <router-view></router-view>
+      </v-container>
+    </v-sheet>
+    </v-main>
+    
+
+    <v-footer app>
+      <!-- -->
+    </v-footer>
+  </v-app>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld';
+<style lang="scss">
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
 
-export default {
-  name: 'App',
+#nav {
+  padding: 30px;
 
-  components: {
-    HelloWorld,
-  },
+  a {
+    font-weight: bold;
+    color: #2c3e50;
 
-  data: () => ({
-    //
-  }),
-};
-</script>
+    &.router-link-exact-active {
+      color: #42b983;
+    }
+  }
+}
+</style>
