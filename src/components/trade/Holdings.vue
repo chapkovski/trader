@@ -28,7 +28,7 @@
             <tr v-for="item in holdings" :key="item.name">
               <td>{{ item.name }}</td>
               <td>{{ item.value }}</td>
-              <td>{{ item.items }}</td>
+              <td>{{ item.units }}</td>
               <td>{{ item.gain }}</td>
               <td>{{ item.return }}</td>
             </tr>
@@ -36,16 +36,15 @@
         </template>
       </v-simple-table>
     </v-card-text>
-    <v-card-actions>
-      <margin-dialog />
-    </v-card-actions>
+    
+     
   </v-card>
 </template>
 
 <script>
-import MarginDialog from "./MarginDialog";
+
 export default {
-  components: { MarginDialog },
+
   data: () => ({
     selection: 1,
     holdings: [

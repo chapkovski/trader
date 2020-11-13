@@ -16,12 +16,16 @@
         <tbody>
           <tr v-for="item in stocks" :key="item.name">
             <td>{{ item.name }}</td>
-            <td>
-              {{ item.price }}
-              <span :style="{ color: 'red' }"
-                ><v-icon :color="item.color">{{ item.icon }}</v-icon></span
-              >
-            </td>
+            <transition name="fade" mode="out-in" :duration="100">
+              <td :key="item.price">
+                {{ item.price }}
+                <span :style="{ color: 'red' }">
+                  <v-icon :color="item.color" >{{
+                    item.icon
+                  }}</v-icon>
+                </span>
+              </td>
+            </transition>
             <td><management-buttons /></td>
           </tr>
         </tbody>
@@ -31,7 +35,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import _ from "lodash";
 import ManagementButtons from "./ManagementButtons";
 export default {
   components: { ManagementButtons },
@@ -60,18 +64,18 @@ export default {
         _.forEach(this.stocks, function(i) {
           const oldval = i.price;
           i.price = (Math.random() * 100).toFixed(2);
-          const up = oldval<i.price
+          const up = oldval < i.price;
           if (up) {
-            i.color='blue'
-            i.icon =  "mdi-arrow-up-bold-outline"
-          } else 
-          {
-            i.color='red'
-            i.icon =  "mdi-arrow-down-bold-outline"
+            i.color = "blue";
+            i.icon = "mdi-arrow-up-bold-outline";
+          } else {
+            i.color = "red";
+            i.icon = "mdi-arrow-down-bold-outline";
           }
         });
-      }, 1000);
+      }, 2000);
     },
   },
 };
 </script>
+ 

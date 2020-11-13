@@ -19,7 +19,9 @@ export default {
   data: () => ({
     hcInstance: Chart,
     chartOptions: {
+      height:300,
       chart: {
+        height:300,
         type: "spline",
       },
       data: {

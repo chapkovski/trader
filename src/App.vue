@@ -38,32 +38,16 @@
     </v-main>
 
     <v-footer app>
-      <v-bottom-navigation  color="primary" fixed absolute v-if='inBank'>
-        <v-btn>
-          <span>Recents</span>
-
-          <v-icon>mdi-history</v-icon>
-        </v-btn>
-
-        <v-btn>
-          <span>Favorites</span>
-
-          <v-icon>mdi-heart</v-icon>
-        </v-btn>
-
-        <v-btn>
-          <span>Nearby</span>
-
-          <v-icon>mdi-map-marker</v-icon>
-        </v-btn>
-      </v-bottom-navigation>
+      <trade-footer v-if='inTrade'/>
     </v-footer>
   </v-app>
 </template>
 <script>
+import TradeFooter from 'trade/TradeFooter'
 export default {
+  components:{TradeFooter},
 computed:{
-  inBank(){
+  inTrade(){
     return  this.$route.name=='Trade';
   }
 }
