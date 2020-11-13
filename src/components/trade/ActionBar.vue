@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import ManagementButtons from "./ManagementButtons";
 export default {
   components: { ManagementButtons },
