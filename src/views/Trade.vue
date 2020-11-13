@@ -5,7 +5,7 @@
         <v-toolbar
           dark
           prominent
-          src="https://investments.academic.ru/pictures/investments/img591622_4-1_New_York_Stock_Exchange_NYSE_dnevnoy_vid_na_zdanie.jpg"
+          src="https://on-woman.com/wp-content/uploads/2377dd4dc8fd6c8a5988ab5e218af88a-jpg.jpeg"
         >
           <v-app-bar-nav-icon></v-app-bar-nav-icon>
 

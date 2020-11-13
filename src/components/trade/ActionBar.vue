@@ -58,7 +58,17 @@ export default {
     updStock: function() {
       this.intervalid1 = setInterval(() => {
         _.forEach(this.stocks, function(i) {
+          const oldval = i.price;
           i.price = (Math.random() * 100).toFixed(2);
+          const up = oldval<i.price
+          if (up) {
+            i.color='blue'
+            i.icon =  "mdi-arrow-up-bold-outline"
+          } else 
+          {
+            i.color='red'
+            i.icon =  "mdi-arrow-down-bold-outline"
+          }
         });
       }, 1000);
     },

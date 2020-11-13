@@ -6,9 +6,7 @@ import Highcharts from "highcharts";
 import dataModule from "highcharts/modules/data";
 import router from './router'
 dataModule(Highcharts);
-import lodash from 'lodash'
-import VueLodash from 'vue-lodash'
-Vue.use(VueLodash, lodash)
+
 Vue.use(HighchartsVue);
 Vue.config.productionTip = false
 
