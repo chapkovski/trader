@@ -4,7 +4,7 @@
 
     <v-card-text>
       <v-sparkline
-        height="167"
+        height="172"
         :fill="fill"
         :radius='25'
         :value="value"

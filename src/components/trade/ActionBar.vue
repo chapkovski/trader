@@ -16,16 +16,24 @@
         <tbody>
           <tr v-for="item in stocks" :key="item.name">
             <td>{{ item.name }}</td>
-            <transition name="fade" mode="out-in" :duration="100">
-              <td :key="item.price">
-                {{ item.price }}
-                <span :style="{ color: 'red' }">
-                  <v-icon :color="item.color" >{{
-                    item.icon
-                  }}</v-icon>
-                </span>
-              </td>
-            </transition>
+
+            <td >
+              <transition
+                name="fade"
+                mode="out-in"
+               
+              >
+                <div :key="item.price" class='d-flex '>
+                  <div class='mr-3' :style='{color:item.color}'>{{ item.price }}</div>
+                  <div>
+                  <span :style="{ color: 'red' }">
+                    <v-icon :color="item.color">{{ item.icon }}</v-icon>
+                  </span>
+                  </div>
+                </div>
+              </transition>
+            </td>
+
             <td><management-buttons /></td>
           </tr>
         </tbody>
@@ -78,4 +86,14 @@ export default {
   },
 };
 </script>
- 
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

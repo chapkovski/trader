@@ -55,7 +55,7 @@ export default {
     };
   },
   created() {
-    // this.congratulate();
+    this.congratulate();
   },
   methods: {
     congratulate: function() {

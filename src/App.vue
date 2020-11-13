@@ -6,7 +6,28 @@
       <v-toolbar-title>Trading app</v-toolbar-title>
 
       <v-spacer></v-spacer>
+      <div class="mx-3">
+      <v-tooltip bottom  >
+        <template v-slot:activator="{ on, attrs }">
+          <div v-bind="attrs" v-on="on" >
+            <v-badge avatar bordered overlap  color="error" >
+              <template v-slot:badge>
+                <v-avatar>
+                  2
+                </v-avatar>
+              </template>
 
+              <v-avatar size="40" >
+                <v-img
+                  src="https://cdn1.iconfinder.com/data/icons/web-design-18/50/86-512.png"
+                ></v-img>
+              </v-avatar>
+            </v-badge>
+          </div>
+        </template>
+        <span>Amount of trade > 1000</span>
+      </v-tooltip>
+      </div>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <div v-bind="attrs" v-on="on">
