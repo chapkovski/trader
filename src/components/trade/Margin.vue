@@ -14,7 +14,7 @@
     </v-alert>
     <v-alert
       outlined
-      type="primary"
+      type="info"
       border="left"
       :icon="false"
       class="mx-3 centered-alert"

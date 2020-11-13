@@ -7,30 +7,55 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <div v-bind="attrs" v-on="on">
+            <v-badge avatar bordered overlap>
+              <template v-slot:badge>
+                <v-avatar>
+                  2
+                </v-avatar>
+              </template>
 
-      <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
-      </v-btn>
-
-      <template v-slot:extension>
-        <v-tabs align-with-title>
-          <v-tab to="/bank">
-            Bank
-          </v-tab>
-          <v-tab to="/trade">
-            Trading
-          </v-tab>
-          <v-tab to="/work">Work</v-tab>
-        </v-tabs>
-      </template>
+              <v-avatar size="40">
+                <v-img
+                  src="https://previews.123rf.com/images/pikepicture/pikepicture1807/pikepicture180700221/104970298-best-worker-employee-vector-european-woman-award-of-the-year-gold-wreath-leader-business-cartoon-ill.jpg"
+                ></v-img>
+              </v-avatar>
+            </v-badge>
+          </div>
+        </template>
+        <span>Best trader of the day</span>
+      </v-tooltip>
     </v-app-bar>
+    <v-navigation-drawer absolute permanent app>
+      <template v-slot:prepend>
+        <v-list-item two-line>
+          <v-list-item-avatar>
+            <img src="https://randomuser.me/api/portraits/women/81.jpg" />
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title>Jane Smith</v-list-item-title>
+            <v-list-item-subtitle>Logged In</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
+
+      <v-divider></v-divider>
+
+      <v-list dense>
+        <v-list-item v-for="item in items" :key="item.title" :to="item.to">
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
     <v-main>
       <v-container fluid>
         <router-view></router-view>
@@ -38,20 +63,29 @@
     </v-main>
 
     <v-footer app>
-      <trade-footer v-if='inTrade'/>
+      <trade-footer v-if="inTrade" />
     </v-footer>
   </v-app>
 </template>
 <script>
-import TradeFooter from 'trade/TradeFooter'
+import TradeFooter from "trade/TradeFooter";
 export default {
-  components:{TradeFooter},
-computed:{
-  inTrade(){
-    return  this.$route.name=='Trade';
-  }
-}
-}
+  components: { TradeFooter },
+  data() {
+    return {
+      items: [
+        { title: "Trading", icon: "mdi-bank", to: { name: "Trade" } },
+        { title: "Bank Account", icon: "mdi-cash-usd", to: { name: "Bank" } },
+        { title: "Work", icon: "mdi-account-hard-hat", to: { name: "Work" } },
+      ],
+    };
+  },
+  computed: {
+    inTrade() {
+      return this.$route.name == "Trade";
+    },
+  },
+};
 </script>
 <style lang="scss">
 #app {

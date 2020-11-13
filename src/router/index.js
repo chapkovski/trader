@@ -8,6 +8,10 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    redirect: '/trade'
+  },
+  {
     path: '/bank',
     name: 'Bank',
     component: Bank

@@ -6,7 +6,9 @@ import Highcharts from "highcharts";
 import dataModule from "highcharts/modules/data";
 import router from './router'
 dataModule(Highcharts);
-
+import VueConfetti from 'vue-confetti'
+ 
+Vue.use(VueConfetti)
 Vue.use(HighchartsVue);
 Vue.config.productionTip = false
 

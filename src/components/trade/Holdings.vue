@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto " max-width="374">
+  <v-card class="mx-auto "  >
     <v-card-title>Current holdings</v-card-title>
 
     <v-card-text>

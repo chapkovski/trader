@@ -1,17 +1,21 @@
 <template>
   <v-container>
-    <template>
-      <div>
-        <v-toolbar dark prominent>
-          <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-          <v-toolbar-title>Trading</v-toolbar-title>
-
-          <v-spacer></v-spacer>
-        </v-toolbar>
-      </div>
-    </template>
-
+    <transition name="fade">
+      <v-row if="successfulTrade" :key="successfulTrade">
+        <v-col cols="12">
+          <v-alert
+            v-model="successfulTrade"
+            border="left"
+            close-text="Close Alert"
+            color="deep-purple accent-4"
+            dark
+            dismissible
+          >
+            Hurray, you achieved new heights in trading!
+          </v-alert>
+        </v-col>
+      </v-row>
+    </transition>
     <v-row flex>
       <v-col cols="6">
         <action-bar />
@@ -45,5 +49,36 @@ export default {
 
     Information,
   },
+  data() {
+    return {
+      successfulTrade: false,
+    };
+  },
+  created() {
+    // this.congratulate();
+  },
+  methods: {
+    congratulate: function() {
+      this.intervalid1 = setInterval(() => {
+        this.$confetti.start();
+        this.successfulTrade = true;
+        const self = this;
+        setTimeout(function() {
+          self.$confetti.stop();
+          self.successfulTrade = false;
+        }, 2000);
+      }, 15000);
+    },
+  },
 };
 </script>
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
