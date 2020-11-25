@@ -4,24 +4,22 @@
    
       <v-card
         
-        color='rgba(255, 0, 0, 0)'
-        outlined
-        :style="{'border': '0.5px solid black'}"
         
-        width="100%"
+        raised
+        
+       
+        
+        
        
       >
         <v-card-text>
-          <v-btn
-            v-for="icon in icons"
-            :key="icon"
-            class="mx-4"
-            icon
-          >
-            <v-icon size="24px">
-              {{ icon }}
-            </v-icon>
-          </v-btn>
+          Bank account balance:
+            <v-chip
+      class="ma-2"
+      color="primary"
+    >
+      $100.000
+    </v-chip>
         </v-card-text>
 
        

@@ -1,23 +1,23 @@
 <template>
-  <v-app>
-    <v-app-bar  color="#6A76AB" dark app  
-    extension-height="100">
-
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Trading app</v-toolbar-title>
-
-      <v-spacer></v-spacer>
-      <div class="m-3">
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <div v-bind="attrs" v-on="on">
-              <v-badge avatar bordered overlap color="error">
-                <template v-slot:badge>
-                  <v-avatar>
-                    2
-                  </v-avatar>
-                </template>
+    <v-app>
+        <v-app-bar color="#6A76AB" dark app height='95' >
+    
+            <v-app-bar-nav-icon></v-app-bar-nav-icon>
+    
+           
+      <account-info>
+    </account-info>
+            <v-spacer></v-spacer>
+            <div class="m-3">
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                <div v-bind="attrs" v-on="on">
+                  <v-badge avatar bordered overlap color="error">
+                    <template v-slot:badge>
+                      <v-avatar>
+                        2
+                      </v-avatar>
+</template>
 
                 <v-avatar size="60">
                   <v-img
@@ -31,14 +31,14 @@
         </v-tooltip>
       </div>
       <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <div v-bind="attrs" v-on="on">
-            <v-badge avatar bordered overlap>
-              <template v-slot:badge>
-                <v-avatar>
-                  2
-                </v-avatar>
-              </template>
+<template v-slot:activator="{ on, attrs }">
+    <div v-bind="attrs" v-on="on">
+        <v-badge avatar bordered overlap>
+            <template v-slot:badge>
+                    <v-avatar>
+                      2
+                    </v-avatar>
+</template>
 
               <v-avatar size="60">
                 <v-img
@@ -51,27 +51,25 @@
         <span>Best trader of the day</span>
       </v-tooltip>
     
-    <template v-slot:extension>
-       <account-info></account-info>
-      </template>
+
     </v-app-bar>
 
       
  
     <v-navigation-drawer permanent
         expand-on-hover app>
-      <template v-slot:prepend>
-        <v-list-item two-line>
-          <v-list-item-avatar>
+<template v-slot:prepend>
+    <v-list-item two-line>
+        <v-list-item-avatar>
             <img src="https://randomuser.me/api/portraits/women/81.jpg" />
-          </v-list-item-avatar>
-
-          <v-list-item-content>
+        </v-list-item-avatar>
+    
+        <v-list-item-content>
             <v-list-item-title>Jane Smith</v-list-item-title>
             <v-list-item-subtitle>Logged In</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </template>
+        </v-list-item-content>
+    </v-list-item>
+</template>
 
       <v-divider></v-divider>
 
@@ -103,40 +101,40 @@
 import TradeFooter from "trade/TradeFooter";
 import AccountInfo from "bank/AccountInfo";
 export default {
-  components: { TradeFooter, AccountInfo },
-  data() {
-    return {
-      items: [
-        { title: "Trading", icon: "mdi-bank", to: { name: "Trade" } },
-        { title: "Work", icon: "mdi-account-hard-hat", to: { name: "Work" } },
-      ],
-    };
-  },
-  computed: {
-    inTrade() {
-      return this.$route.name == "Trade";
+    components: { TradeFooter, AccountInfo },
+    data() {
+        return {
+            items: [
+                { title: "Trading", icon: "mdi-bank", to: { name: "Trade" } },
+                { title: "Work", icon: "mdi-account-hard-hat", to: { name: "Work" } },
+            ],
+        };
     },
-  },
+    computed: {
+        inTrade() {
+            return this.$route.name == "Trade";
+        },
+    },
 };
 </script>
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
 }
 
 #nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
+    padding: 30px;
+    a {
+        font-weight: bold;
+        color: #2c3e50;
+        &.router-link-exact-active {
+            color: #42b983;
+        }
     }
-  }
 }
 </style>
