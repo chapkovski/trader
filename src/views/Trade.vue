@@ -1,5 +1,7 @@
 <template>
   <v-container>
+     
+
     <transition name="fade">
       <v-row if="successfulTrade" :key="successfulTrade">
         <v-col cols="12">
@@ -52,11 +54,13 @@ export default {
   data() {
     return {
       successfulTrade: false,
+      
     };
   },
   created() {
-    this.congratulate();
+    // this.congratulate();
   },
+  
   methods: {
     congratulate: function() {
       this.intervalid1 = setInterval(() => {

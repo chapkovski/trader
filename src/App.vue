@@ -1,32 +1,34 @@
 <template>
   <v-app>
-    <v-app-bar absolute color="#6A76AB" dark app>
+    <v-app-bar  color="#6A76AB" dark app  
+    extension-height="100">
+
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
       <v-toolbar-title>Trading app</v-toolbar-title>
 
       <v-spacer></v-spacer>
-      <div class="mx-3">
-      <v-tooltip bottom  >
-        <template v-slot:activator="{ on, attrs }">
-          <div v-bind="attrs" v-on="on" >
-            <v-badge avatar bordered overlap  color="error" >
-              <template v-slot:badge>
-                <v-avatar>
-                  2
-                </v-avatar>
-              </template>
+      <div class="m-3">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <div v-bind="attrs" v-on="on">
+              <v-badge avatar bordered overlap color="error">
+                <template v-slot:badge>
+                  <v-avatar>
+                    2
+                  </v-avatar>
+                </template>
 
-              <v-avatar size="40" >
-                <v-img
-                  src="https://cdn1.iconfinder.com/data/icons/web-design-18/50/86-512.png"
-                ></v-img>
-              </v-avatar>
-            </v-badge>
-          </div>
-        </template>
-        <span>Amount of trade > 1000</span>
-      </v-tooltip>
+                <v-avatar size="60">
+                  <v-img
+                    src="https://cdn1.iconfinder.com/data/icons/web-design-18/50/86-512.png"
+                  ></v-img>
+                </v-avatar>
+              </v-badge>
+            </div>
+          </template>
+          <span>Amount of trade > 1000</span>
+        </v-tooltip>
       </div>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
@@ -38,7 +40,7 @@
                 </v-avatar>
               </template>
 
-              <v-avatar size="40">
+              <v-avatar size="60">
                 <v-img
                   src="https://previews.123rf.com/images/pikepicture/pikepicture1807/pikepicture180700221/104970298-best-worker-employee-vector-european-woman-award-of-the-year-gold-wreath-leader-business-cartoon-ill.jpg"
                 ></v-img>
@@ -48,7 +50,14 @@
         </template>
         <span>Best trader of the day</span>
       </v-tooltip>
+    
+    <template v-slot:extension>
+       <account-info></account-info>
+      </template>
     </v-app-bar>
+
+      
+ 
     <v-navigation-drawer absolute permanent app>
       <template v-slot:prepend>
         <v-list-item two-line>
@@ -88,10 +97,12 @@
     </v-footer>
   </v-app>
 </template>
+
 <script>
 import TradeFooter from "trade/TradeFooter";
+import AccountInfo from "bank/AccountInfo";
 export default {
-  components: { TradeFooter },
+  components: { TradeFooter, AccountInfo },
   data() {
     return {
       items: [
@@ -108,6 +119,7 @@ export default {
   },
 };
 </script>
+
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -119,11 +131,9 @@ export default {
 
 #nav {
   padding: 30px;
-
   a {
     font-weight: bold;
     color: #2c3e50;
-
     &.router-link-exact-active {
       color: #42b983;
     }
