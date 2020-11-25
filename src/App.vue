@@ -58,7 +58,8 @@
 
       
  
-    <v-navigation-drawer absolute permanent app>
+    <v-navigation-drawer permanent
+        expand-on-hover app>
       <template v-slot:prepend>
         <v-list-item two-line>
           <v-list-item-avatar>
@@ -107,7 +108,6 @@ export default {
     return {
       items: [
         { title: "Trading", icon: "mdi-bank", to: { name: "Trade" } },
-        { title: "Bank Account", icon: "mdi-cash-usd", to: { name: "Bank" } },
         { title: "Work", icon: "mdi-account-hard-hat", to: { name: "Work" } },
       ],
     };
