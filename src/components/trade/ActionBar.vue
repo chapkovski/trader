@@ -34,7 +34,15 @@
               </transition>
             </td>
 
-            <td><management-buttons /></td>
+            <td>
+               
+   <div class="d-flex">
+    
+      <buy-sell-dialog :action='"buy"' :stockName='item.name' :price='item.price' :actionIcon="'mdi-cart-arrow-down'"></buy-sell-dialog>
+      <buy-sell-dialog :action='"sell"' :stockName='item.name ' :price='item.price' :actionIcon="'mdi-trash-can-outline'"></buy-sell-dialog>
+      </div>
+ 
+              </td>
           </tr>
         </tbody>
       </template>
@@ -45,8 +53,9 @@
 <script>
 import _ from "lodash";
 import ManagementButtons from "./ManagementButtons";
+import BuySellDialog from "./BuySellDialog";
 export default {
-  components: { ManagementButtons },
+  components: { ManagementButtons, BuySellDialog },
   data: () => ({
     stocks: [
       {
@@ -65,6 +74,9 @@ export default {
   }),
   created() {
     this.updStock();
+  },
+  computed:{
+    priceA(){return this.stocks[0].price}
   },
   methods: {
     updStock: function() {

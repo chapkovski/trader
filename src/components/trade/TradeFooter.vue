@@ -18,7 +18,7 @@
             {{ (currentDebt).toFixed(2) }}
           </span>
         </v-alert>
-        <margin-dialog />
+        <margin-dialog :rate='rate' :currentDebt='currentDebt' />
     </div>
 </template>
 

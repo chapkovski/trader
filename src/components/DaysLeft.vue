@@ -3,9 +3,16 @@
     <v-card raised class='mx-3'>
         <v-card-text>
             Day:
-            <v-chip class="ma-2" color="primary">
-                1/10
+                   <transition
+            mode="out-in"
+            name="custom-classes-transition"
+            enter-active-class="animate__animated animate__fadeInUp"
+            leave-active-class="animate__animated animate__fadeOutUp"
+          >
+            <v-chip class="ma-2" color="primary" :key='day'>
+                {{day}}
             </v-chip>
+                   </transition>
         </v-card-text>
     
     
@@ -14,33 +21,12 @@
 
 <script>
 export default {
+    props:['day'],
     data: () => ({
-        icons: [
-            'mdi-home',
-            'mdi-email',
-            'mdi-calendar',
-            'mdi-delete',
-        ],
-        items: [
-            'default',
-            'absolute',
-            'fixed',
-        ],
-        padless: false,
-        variant: 'default',
+         
     }),
     computed: {
-        localAttrs() {
-            const attrs = {}
-
-            if (this.variant === 'default') {
-                attrs.absolute = false
-                attrs.fixed = false
-            } else {
-                attrs[this.variant] = true
-            }
-            return attrs
-        },
+         
     },
 }
 </script>

@@ -4,8 +4,8 @@
             <v-app-bar-nav-icon></v-app-bar-nav-icon>
     
             <account-info> </account-info>
-            <days-left></days-left>
-            <time-left></time-left>
+            <days-left :day='day'></days-left>
+            <time-left @dayDone='day++'></time-left>
             <v-spacer></v-spacer>
             <div :class="{  'd-flex':true}" v-if='inTrade'>
                 <div class="m-3">
@@ -102,6 +102,7 @@ export default {
     components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft },
     data() {
         return {
+          day:1,
             items: [
                 { title: "Trading", icon: "mdi-bank", to: { name: "Trade" } },
                 { title: "Work", icon: "mdi-account-hard-hat", to: { name: "Work" } },
@@ -113,6 +114,9 @@ export default {
             return this.$route.name == "Trade";
         },
     },
+    methods:{newDay(){
+      console.debug('NEW DAY!!!')
+    }}
 };
 </script>
 

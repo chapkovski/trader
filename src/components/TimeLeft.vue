@@ -29,6 +29,7 @@ export default {
   methods: {
     restartTimer() {
       this.$refs.timer.startCountdown(true);
+      this.$emit('dayDone');
     },
   },
 };
