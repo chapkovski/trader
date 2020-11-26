@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card height='100%'>
     <v-simple-table>
       <template v-slot:default>
         <thead>
