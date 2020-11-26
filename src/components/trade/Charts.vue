@@ -81,8 +81,7 @@ export default {
       
       this.chartOptions.series[0].data.shift();
       this.chartOptions.series[1].data.shift();
-      
-      console.debug(this.chartOptions.xAxis)
+    
       const xAxisCategories=_.range(0,10)
       this.chartOptions.xAxis.categories.shift()
       const last = _.last(this.chartOptions.xAxis.categories)
