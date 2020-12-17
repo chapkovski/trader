@@ -23,39 +23,45 @@
         ></info-card>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="m-0">
+      <v-col cols="12">
+        <v-alert
+          class="lead text-center m-0 p-0"
+          outlined
+          color="primary"
+          :style="{ padding: '0px', margin: '0px' }"
+        >
+          First: find in each section below a maximum number; <br />Second:
+          provide a sum of these two numbers in the field below<br>JUST FOR OUR EYES ONLY: CORRECT ANSWER: {{correctAnswer}} 
+        </v-alert>
+      </v-col>
+    </v-row>
+    <v-row class="m-0">
       <v-col sm="12" md="6">
         <v-card>
           <v-card-text>
-            {{ taskText }}
+            <matrix :data="matrix1"></matrix>
           </v-card-text>
         </v-card>
       </v-col>
       <v-col sm="12" md="6">
         <v-card>
-          <v-card-title
-            class="d-flex "
-            :style="{ 'justify-content': 'center' }"
-          >
-            Based on the text, what is best definition of the word &nbsp;
-            <span class="font-weight-bold font-italic ml-3">
-              &nbsp; {{ q }}</span
-            >?
-          </v-card-title>
+          <v-card-text>
+            <matrix :data="matrix2"></matrix>
+          </v-card-text>
         </v-card>
-        <v-card-text>
-          <v-radio-group v-model="answer" column>
-            <v-radio
-              v-for="i in choices"
-              :label="i"
-              :value="i"
-              :key="i"
-            ></v-radio>
-          </v-radio-group>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn v-if="answer" @click="newTask">Submit</v-btn>
-        </v-card-actions>
+      </v-col>
+    </v-row>
+    <v-row class="m-0">
+      <v-col cols="12">
+        Submit your answer here and press "Enter"
+        <v-text-field
+          v-model="answer"
+          hide-details
+          single-line
+          type="number"
+          v-on:keyup.enter="submit"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -63,43 +69,47 @@
 
 <script>
 import _ from "lodash";
-import { LoremIpsum } from "lorem-ipsum";
+
 import infoCard from "work/InfoCard";
-const lorem = new LoremIpsum({
-  sentencesPerParagraph: {
-    max: 8,
-    min: 4,
-  },
-  wordsPerSentence: {
-    max: 16,
-    min: 4,
-  },
-});
+import Matrix from "work/Matrix";
+
 export default {
   name: "Home",
-  components: { infoCard },
+  components: { infoCard, Matrix },
   data() {
-    const sentences = _.map(_.range(5), () => lorem.generateSentences(1));
-
     return {
       totalTasks: 0,
+      matrix1: _.map(_.range(100), () => {
+        return _.random(50, 999);
+      }),
+      matrix2: _.map(_.range(100), () => {
+        return _.random(50, 999);
+      }),
+
       correctTasks: 0,
       salary: 0,
       fee: 150,
       answer: null,
-      q: lorem.generateWords(1),
-      taskText: lorem.generateParagraphs(2),
-      choices: sentences,
     };
   },
+  computed:{
+    correctAnswer(){return _.max(this.matrix1) + _.max(this.matrix2);}
+  },
   methods: {
-    newTask() {
-      this.taskText = lorem.generateParagraphs(2);
-      this.choices = _.map(_.range(5), () => lorem.generateSentences(1));
-      this.q = lorem.generateWords(1);
-      this.totalTasks++;
-      this.correctTasks+=_.sample([0,1]);
-      this.salary+=this.fee
+    submit() {
+      
+      if (this.answer == this.correctAnswer) {
+        this.correctTasks++;
+        this.salary += this.fee;
+      }
+      this.answer=null;
+      (this.matrix1 = _.map(_.range(100), () => {
+        return _.random(50, 999);
+      })),
+        (this.matrix2 = _.map(_.range(100), () => {
+          return _.random(50, 999);
+        })),
+        this.totalTasks++;
     },
   },
 };
