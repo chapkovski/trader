@@ -7,7 +7,7 @@ import dataModule from "highcharts/modules/data";
 import router from './router'
 dataModule(Highcharts);
 import VueConfetti from 'vue-confetti'
- 
+import store from './store'
 Vue.use(VueConfetti)
 Vue.use(HighchartsVue);
 import vueAwesomeCountdown from 'vue-awesome-countdown'
@@ -18,5 +18,6 @@ Vue.config.productionTip = false
 new Vue({
   vuetify,
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')

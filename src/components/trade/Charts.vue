@@ -32,20 +32,16 @@ export default {
       },
       series: [
         {
-          data: _.map(_.range(0, 10), function(i) {
-            return  Math.random();
-          }),
+          data: _.times(10,_.constant(null)),
           name: "Stock A",
         },
         {
-          data: _.map(_.range(0, 10), function(i) {
-            return  Math.random();
-          }),
+          data: _.times(10,_.constant(null)),
           name: "Stock B",
         },
       ],
       xAxis: {
-        categories: _.range(10,20),
+        categories: _.times(13,_.constant(1)),
         labels: {
           enabled: true,
            
@@ -68,19 +64,22 @@ export default {
     },
   }),
   created() {
+    console.debug('JOPJPAJPJA', 
+    _.concat([1, 2, 3], _.times(10,_.constant(null))))
     this.updShares();
   },
   methods: {
     updShares: function() {
       this.intervalid1 = setInterval(() => {
-        this.addRecord();
+        // this.addRecord();
       }, 2000);
     },
     addRecord() {
  
-      
+    
       this.chartOptions.series[0].data.shift();
       this.chartOptions.series[1].data.shift();
+      
     
       const xAxisCategories=_.range(0,10)
       this.chartOptions.xAxis.categories.shift()
