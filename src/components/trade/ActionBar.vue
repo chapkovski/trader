@@ -39,43 +39,27 @@ const formatUp = {
 export default {
   components: { StockRow },
   data: () => ({
-    aObj: {
-      name: "Stock A",
-      innerName: 'a'
-    },
-    bObj: {
-      name: "Stock B",
-      innerName: 'b'
-    },
+   stocksForActions:[]
   }),
   created() {},
   computed: {
     ...mapState(["stocks"]),
+
   },
   watch: {
-    currentAprice(newV, oldV) {
-      this.priceUpdate(newV, oldV, "a");
-    },
-    currentBprice(newV, oldV) {
-      this.priceUpdate(newV, oldV, "b");
-    },
+    stocks(newV, oldV){
+      this.stocksForActions = _.map(this.stocks, (i)=>{
+        
+        return {
+
+        }
+      })
+      let format = newV.newPrice>=oldV.price? formatUp: formatUp`
+      
+    }
   },
   methods: {
-    priceUpdate(newV, oldV, stock) {
-      if (newV >= oldV) {
-        this[`${stock}Obj`] = {
-          ...this[`${stock}Obj`],
-          price: newV,
-          ...formatUp,
-        };
-      } else {
-        this[`${stock}Obj`] = {
-          ...this[`${stock}Obj`],
-          price: newV,
-          ...formatDown,
-        };
-      }
-    },
+
   },
 };
 </script>

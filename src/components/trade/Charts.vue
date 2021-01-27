@@ -62,7 +62,6 @@ export default {
   },
   watch: {
      stocks(newV, oldV) {
-       console.debug("JOJOJOJOJO", _.map(newV, (i)=>({name:i.publicName, data:i.history})))
         this.chartOptions.series = _.map(newV, (i)=>({name:i.publicName, data:i.history}))
      }
   },
