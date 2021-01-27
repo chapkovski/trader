@@ -1,5 +1,5 @@
 <template>
-  <v-card height='100%'>
+  <v-card height="100%">
     <v-simple-table>
       <template v-slot:default>
         <thead>
@@ -14,36 +14,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in stocks" :key="item.name">
-            <td>{{ item.name }}</td>
-
-            <td >
-              <transition
-                name="fade"
-                mode="out-in"
-               
-              >
-                <div :key="item.price" class='d-flex '>
-                  <div class='mr-3' :style='{color:item.color}'>{{ item.price }}</div>
-                  <div>
-                  <span :style="{ color: 'red' }">
-                    <v-icon :color="item.color">{{ item.icon }}</v-icon>
-                  </span>
-                  </div>
-                </div>
-              </transition>
-            </td>
-
-            <td>
-               
-   <div class="d-flex">
-    
-      <buy-sell-dialog :action='"buy"' :stockName='item.name' :price='item.price' :actionIcon="'mdi-cart-arrow-down'"></buy-sell-dialog>
-      <buy-sell-dialog :action='"sell"' :stockName='item.name ' :price='item.price' :actionIcon="'mdi-trash-can-outline'"></buy-sell-dialog>
-      </div>
- 
-              </td>
-          </tr>
+          <stock-row v-bind="aObj" />
+          <stock-row v-bind="bObj" />
         </tbody>
       </template>
     </v-simple-table>
@@ -52,48 +24,57 @@
 
 <script>
 import _ from "lodash";
-import ManagementButtons from "./ManagementButtons";
-import BuySellDialog from "./BuySellDialog";
+
+import StockRow from "./StockRow";
+
+import { mapState } from "vuex";
+const formatDown = {
+  color: "red",
+  icon: "mdi-arrow-down-bold-outline",
+};
+const formatUp = {
+  color: "blue",
+  icon: "mdi-arrow-up-bold-outline",
+};
 export default {
-  components: { ManagementButtons, BuySellDialog },
+  components: { StockRow },
   data: () => ({
-    stocks: [
-      {
-        name: "Stock A",
-        price: 3.456,
-        color: "red",
-        icon: "mdi-arrow-down-bold-outline",
-      },
-      {
-        name: "Stock B",
-        price: 4.356,
-        color: "blue",
-        icon: "mdi-arrow-up-bold-outline",
-      },
-    ],
+    aObj: {
+      name: "Stock A",
+      innerName: 'a'
+    },
+    bObj: {
+      name: "Stock B",
+      innerName: 'b'
+    },
   }),
-  created() {
-    this.updStock();
+  created() {},
+  computed: {
+    ...mapState(["stocks"]),
   },
-  computed:{
-    priceA(){return this.stocks[0].price}
+  watch: {
+    currentAprice(newV, oldV) {
+      this.priceUpdate(newV, oldV, "a");
+    },
+    currentBprice(newV, oldV) {
+      this.priceUpdate(newV, oldV, "b");
+    },
   },
   methods: {
-    updStock: function() {
-      this.intervalid1 = setInterval(() => {
-        _.forEach(this.stocks, function(i) {
-          const oldval = i.price;
-          i.price = (Math.random() * 100).toFixed(2);
-          const up = oldval < i.price;
-          if (up) {
-            i.color = "blue";
-            i.icon = "mdi-arrow-up-bold-outline";
-          } else {
-            i.color = "red";
-            i.icon = "mdi-arrow-down-bold-outline";
-          }
-        });
-      }, 2000);
+    priceUpdate(newV, oldV, stock) {
+      if (newV >= oldV) {
+        this[`${stock}Obj`] = {
+          ...this[`${stock}Obj`],
+          price: newV,
+          ...formatUp,
+        };
+      } else {
+        this[`${stock}Obj`] = {
+          ...this[`${stock}Obj`],
+          price: newV,
+          ...formatDown,
+        };
+      }
     },
   },
 };

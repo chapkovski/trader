@@ -10,7 +10,7 @@
           class="my-3"
         >
           <v-icon>{{ actionIcon }}</v-icon>
-          {{action}}
+          {{ action }}
         </v-btn>
       </template>
 
@@ -27,9 +27,7 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title> </v-list-item-title>
-                <v-sheet
-                  >Current price per share: {{ price  }}</v-sheet
-                >
+                <v-sheet>Current price per share: {{ price }}</v-sheet>
               </v-list-item-content>
             </v-list-item>
             <v-divider></v-divider>
@@ -59,6 +57,7 @@
 </template>
 <script>
 import _ from "lodash";
+
 export default {
   props: ["action", "stockName", "price", "actionIcon"],
   data() {
@@ -67,7 +66,11 @@ export default {
     };
   },
   computed: {
-    capAction(){return  _.capitalize(this.action) },
+ 
+
+    capAction() {
+      return _.capitalize(this.action);
+    },
     actionColor() {
       return this.action === "buy" ? "green" : "red";
     },

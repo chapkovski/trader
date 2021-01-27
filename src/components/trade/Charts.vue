@@ -8,89 +8,76 @@
         :options="chartOptions"
         :updateArgs="[true, true, true]"
       ></highcharts>
-     
     </v-card-text>
   </v-card>
 </template>
 
 <script>
 import { Chart } from "highcharts-vue";
-import csvFile from "../../assets/data.csv";
-import _ from "lodash";
 
+import _ from "lodash";
+import { mapState, mapMutations, mapActions } from "vuex";
+import gameParams from "../../params";
 export default {
   components: {
     highcharts: Chart,
   },
-  data: () => ({
-    hcInstance: Chart,
-    chartOptions: {
-      height: 300,
-      chart: {
+  data: function() {
+    return {
+      hcInstance: Chart,
+      chartOptions: {
         height: 300,
-        type: "spline",
-      },
-      series: [
-        {
-          data: _.times(10,_.constant(null)),
-          name: "Stock A",
+        chart: {
+          height: 300,
+          type: "spline",
         },
-        {
-          data: _.times(10,_.constant(null)),
-          name: "Stock B",
-        },
-      ],
-      xAxis: {
-        categories: _.times(13,_.constant(1)),
-        labels: {
-          enabled: true,
-           
-           
-        },
-      },
-      legend: {
-        enabled: true,
-      },
-      yAxis: {
-        labels: {
-          formatter: function() {
-            return this.axis.defaultLabelFormatter.call(this);
+        series: [        ],
+        xAxis: {
+          categories: _.range(gameParams.numTicks),
+          labels: {
+            enabled: true,
           },
         },
+        legend: {
+          enabled: true,
+        },
+        yAxis: {
+          labels: {
+            formatter: function() {
+              return this.axis.defaultLabelFormatter.call(this);
+            },
+          },
+        },
+        title: {
+          text: "",
+        },
       },
-      title: {
-        text: "",
-      },
-    },
-  }),
+    };
+  },
   created() {
-    console.debug('JOPJPAJPJA', 
-    _.concat([1, 2, 3], _.times(10,_.constant(null))))
     this.updShares();
   },
+  computed: {
+    ...mapState(["currentTick", "stocks"])
+  },
+  watch: {
+     stocks(newV, oldV) {
+       console.debug("JOJOJOJOJO", _.map(newV, (i)=>({name:i.publicName, data:i.history})))
+        this.chartOptions.series = _.map(newV, (i)=>({name:i.publicName, data:i.history}))
+     }
+  },
   methods: {
+    ...mapMutations(["INC_TICK"]),
+    ...mapActions(["requestPriceUpdate"]),
     updShares: function() {
       this.intervalid1 = setInterval(() => {
-        // this.addRecord();
-      }, 2000);
+        this.addRecord();
+      }, gameParams.tickFrequency * 1000);
     },
     addRecord() {
- 
-    
-      this.chartOptions.series[0].data.shift();
-      this.chartOptions.series[1].data.shift();
-      
-    
-      const xAxisCategories=_.range(0,10)
-      this.chartOptions.xAxis.categories.shift()
-      const last = _.last(this.chartOptions.xAxis.categories)
-      this.chartOptions.xAxis.categories.push(last+1)
-
- 
-      this.chartOptions.series[0].data.push( Math.random());
-      this.chartOptions.series[1].data.push( Math.random());
-      
-      
+      this.requestPriceUpdate("a");
+      this.requestPriceUpdate("b");
+      this.INC_TICK();
     },
   },
 };

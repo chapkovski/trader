@@ -2,9 +2,28 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import _ from 'lodash'
 import VueNativeSock from 'vue-native-websocket'
+import gameParams, { lastKnownState } from './params'
 Vue.use(Vuex)
+// 
 const store = new Vuex.Store({
     state: {
+        ...lastKnownState,
+        stocks: [
+            {
+                innerName: 'a',
+                publicName: 'Stock A',
+                price: 0,
+                volume: 0,
+                history: []
+            },
+            {
+                innerName: 'b',
+                publicName: 'Stock B',
+                price: 0,
+                volume: 0,
+                history: []
+            },
+        ],
         socket: {
             isConnected: false,
             message: '',
@@ -12,9 +31,20 @@ const store = new Vuex.Store({
         },
     },
     getters: {
+        getStockByName: (state) => (name) => {
+            return state.stocks.find(stock => stock.innerName === name)
+        },
+        getStockIndexByName: (state) => (name) => {
+
+            return _.findIndex(state.stocks, (i)=> i.innerName=== name )
+        }
     },
     mutations: {
-       
+        STOCK_UPDATE: (state, { ind, obj }) => {
+            state.stocks.splice(ind, 1, obj);
+        },
+
+        INC_TICK: (state) => (state.currentTick++),
         SOCKET_ONOPEN(state, event) {
             Vue.prototype.$socket = event.currentTarget
             state.socket.isConnected = true
@@ -27,7 +57,7 @@ const store = new Vuex.Store({
         },
         // default handler called for all methods
         SOCKET_ONMESSAGE(state, message) {
-           
+
         },
         // mutations for reconnect methods
         SOCKET_RECONNECT(state, count) {
@@ -38,7 +68,16 @@ const store = new Vuex.Store({
         },
     },
     actions: {
-  
+        requestPriceUpdate(context, stock) {
+            // TODO: somewhere here we'll send a socket request to get a new tick
+            const price = Math.random();
+            const obj = context.getters.getStockByName(stock)
+            obj.price = price;
+            obj.history = [...obj.history, price]
+            const ind = context.getters.getStockIndexByName(stock)
+            context.commit('STOCK_UPDATE', {ind, obj});
+
+        }
 
     }
 })
