@@ -22,16 +22,14 @@
         <buy-sell-dialog
           action="buy"
           :stockName="name"
-        
-          :innerName='innerName'
+          :name="innerName"
           actionIcon="mdi-cart-arrow-down"
         ></buy-sell-dialog>
         <buy-sell-dialog
           action="sell"
           :stockName="name"
-        
+          :name="innerName"
           :actionIcon="'mdi-trash-can-outline'"
-          :innerName='innerName'
         ></buy-sell-dialog>
       </div>
     </td>
@@ -45,7 +43,7 @@ import BuySellDialog from "./BuySellDialog";
 
 export default {
   components: { BuySellDialog },
-  props: ["name",  "color", "icon", 'innerName'],
+  props: ["name", "color", "icon", "innerName", "price"],
   data() {
     return {};
   },

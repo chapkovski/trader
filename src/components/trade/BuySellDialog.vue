@@ -27,7 +27,7 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title> </v-list-item-title>
-                <v-sheet>Current price per share: {{ price }}</v-sheet>
+                <v-sheet>Current price per share: {{ this.getStockByName(this.name).price}}</v-sheet>
               </v-list-item-content>
             </v-list-item>
             <v-divider></v-divider>
@@ -58,15 +58,19 @@
 <script>
 import _ from "lodash";
 
+import { mapGetters } from "vuex";
 export default {
-  props: ["action", "stockName", "price", "actionIcon"],
+  props: ["action", "stockName", "actionIcon", 'name'],
   data() {
     return {
       dialog: false,
     };
   },
+  created(){
+  
+  },
   computed: {
- 
+    ...mapGetters(['getStockByName']),
 
     capAction() {
       return _.capitalize(this.action);

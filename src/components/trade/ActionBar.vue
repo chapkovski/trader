@@ -14,8 +14,11 @@
           </tr>
         </thead>
         <tbody>
-          <stock-row v-bind="aObj" />
-          <stock-row v-bind="bObj" />
+          <stock-row
+          v-for="stock in stocksForActions"
+          v-bind='stock'
+          :key='stock.innerName'
+          ></stock-row>
         </tbody>
       </template>
     </v-simple-table>
@@ -39,28 +42,23 @@ const formatUp = {
 export default {
   components: { StockRow },
   data: () => ({
-   stocksForActions:[]
+    stocksForActions: [],
   }),
   created() {},
   computed: {
     ...mapState(["stocks"]),
-
   },
   watch: {
-    stocks(newV, oldV){
-      this.stocksForActions = _.map(this.stocks, (i)=>{
-        
-        return {
-
-        }
-      })
-      let format = newV.newPrice>=oldV.price? formatUp: formatUp`
+    stocks(newV, oldV) {
+      this.stocksForActions = _.map(newV, (i) => {
+  
+        const format = i.price >= i.previous ? formatUp : formatDown;
+        return { name: i.publicName, innerName: i.innerName, ...format, price:i.price };
+      });
       
-    }
+    },
   },
-  methods: {
-
-  },
+  methods: {},
 };
 </script>
 

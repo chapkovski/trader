@@ -13,6 +13,7 @@ const store = new Vuex.Store({
                 innerName: 'a',
                 publicName: 'Stock A',
                 price: 0,
+                previous: 0,
                 volume: 0,
                 history: []
             },
@@ -20,6 +21,7 @@ const store = new Vuex.Store({
                 innerName: 'b',
                 publicName: 'Stock B',
                 price: 0,
+                previous: 0,
                 volume: 0,
                 history: []
             },
@@ -36,7 +38,7 @@ const store = new Vuex.Store({
         },
         getStockIndexByName: (state) => (name) => {
 
-            return _.findIndex(state.stocks, (i)=> i.innerName=== name )
+            return _.findIndex(state.stocks, (i) => i.innerName === name)
         }
     },
     mutations: {
@@ -73,9 +75,10 @@ const store = new Vuex.Store({
             const price = Math.random();
             const obj = context.getters.getStockByName(stock)
             obj.price = price;
-            obj.history = [...obj.history, price]
-            const ind = context.getters.getStockIndexByName(stock)
-            context.commit('STOCK_UPDATE', {ind, obj});
+            obj.previous = _.last(obj.history);
+            obj.history = [...obj.history, price];
+            const ind = context.getters.getStockIndexByName(stock);
+            context.commit('STOCK_UPDATE', { ind, obj });
 
         }
 
