@@ -15,9 +15,9 @@
         </thead>
         <tbody>
           <stock-row
-          v-for="stock in stocksForActions"
-          v-bind='stock'
-          :key='stock.innerName'
+            v-for="stock in stocksForActions"
+            v-bind="stock"
+            :key="stock.innerName"
           ></stock-row>
         </tbody>
       </template>
@@ -41,23 +41,23 @@ const formatUp = {
 };
 export default {
   components: { StockRow },
-  data: () => ({
-    stocksForActions: [],
-  }),
+  data: () => ({}),
   created() {},
   computed: {
     ...mapState(["stocks"]),
-  },
-  watch: {
-    stocks(newV, oldV) {
-      this.stocksForActions = _.map(newV, (i) => {
-  
+    stocksForActions() {
+      return _.map(this.stocks, (i) => {
         const format = i.price >= i.previous ? formatUp : formatDown;
-        return { name: i.publicName, innerName: i.innerName, ...format, price:i.price };
+        return {
+          name: i.publicName,
+          innerName: i.innerName,
+          ...format,
+          price: i.price,
+        };
       });
-      
     },
   },
+  watch: {},
   methods: {},
 };
 </script>
