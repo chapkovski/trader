@@ -125,6 +125,9 @@ export default {
   watch:{
     dialog(){
       this.q = null
+    },
+    getCurrentPrice(){
+      this.validate()
     }
   },
 
