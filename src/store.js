@@ -9,7 +9,7 @@ Vue.use(Vuex)
 const generateTask = () => {
     const matrix1 = _.map(_.range(100), () => {
         return _.random(50, 999);
-    }))
+    })
     const matrix2 = _.map(_.range(100), () => {
         return _.random(50, 999);
     })
@@ -22,7 +22,7 @@ const store = new Vuex.Store({
         salary: 0,
         tasksSubmitted: 0,
         correctTasksSubmitted: 0,
-        currentTask: {},
+        currentTask: generateTask(),
         currentTab: null,
         transactions: [
 
@@ -55,6 +55,7 @@ const store = new Vuex.Store({
     },
     getters: {
         getCashBalance: (state) => () => { return state.cashBalance },
+
         getStockByName: (state) => (name) => {
             return state.stocks.find(stock => stock.innerName === name)
         },
@@ -72,6 +73,7 @@ const store = new Vuex.Store({
         },
         INCREASE_TOTAL_TASKS_COUNTER: (state) => { state.tasksSubmitted++ },
         INCREASE_CORRECT_TASKS_COUNTER: (state) => { state.correctTasksSubmitted++ },
+        SET_NEW_TASK: (state, body) => { state.currentTask = body },
         SET_TAB: (state, tab) => {
             state.currentTab = tab
         },
@@ -120,6 +122,7 @@ const store = new Vuex.Store({
 
 
             context.commit('INCREASE_TOTAL_TASKS_COUNTER')
+            context.commit('SET_NEW_TASK', generateTask())
         },
         makeTransaction(context, { stock, quantity }) {
             // negative quantity means selling, positive quanitity means buying
