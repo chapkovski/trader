@@ -98,6 +98,7 @@ import TradeFooter from "trade/TradeFooter";
 import AccountInfo from "bank/AccountInfo";
 import DaysLeft from "./components/DaysLeft";
 import TimeLeft from "./components/TimeLeft";
+import {mapActions} from 'vuex'
 export default {
   components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft },
   data() {
@@ -114,7 +115,16 @@ export default {
       return this.$route.name == "Trade";
     },
   },
+  watch: {
+    $route(to, from) {
+      if (to.name) {
+          this.setTab(to.name)
+      }
+      
+    },
+  },
   methods: {
+    ...mapActions(['setTab']),
     newDay() {
       console.debug("NEW DAY!!!");
     },

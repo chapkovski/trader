@@ -4,7 +4,7 @@
         <v-card-text>
             Bank account balance:
             <v-chip class="ma-2" color="primary">
-                $100.000
+                {{getCashBalance()}}
             </v-chip>
         </v-card-text>
     
@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 export default {
     data: () => ({
         icons: [
@@ -30,6 +31,7 @@ export default {
         variant: 'default',
     }),
     computed: {
+        ...mapGetters(['getCashBalance']),
         localAttrs() {
             const attrs = {}
 

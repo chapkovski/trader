@@ -30,6 +30,7 @@
           :stockName="name"
           :name="innerName"
           :actionIcon="'mdi-trash-can-outline'"
+          
         ></buy-sell-dialog>
       </div>
     </td>

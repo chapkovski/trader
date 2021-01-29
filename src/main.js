@@ -10,6 +10,10 @@ import VueConfetti from 'vue-confetti'
 import store from './store'
 Vue.use(VueConfetti)
 Vue.use(HighchartsVue);
+import VueLodash from 'vue-lodash'
+import lodash from 'lodash'
+
+Vue.use(VueLodash,  { lodash: lodash })
 import vueAwesomeCountdown from 'vue-awesome-countdown'
 
 Vue.use(vueAwesomeCountdown, 'vac') // Component name, `countdown` and `vac` by default

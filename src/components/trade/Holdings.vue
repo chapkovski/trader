@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto "  >
+  <v-card class="mx-auto ">
     <v-card-title>Current holdings</v-card-title>
 
     <v-card-text>
@@ -16,43 +16,49 @@
               <th class="text-left">
                 Items
               </th>
-              <th class="text-left">
-                Gain
-              </th>
+
               <th class="text-left">
                 Return
               </th>
             </tr>
-          </thead>
+          </thead> 
           <tbody>
-            <tr v-for="item in holdings" :key="item.name">
-              <td>{{ item.name }}</td>
+            <tr v-for="item in stocksForHoldings" :key="item.name">
+              <td>{{ item.publicName }}</td>
               <td>{{ item.value }}</td>
               <td>{{ item.units }}</td>
-              <td>{{ item.gain }}</td>
-              <td>{{ item.return }}</td>
+
+              <td>{{ item.rate_return }}</td>
             </tr>
           </tbody>
         </template>
       </v-simple-table>
     </v-card-text>
-    
-     
   </v-card>
 </template>
 
 <script>
-
+import { mapGetters, mapState } from "vuex";
+import _ from "lodash";
 export default {
-
   data: () => ({
     selection: 1,
-    holdings: [
-      { name: "Stock A", units: 100, value: 20, gain: -70, return: 0.25 },
-      { name: "Stock B", units: 200, value: 10, gain: 70, return: 0.36 },
-    ],
+    stocksForHoldings: [],
   }),
-
+  computed: { ...mapState(["stocks"]) },
+  watch: {
+    stocks(newV, oldV) {
+      this.stocksForHoldings = _.map(newV, (i) => {
+        return {
+          publicName: i.publicName,
+          value: i.quantity*i.price,
+          units: i.quantity,
+          rate_return: i.rate_return,
+        };
+      });
+      
+    },
+  },
   methods: {},
 };
 </script>
