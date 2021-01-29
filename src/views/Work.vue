@@ -100,18 +100,7 @@ export default {
   methods: {
     submit() {
       
-      if (this.answer == this.correctAnswer) {
-        this.correctTasks++;
-        this.salary += this.fee;
-      }
-      this.answer=null;
-      (this.matrix1 = _.map(_.range(100), () => {
-        return _.random(50, 999);
-      })),
-        (this.matrix2 = _.map(_.range(100), () => {
-          return _.random(50, 999);
-        })),
-        this.totalTasks++;
+     
     },
   },
 };

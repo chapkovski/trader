@@ -4,7 +4,17 @@ import _ from 'lodash'
 import VueNativeSock from 'vue-native-websocket'
 import gameParams, { lastKnownState } from './params'
 Vue.use(Vuex)
-// 
+// all this bullshit with task generation should move to server side later
+
+const generateTask = () => {
+    const matrix1 = _.map(_.range(100), () => {
+        return _.random(50, 999);
+    }))
+    const matrix2 = _.map(_.range(100), () => {
+        return _.random(50, 999);
+    })
+    return { matrix1, matrix2 }
+}
 const store = new Vuex.Store({
     state: {
         ...lastKnownState,
@@ -60,6 +70,8 @@ const store = new Vuex.Store({
         CHANGE_CASH: (state, q) => {
             state.cashBalance += q
         },
+        INCREASE_TOTAL_TASKS_COUNTER: (state) => { state.tasksSubmitted++ },
+        INCREASE_CORRECT_TASKS_COUNTER: (state) => { state.correctTasksSubmitted++ },
         SET_TAB: (state, tab) => {
             state.currentTab = tab
         },
@@ -94,7 +106,20 @@ const store = new Vuex.Store({
             // somewhere here we send task asnwer for checking on a server side, and get a new task to work on
             // as soon as we get the answer we increase the counter of total tasks by 1, and 
             // if correct we increase the salary, number of crrect task and total number of money avaialbe
+            function isAnswerCorrect(task, answer) {
+                const m1 = _.max(task.matrix1)
+                const m2 = _.max(task.matrix2)
+                const correctAnswer = m1 + m2
+                return parseInt(correctAnswer) === parseInt(answer)
+            }
+            const currentTask = context.state.currentTask
+            if (isAnswerCorrect(currentTask, answer)) {
+                context.commit('INCREASE_CORRECT_TASKS_COUNTER')
+                context.commit('CHANGE_CASH', gameParams.taskFee)
+            }
 
+
+            context.commit('INCREASE_TOTAL_TASKS_COUNTER')
         },
         makeTransaction(context, { stock, quantity }) {
             // negative quantity means selling, positive quanitity means buying
