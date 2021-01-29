@@ -21,7 +21,7 @@
                 Return
               </th>
             </tr>
-          </thead> 
+          </thead>
           <tbody>
             <tr v-for="item in stocksForHoldings" :key="item.name">
               <td>{{ item.publicName }}</td>
@@ -41,24 +41,22 @@
 import { mapGetters, mapState } from "vuex";
 import _ from "lodash";
 export default {
-  data: () => ({
-    selection: 1,
-    stocksForHoldings: [],
-  }),
-  computed: { ...mapState(["stocks"]) },
-  watch: {
-    stocks(newV, oldV) {
-      this.stocksForHoldings = _.map(newV, (i) => {
+  data: () => ({}),
+  created() {},
+  computed: {
+    ...mapState(["stocks"]),
+    stocksForHoldings() {
+      return _.map(this.stocks, (i) => {
         return {
           publicName: i.publicName,
-          value: i.quantity*i.price,
+          value: i.quantity * i.price,
           units: i.quantity,
           rate_return: i.rate_return,
         };
       });
-      
     },
   },
+  watch: {},
   methods: {},
 };
 </script>

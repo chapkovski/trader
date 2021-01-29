@@ -16,7 +16,7 @@
         :gradient-direction="gradientDirection"
         :type="type"
         :auto-line-width="autoLineWidth"
-        auto-draw
+        
       ></v-sparkline>
     </v-card-text>
   </v-card>
