@@ -31,7 +31,7 @@ export default {
           height: 300,
           type: "spline",
         },
-        series: [        ],
+        series: [],
         xAxis: {
           categories: _.range(gameParams.numTicks),
           labels: {
@@ -55,18 +55,22 @@ export default {
     };
   },
   created() {
-     this.chartOptions.series = _.map(this.stocks, (i)=>({name:i.publicName, data:i.history}))
+    this.chartOptions.series = _.map(this.stocks, (i) => ({
+      name: i.publicName,
+      data: i.history,
+    }));
   },
   computed: {
-    ...mapState(["currentTick", "stocks"])
+    ...mapState(["currentTick", "stocks"]),
   },
   watch: {
-     stocks(newV, oldV) {
-        this.chartOptions.series = _.map(newV, (i)=>({name:i.publicName, data:i.history}))
-     }
+    stocks(newV, oldV) {
+      this.chartOptions.series = _.map(newV, (i) => ({
+        name: i.publicName,
+        data: i.history,
+      }));
+    },
   },
-  methods: {
-    
-  },
+  methods: {},
 };
 </script>

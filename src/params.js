@@ -5,6 +5,7 @@ const gameParams = {
     dayLength: 30,
     tickFrequency: 3,
     numTicks: 30,
+    taskFee:20
 }
 
 export const lastKnownState = {

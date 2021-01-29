@@ -17,8 +17,8 @@
       </v-col>
       <v-col md="4" sm="12">
         <info-card
-          title="Total earnings from work"
-          :value="salary"
+          title="Fee per task"
+          :value="fee"
           img="https://www.flaticon.com/svg/static/icons/svg/3135/3135706.svg"
         ></info-card>
       </v-col>
@@ -61,6 +61,7 @@
           single-line
           type="number"
           v-on:keyup.enter="submit"
+          autofocus
         />
       </v-col>
     </v-row>
@@ -72,13 +73,14 @@ import _ from "lodash";
 
 import infoCard from "work/InfoCard";
 import Matrix from "work/Matrix";
-
+import gameParams from '../params'
 export default {
   name: "Home",
   components: { infoCard, Matrix },
   data() {
     return {
       totalTasks: 0,
+      fee:gameParams.taskFee, 
       matrix1: _.map(_.range(100), () => {
         return _.random(50, 999);
       }),
@@ -88,7 +90,7 @@ export default {
 
       correctTasks: 0,
       salary: 0,
-      fee: 150,
+ 
       answer: null,
     };
   },
