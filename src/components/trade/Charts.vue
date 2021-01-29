@@ -55,7 +55,7 @@ export default {
     };
   },
   created() {
-   
+     this.chartOptions.series = _.map(this.stocks, (i)=>({name:i.publicName, data:i.history}))
   },
   computed: {
     ...mapState(["currentTick", "stocks"])
