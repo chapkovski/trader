@@ -98,7 +98,8 @@ import TradeFooter from "trade/TradeFooter";
 import AccountInfo from "bank/AccountInfo";
 import DaysLeft from "./components/DaysLeft";
 import TimeLeft from "./components/TimeLeft";
-import {mapActions} from 'vuex'
+import {mapActions, mapMutations} from 'vuex'
+import gameParams from './params'
 export default {
   components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft },
   data() {
@@ -109,6 +110,10 @@ export default {
         { title: "Work", icon: "mdi-account-hard-hat", to: { name: "Work" } },
       ],
     };
+  },
+  created(){
+    this.addRecord();
+    this.updShares()
   },
   computed: {
     inTrade() {
@@ -124,7 +129,18 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setTab']),
+    ...mapActions(['setTab', 'requestPriceUpdate']),
+    ...mapMutations(["INC_TICK"]),
+    updShares: function() {
+      this.intervalid1 = setInterval(() => {
+        this.addRecord();
+      }, gameParams.tickFrequency * 1000);
+    },
+    addRecord() {
+      this.requestPriceUpdate("a");
+      this.requestPriceUpdate("b");
+      this.INC_TICK();
+    },
     newDay() {
       console.debug("NEW DAY!!!");
     },

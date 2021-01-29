@@ -55,7 +55,7 @@ export default {
     };
   },
   created() {
-    this.updShares();
+   
   },
   computed: {
     ...mapState(["currentTick", "stocks"])
@@ -66,18 +66,7 @@ export default {
      }
   },
   methods: {
-    ...mapMutations(["INC_TICK"]),
-    ...mapActions(["requestPriceUpdate"]),
-    updShares: function() {
-      this.intervalid1 = setInterval(() => {
-        this.addRecord();
-      }, gameParams.tickFrequency * 1000);
-    },
-    addRecord() {
-      this.requestPriceUpdate("a");
-      this.requestPriceUpdate("b");
-      this.INC_TICK();
-    },
+    
   },
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex justify-content-center " :style="{'flex-grow':'1'}">
+    <div class="d-flex justify-content-center " :style="{'flex-grow':'1'}" v-if='false'>
         <v-alert outlined height="42" type="warning" :icon="false" class="centered-alert">
             Interest accrued:
             <span>
@@ -33,7 +33,7 @@ export default {
         accrued: 0,
     }),
     created() {
-        this.updDebt();
+        // this.updDebt();
     },
     methods: {
         updDebt: function() {
