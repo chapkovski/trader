@@ -95,10 +95,11 @@
 
 <script>
 import TradeFooter from "trade/TradeFooter";
+import _ from 'lodash'
 import AccountInfo from "bank/AccountInfo";
 import DaysLeft from "./components/DaysLeft";
 import TimeLeft from "./components/TimeLeft";
-import {mapActions, mapMutations} from 'vuex'
+import {mapActions, mapMutations, mapState} from 'vuex'
 import gameParams from './params'
 export default {
   components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft },
@@ -116,6 +117,7 @@ export default {
     this.updShares()
   },
   computed: {
+    ...mapState(['stocks']),
     inTrade() {
       return this.$route.name == "Trade";
     },
@@ -137,8 +139,8 @@ export default {
       }, gameParams.tickFrequency * 1000);
     },
     addRecord() {
-      this.requestPriceUpdate("a");
-      this.requestPriceUpdate("b");
+      _.forEach(this.stocks, i=>this.requestPriceUpdate(i.innerName))
+     
       this.INC_TICK();
     },
     newDay() {

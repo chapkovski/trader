@@ -28,9 +28,9 @@
     </v-row>
     <v-row>
       <v-col cols="12" md=6>
-        <charts />
+        <charts v-if='false'/>
       </v-col>
-      <v-col cols="12" md=6>
+      <v-col cols="12" md=12>
         <history />
       </v-col>
     </v-row>

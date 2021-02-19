@@ -1,28 +1,28 @@
 <template>
   <v-card class=" "  >
-    <v-card-title>Historical data</v-card-title>
+    <v-card-title>Charts</v-card-title>
   <v-tabs
           v-model="currentTab"
           centered
           slider-color="yellow"
         >
           <v-tab
-            v-for="i in tabs"
-            :key="i.name"
-            :href="`#${i.name}`"
+            v-for="i in stocks"
+            :key="i.innerName"
+            :href="`#${i.innerName}`"
           >
-             {{ i.label }}
+             {{ i.publicName }}
           </v-tab>
         </v-tabs>
    <v-tabs-items v-model="currentTab">
       <v-tab-item
-        v-for="i in tabs"
-        :key="i.name"
-        :value="`${i.name}`"
+        v-for="i in stocks"
+        :key="i.innerName"
+        :value="`${i.innerName}`"
       >
         <v-card flat>
           <v-card-text  >
-            <chart :chart-id='i.name'></chart>
+            <chart :stock-name='i.innerName'></chart>
           </v-card-text>
         </v-card>
       </v-tab-item>
@@ -32,29 +32,22 @@
 </template>
 <script>
 import _ from 'lodash'
+import { mapState, mapMutations, mapActions } from "vuex";
 import Chart from './SingleChart' 
 export default {
   components:{Chart},
   data: () => ({
-    tabs:[
-      {name:'a', label:'stock A', text:'jopa 1'},
-      {name:'b', label:'stock B', text:'pizda 2'},
-      {name:'c', label:'stock C', text:'hui 3'},
-      {name:'d', label:'stock D', text:'putin!'},
-    ],
+    chartStocks:[],
     currentTab:'a',
 
   }),
   computed:{
+    ...mapState(['stocks']),
     getCurrentTab(){
       
-      return _.find(this.tabs, (i)=>(i.name===this.currentTab))
+      return _.find(this.stocks, (i)=>(i.innerName===this.currentTab))
       }
   },
-  watch:{
-    currentTab(newv, oldv){
-      console.debug('CCCC', newv,oldv)
-    }
-  }
+  
 };
 </script>

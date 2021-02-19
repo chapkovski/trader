@@ -27,26 +27,46 @@ const store = new Vuex.Store({
         transactions: [
 
         ],
-        stocks: [
-            {
-                innerName: 'a',
-                publicName: 'Stock A',
-                price: 0,
-                previous: 0,
-                quantity: 10,
-                history: [],
-                rate_return: 0
-            },
-            {
-                innerName: 'b',
-                publicName: 'Stock B',
-                price: 0,
-                previous: 0,
-                quantity: 2,
-                history: [],
-                rate_return: 0
-            },
-        ],
+        stocks:
+            [
+                {
+                    innerName: 'a',
+                    publicName: 'Stock A',
+                    price: 0,
+                    previous: 0,
+                    quantity: 10,
+                    history: [],
+                    rate_return: 0
+                },
+                {
+                    innerName: 'b',
+                    publicName: 'Stock B',
+                    price: 0,
+                    previous: 0,
+                    quantity: 2,
+                    history: [],
+                    rate_return: 0
+                },
+                {
+                    innerName: 'c',
+                    publicName: 'Leveraged ETF 2XA',
+                    price: 0,
+                    previous: 0,
+                    quantity: 2,
+                    history: [],
+                    rate_return: 0
+                },
+                {
+                    innerName: 'd',
+                    publicName: 'Leveraged ETF 2XB',
+                    price: 0,
+                    previous: 0,
+                    quantity: 2,
+                    history: [],
+                    rate_return: 0
+                },
+            ]
+        ,
         socket: {
             isConnected: false,
             message: '',
@@ -57,6 +77,7 @@ const store = new Vuex.Store({
         getCashBalance: (state) => () => { return state.cashBalance },
 
         getStockByName: (state) => (name) => {
+            
             return state.stocks.find(stock => stock.innerName === name)
         },
         getStockIndexByName: (state) => (name) => {
