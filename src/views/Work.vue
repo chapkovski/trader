@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" v-model="valid">
+  <v-form ref="form" v-model="valid"  @submit.prevent="submit">
     <v-container>
       <v-row>
         <v-col md="4" sm="12">
@@ -55,16 +55,18 @@
         </v-col>
       </v-row>
       <v-row class="m-0">
-        <v-col cols="12">
+        <v-col cols="12" v-cloak>
           Submit your answer here and press "Enter"
           <v-text-field
             v-model="answer"
              
             single-line
             type="number"
+            
             @keyup.enter="submit"
             autofocus
             @change="validate"
+           
             :rules="[rules.required]"
             
           />
@@ -88,7 +90,7 @@ export default {
     return {
       fee: gameParams.taskFee,
       valid: true,
-      answer: null,
+      answer: '',
       rules: {required: value => !!value || 'Required.',}
     };
   },
@@ -98,13 +100,17 @@ export default {
       return _.max(this.currentTask.matrix1) + _.max(this.currentTask.matrix2);
     },
   },
+
   methods: {
     ...mapActions(["processTaskAnswer"]),
+    
     validate() {
       this.$refs.form.validate();
     },
     submit() {
+      
       if (this.valid) {
+      
         this.processTaskAnswer(this.answer);
         this.answer = null;
         this.$refs.form.reset()
