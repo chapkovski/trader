@@ -1,49 +1,60 @@
 <template>
   <v-card class=" "  >
     <v-card-title>Historical data</v-card-title>
+  <v-tabs
+          v-model="currentTab"
+          centered
+          slider-color="yellow"
+        >
+          <v-tab
+            v-for="i in tabs"
+            :key="i.name"
+            :href="`#${i.name}`"
+          >
+             {{ i.label }}
+          </v-tab>
+        </v-tabs>
+   <v-tabs-items v-model="currentTab">
+      <v-tab-item
+        v-for="i in tabs"
+        :key="i.name"
+        :value="`${i.name}`"
+      >
+        <v-card flat>
+          <v-card-text  >
+            <chart :chart-id='i.name'></chart>
+          </v-card-text>
+        </v-card>
+      </v-tab-item>
+    </v-tabs-items>
 
-    <v-card-text>
-      <v-sparkline
-        height="172"
-        :fill="fill"
-        :radius='25'
-        :value="value"
-       
-        :smooth="25"
-        :padding="padding"
-        :line-width="width"
-        :stroke-linecap="lineCap"
-        :gradient-direction="gradientDirection"
-        :type="type"
-        :auto-line-width="autoLineWidth"
-        
-      ></v-sparkline>
-    </v-card-text>
   </v-card>
 </template>
 <script>
-const gradients = [
-  ["#222"],
-  ["#42b3f4"],
-  ["red", "orange", "yellow"],
-  ["purple", "violet"],
-  ["#00c6ff", "#F0F", "#FF0"],
-  ["#f72047", "#ffd200", "#1feaea"],
-];
-
+import _ from 'lodash'
+import Chart from './SingleChart' 
 export default {
+  components:{Chart},
   data: () => ({
-    fill: true,
-    width: 2,
-    radius: 10,
-    padding: 8,
-    lineCap: "round",
-    gradient: gradients[5],
-    value: [0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0],
-    gradientDirection: "top",
-    gradients,
-    type: "trend",
-    autoLineWidth: false,
+    tabs:[
+      {name:'a', label:'stock A', text:'jopa 1'},
+      {name:'b', label:'stock B', text:'pizda 2'},
+      {name:'c', label:'stock C', text:'hui 3'},
+      {name:'d', label:'stock D', text:'putin!'},
+    ],
+    currentTab:'a',
+
   }),
+  computed:{
+    getCurrentTab(){
+      
+      return _.find(this.tabs, (i)=>(i.name===this.currentTab))
+      }
+  },
+  watch:{
+    currentTab(newv, oldv){
+      console.debug('CCCC', newv,oldv)
+    }
+  }
 };
 </script>

@@ -19,7 +19,8 @@ const routes = [
   {
     path: '/trade',
     name: 'Trade',
-    component: Trade
+    component: Trade,
+     
   },
   {
     path: '/work',
