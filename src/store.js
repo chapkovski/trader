@@ -162,11 +162,12 @@ const store = new Vuex.Store({
 
         requestPriceUpdate(context, stock) {
             // TODO: somewhere here we'll send a socket request to get a new tick
+            // TODO: we dont' need to send so many requests; it makes sense to request them in a bunch
             const price = Math.random();
             const obj = context.getters.getStockByName(stock)
             obj.price = price;
             obj.previous = _.last(obj.history);
-            obj.history = [...obj.history, price];
+            obj.history = [...obj.history, [Date.now(), price]];
             const ind = context.getters.getStockIndexByName(stock);
             context.commit('STOCK_UPDATE', { ind, obj });
 

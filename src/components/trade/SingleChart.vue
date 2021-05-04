@@ -4,8 +4,10 @@
 
     <v-card-text>
       <highcharts
-        class="chart"
+        constructorType="stockChart"
+        class="hc"
         :options="chartOptions"
+        ref='chart'
         :updateArgs="[true, true, true]"
       ></highcharts>
     </v-card-text>
@@ -13,62 +15,32 @@
 </template>
 
 <script>
-import { Chart } from "highcharts-vue";
+
 import _ from "lodash";
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 import gameParams from "../../params";
 export default {
   components: {
-    highcharts: Chart,
+    // highcharts: Chart,
   },
   props: ["stockName"],
-  data: function() {
+   data() {
     return {
-      hcInstance: Chart,
       chartOptions: {
-        height: 300,
-        chart: {
-          height: 300,
-          type: "spline",
+        rangeSelector: {
+          selected: 0,
         },
         series: [
-          {
-            name: null,
-            data: null,
-          },
+          // {
+          //   pointStart: Date.now(), // starting at the moment
+          //   pointInterval: 1000, // second data
+          //   data: [1,2,3],
+          // },
         ],
-        xAxis: {
-          categories: _.range(gameParams.numTicks),
-          labels: {
-            enabled: true,
-          },
-        },
-        legend: {
-          enabled: true,
-        },
-        yAxis: {
-          labels: {
-            formatter: function() {
-              return this.axis.defaultLabelFormatter.call(this);
-            },
-          },
-        },
-        title: {
-          text: "",
-        },
       },
     };
   },
-  created() {
-    console.log('PIZDA',_.map(this.stocks, (i) => ({
-      name: i.publicName,
-      data: i.history,
-    })))
-    this.chartOptions.series = _.map(this.stocks, (i) => ({
-      name: i.publicName,
-      data: i.history,
-    }));
-  },
+  
   computed: {
     ...mapGetters(["getStockByName"]),
     stock() {
@@ -79,9 +51,7 @@ export default {
     },
   },
 
-  methods: {
-    
-  },
+  methods: {},
   watch: {
     stocks(newV, oldV) {
       this.chartOptions.series = _.map(newV, (i) => ({

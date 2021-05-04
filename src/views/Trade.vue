@@ -28,7 +28,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" md=6>
-        <charts v-if='false'/>
+        
       </v-col>
       <v-col cols="12" md=12>
         <history />
@@ -39,14 +39,16 @@
 
 <script>
 // @ is an alias to /src
-import { ActionBar, Holdings, Charts, History, Information } from "trade";
+import { ActionBar, Holdings, 
+
+ History, Information } from "trade";
 
 export default {
   name: "Trade",
   components: {
     ActionBar,
     Holdings,
-    Charts,
+    
     History,
 
     Information,
