@@ -77,7 +77,7 @@ const store = new Vuex.Store({
         getCashBalance: (state) => () => { return state.cashBalance },
 
         getStockByName: (state) => (name) => {
-            
+
             return state.stocks.find(stock => stock.innerName === name)
         },
         getStockIndexByName: (state) => (name) => {
@@ -164,7 +164,7 @@ const store = new Vuex.Store({
             // TODO: somewhere here we'll send a socket request to get a new tick
             const price = Math.random();
             const obj = context.getters.getStockByName(stock)
-            obj.price = price;
+            obj.price = _.round(price, 2);
             obj.previous = _.last(obj.history);
             obj.history = [...obj.history, price];
             const ind = context.getters.getStockIndexByName(stock);
@@ -183,4 +183,4 @@ const ws_path = ws_scheme + '://' + window.location.host + window.socket_path;
 //     reconnectionAttempts: 5, // (Number) number of reconnection attempts before giving up (Infinity),
 //     reconnectionDelay: 3000,
 // });
-export default store;  
+export default store;

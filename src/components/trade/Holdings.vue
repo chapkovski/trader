@@ -7,19 +7,27 @@
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-left">
+              <th class="text-center">
                 Stock name
               </th>
-              <th class="text-left">
-                Value
+              <th class="text-center">
+                Market value
               </th>
               <th class="text-left">
-                Items
+                Quantity
               </th>
-
-              <th class="text-left">
+                <th class="text-left">
                 Return
               </th>
+              <th class="text-left">
+                P&L
+              </th>
+              
+              <th class="text-center">
+                % Portfolio
+              </th>
+
+            
             </tr>
           </thead>
           <tbody>
@@ -49,7 +57,7 @@ export default {
       return _.map(this.stocks, (i) => {
         return {
           publicName: i.publicName,
-          value: i.quantity * i.price,
+          value: _.round(i.quantity * i.price,2).toFixed(2),
           units: i.quantity,
           rate_return: i.rate_return,
         };

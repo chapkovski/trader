@@ -3,7 +3,7 @@
     <td>{{ name }}</td>
 
     <td>
-      <transition name="fade" mode="out-in">
+      
         <div :key="price" class="d-flex ">
           <div class="mr-3" :style="{ color: color }">
             {{ price }}
@@ -14,7 +14,7 @@
             </span>
           </div>
         </div>
-      </transition>
+      
     </td>
 
     <td>
