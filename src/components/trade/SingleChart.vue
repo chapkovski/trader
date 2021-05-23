@@ -7,7 +7,7 @@
         constructorType="stockChart"
         class="hc"
         :options="chartOptions"
-        ref='chart'
+        ref="chart"
         :updateArgs="[true, true, true]"
       ></highcharts>
     </v-card-text>
@@ -15,7 +15,6 @@
 </template>
 
 <script>
-
 import _ from "lodash";
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 import gameParams from "../../params";
@@ -24,7 +23,7 @@ export default {
     // highcharts: Chart,
   },
   props: ["stockName"],
-   data() {
+  data() {
     return {
       chartOptions: {
         rangeSelector: {
@@ -40,7 +39,7 @@ export default {
       },
     };
   },
-  
+
   computed: {
     ...mapGetters(["getStockByName"]),
     stock() {
@@ -62,3 +61,8 @@ export default {
   },
 };
 </script>
+<style >
+.highcharts-range-selector-group {
+  display: none !important;
+}
+</style>
