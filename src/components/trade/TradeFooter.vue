@@ -1,48 +1,32 @@
 <template>
-    <div class="d-flex justify-content-center " :style="{'flex-grow':'1'}" v-if='false'>
+    <div class="d-flex justify-content-center " :style="{'flex-grow':'1'}" v-if='true'>
         <v-alert outlined height="42" type="warning" :icon="false" class="centered-alert">
-            Interest accrued:
+            Current portfolio value:
             <span>
-            {{ (accrued ).toFixed(2)  }}
+            {{ portfoglioValue()  }}
           </span>
         </v-alert>
-        <v-alert outlined type="info" height="42" :icon="false" class="mx-3 centered-alert">
-            Current rate:
-            <span>
-            {{ (rate * 100).toFixed(2) }}%
-          </span>
-        </v-alert>
-        <v-alert height="42" outlined type="error" :icon="false" class="mx-3 centered-alert">
-            Borrowed so far:
-            <span>
-            {{ (currentDebt).toFixed(2) }}
-          </span>
-        </v-alert>
-        <margin-dialog :rate='rate' :currentDebt='currentDebt' />
+       
     </div>
 </template>
 
 <script>
-import MarginDialog from "./MarginDialog";
-import _ from 'lodash'
+
+import _ from 'lodash';
+import {mapGetters} from 'vuex'
 export default {
-    components: { MarginDialog },
+    components: {   },
     data: () => ({
-        rate: 0.05,
-        currentDebt: 100,
-        accrued: 0,
+        
     }),
     created() {
-        // this.updDebt();
+        
+    },
+    computed :{
+         ...mapGetters(['portfoglioValue']),
     },
     methods: {
-        updDebt: function() {
-            this.intervalid1 = setInterval(() => {
-                this.currentDebt++;
-                this.rate = this.rate + _.random(-1, 1, true) / 100
-                this.accrued += this.currentDebt * (this.rate)
-            }, 2000);
-        },
+       
     },
 };
 </script>

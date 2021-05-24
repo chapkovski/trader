@@ -17,12 +17,13 @@ import HighchartsVue from "highcharts-vue";
 Stock(Highcharts);
 Vue.use(HighchartsVue);
 
-Vue.use(VueLodash,  { lodash: lodash })
+Vue.use(VueLodash, { lodash: lodash })
 import vueAwesomeCountdown from 'vue-awesome-countdown'
 
 Vue.use(vueAwesomeCountdown, 'vac') // Component name, `countdown` and `vac` by default
-Vue.config.productionTip = false
-
+Vue.config.productionTip = false;
+// TODO:  this one to be injected by backend
+Vue.prototype.$gamified = true;
 new Vue({
   vuetify,
   router,

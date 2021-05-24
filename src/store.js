@@ -75,7 +75,9 @@ const store = new Vuex.Store({
     },
     getters: {
         getCashBalance: (state) => () => { return state.cashBalance },
-
+        portfoglioValue: (state)=> ()=>{
+            return (_.sumBy(state.stocks, (i)=>{return i.quantity*i.price})).toFixed(2);
+        },
         getStockByName: (state) => (name) => {
 
             return state.stocks.find(stock => stock.innerName === name)
@@ -177,6 +179,7 @@ const store = new Vuex.Store({
 })
 const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
 const ws_path = ws_scheme + '://' + window.location.host + window.socket_path;
+// TODO: connection to backend
 // Vue.use(VueNativeSock, ws_path, {
 //     store: store,
 //     format: 'json',

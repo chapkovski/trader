@@ -87,6 +87,7 @@
     </v-main>
 
     <v-footer app height="50">
+      
       <trade-footer v-if="inTrade" />
     </v-footer>
   </v-app>

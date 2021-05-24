@@ -2,7 +2,7 @@
 <template>
     <v-card raised class='mx-3'>
         <v-card-text>
-            Day:
+            Round:
                    <transition
             mode="out-in"
             name="custom-classes-transition"

@@ -10,8 +10,9 @@
             outlined
             :disabled="!passInitialCheck"
             class="my-3"
+            min-height=50
           >
-            <v-icon>{{ actionIcon }}</v-icon>
+            <v-img :src="btnimage" max-height="50" max-width="50"  class='mr-1' v-if='$gamified'/>
             {{ action }}
           </v-btn>
         </template>
@@ -91,17 +92,24 @@ export default {
   },
   created() {},
   computed: {
-    
     ...mapGetters(["getStockByName", "getCashBalance"]),
-    passInitialCheck(){
-        switch (this.action) {
-          case 'buy':
-            return this.getCashBalance()>0;
-          case 'sell':
-            return this.getAvailableQuantity>0;  
-          default:
-            return true 
-        }
+    btnimage() {
+      const sell = require("@/assets/sell_trans.png");
+      const buy = require("@/assets/buy_trans.png");
+      if (this.action === "sell") {
+        return sell;
+      }
+      return buy;
+    },
+    passInitialCheck() {
+      switch (this.action) {
+        case "buy":
+          return this.getCashBalance() > 0;
+        case "sell":
+          return this.getAvailableQuantity > 0;
+        default:
+          return true;
+      }
     },
     getAvailableQuantity() {
       const stock = this.getStockByName(this.name);
@@ -122,13 +130,13 @@ export default {
       return this.action === "buy" ? 1 : -1;
     },
   },
-  watch:{
-    dialog(){
-      this.q = null
+  watch: {
+    dialog() {
+      this.q = null;
     },
-    getCurrentPrice(){
-      this.validate()
-    }
+    getCurrentPrice() {
+      this.validate();
+    },
   },
 
   methods: {

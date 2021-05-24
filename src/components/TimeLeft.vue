@@ -1,7 +1,7 @@
 <template>
   <v-card raised color="red">
     <v-card-text>
-      Time left till the end of the day:
+      Time left till the end of the round:
       <v-chip class="ma-2" color="primary">
         <countdown
           :left-time="timeLeft"
@@ -9,7 +9,7 @@
           ref="timer"
         >
           <template v-slot:process="anyYouWantedScopName">
-            <span>{{ ` ${anyYouWantedScopName.timeObj.ceil.s}` }}</span>
+            <span>{{ ` ${anyYouWantedScopName.timeObj.m}: ${anyYouWantedScopName.timeObj.s}` }}</span>
           </template>
         </countdown>
       </v-chip>
@@ -20,8 +20,8 @@
 <script>
 export default {
   data: () => ({
-    timeLeft: 6000,
-    endTime:new Date().getTime() + 4000
+    timeLeft: 60*1000,
+    endTime:new Date().getTime() + 60*1000
   }),
   computed: {
     
