@@ -47,6 +47,7 @@ export default {
     ...mapState(["stocks"]),
     stocksForActions() {
       return _.map(this.stocks, (i) => {
+        console.log(format, i.price, i.previous, 'JOPA----')
         const format = i.price >= i.previous ? formatUp : formatDown;
         return {
           name: i.publicName,

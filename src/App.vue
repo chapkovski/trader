@@ -4,8 +4,8 @@
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
       <account-info> </account-info>
-      <days-left :day="day"></days-left>
-      <time-left @dayDone="day++"></time-left>
+      <days-left :day="dayNumber"></days-left>
+      <time-left @dayDone="DAY_INCREASE()"></time-left>
       <v-spacer></v-spacer>
       <div :class="{ 'd-flex': true }" v-if="inTrade">
         <div class="m-3">
@@ -117,7 +117,7 @@ export default {
     this.updShares()
   },
   computed: {
-    ...mapState(['stocks']),
+    ...mapState(['stocks', 'dayNumber', ]),
     inTrade() {
       return this.$route.name == "Trade";
     },
@@ -132,7 +132,8 @@ export default {
   },
   methods: {
     ...mapActions(['setTab', 'requestPriceUpdate']),
-    ...mapMutations(["INC_TICK"]),
+    // TODO: we don't need the day increase in production. most likely. 
+    ...mapMutations(["INC_TICK","DAY_INCREASE"]),
     updShares: function() {
       this.intervalid1 = setInterval(() => {
         this.addRecord();

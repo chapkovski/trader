@@ -1,6 +1,6 @@
 <template>
   <v-card class="">
-    <v-card-title></v-card-title>
+    <v-card-title>{{stockName}}</v-card-title>
 
     <v-card-text>
       <highcharts
@@ -27,36 +27,45 @@ export default {
     return {
       chartOptions: {
         rangeSelector: {
-          selected: 0,
+          // selected: 0,
         },
         series: [
-          // {
-          //   pointStart: Date.now(), // starting at the moment
-          //   pointInterval: 1000, // second data
-          //   data: [1,2,3],
-          // },
+          {
+            pointStart: null,
+            pointInterval:1000,
+           data:[1,2,3]
+          }
+          
         ],
       },
     };
   },
+  mounted(){
+    // console.debug('JOPJPJPJ',   typeof this.chartOptions.series[0].pointStart)
+    this.chartOptions.series[0].pointStart = this.dayStart.getTime();
+    // console.debug('pizden!',    this.dayStart.getTime())
+  },
 
   computed: {
+     ...mapState([ 'dayStart', ]),
     ...mapGetters(["getStockByName"]),
     stock() {
       return this.getStockByName(this.stockName);
     },
     stocks() {
-      return [this.stock];
+      return this.stock;
     },
   },
 
   methods: {},
   watch: {
     stocks(newV, oldV) {
-      this.chartOptions.series = _.map(newV, (i) => ({
-        name: i.publicName,
-        data: i.history,
-      }));
+      
+      this.chartOptions.series[0].data=newV.history
+      // this.chartOptions.series = _.map(newV, (i) => ({
+      //   name: i.publicName,
+      //   data: i.history,
+      // }));
     },
   },
 };

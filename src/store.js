@@ -18,6 +18,8 @@ const generateTask = () => {
 const store = new Vuex.Store({
     state: {
         ...lastKnownState,
+        dayNumber:1,
+        dayStart: new Date(),
         cashBalance: 0,
         salary: 0,
         tasksSubmitted: 0,
@@ -88,6 +90,12 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
+        DAY_INCREASE: (state)=> {
+            state.dayNumber++;
+            // TODO: we don't need it in production because we'll get the date in new rounds aka  new pages 
+            // TODO: we'll set the day data (number, start from backend, will be immutable)
+            state.dayStart = new Date()
+        },
         STOCK_UPDATE: (state, { ind, obj }) => {
             state.stocks.splice(ind, 1, obj);
         },
@@ -169,7 +177,7 @@ const store = new Vuex.Store({
             const obj = context.getters.getStockByName(stock)
             obj.price = _.round(price, 2);
             obj.previous = _.last(obj.history);
-            obj.history = [...obj.history, [Date.now(), price]];
+            obj.history = [...obj.history,  price];
             const ind = context.getters.getStockIndexByName(stock);
             context.commit('STOCK_UPDATE', { ind, obj });
 
