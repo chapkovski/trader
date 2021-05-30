@@ -1,7 +1,5 @@
 <template>
   <v-card class="">
-    
-
     <v-card-text>
       <highcharts
         constructorType="stockChart"
@@ -15,6 +13,7 @@
 </template>
 
 <script>
+import { fromUnixTime, format } from "date-fns";
 import _ from "lodash";
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 import gameParams from "../../params";
@@ -24,30 +23,41 @@ export default {
   },
   props: ["stockName"],
   data() {
+    const that = this;
     return {
       chartOptions: {
+        tooltip: {
+          formatter: function () {
+            const t = fromUnixTime(this.x);
+
+            const formattedT = format(t, "HH:mm:ss");
+            return `The ${
+              that.stock.publicName
+            }  price  at <b> ${formattedT} </b>
+               is <br><b> ${this.y.toFixed(2)} </b>`;
+          },
+        },
+
         rangeSelector: {
-          // selected: 0,
+          selected: 0,
         },
         series: [
           {
             pointStart: null,
-            pointInterval:1000,
-           data:[1,2,3]
-          }
-          
+            pointInterval: 1000,
+            data: [1, 2, 3],
+          },
         ],
       },
     };
   },
-  mounted(){
-    // console.debug('JOPJPJPJ',   typeof this.chartOptions.series[0].pointStart)
+  mounted() {
+    console.debug("PIZCA", this.stockName);
     this.chartOptions.series[0].pointStart = this.dayStart.getTime();
-    // console.debug('pizden!',    this.dayStart.getTime())
   },
 
   computed: {
-     ...mapState([ 'dayStart', ]),
+    ...mapState(["dayStart"]),
     ...mapGetters(["getStockByName"]),
     stock() {
       return this.getStockByName(this.stockName);
@@ -60,8 +70,7 @@ export default {
   methods: {},
   watch: {
     stocks(newV, oldV) {
-      
-      this.chartOptions.series[0].data=newV.history
+      this.chartOptions.series[0].data = newV.history;
       // this.chartOptions.series = _.map(newV, (i) => ({
       //   name: i.publicName,
       //   data: i.history,
