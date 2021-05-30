@@ -1,9 +1,9 @@
 <template>
     <div class="d-flex justify-content-center " :style="{'flex-grow':'1'}" v-if='true'>
-        <v-alert outlined height="42" type="warning" :icon="false" class="centered-alert">
-            Current portfolio value:
+        <v-alert outlined height="42" type="warning" :icon="false" class="centered-alert" v-if='false'>
+            
             <span>
-            {{ portfoglioValue()  }}
+            
           </span>
         </v-alert>
        
