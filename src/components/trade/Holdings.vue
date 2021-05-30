@@ -39,6 +39,12 @@
               <td>{{ item.rate_return }}</td>
             </tr>
           </tbody>
+          <thead>
+            <tr class='black white--text caption'>
+              <th colspan="4" class=' subtitle-1 white--text'>Current portfolio value</th>
+              <th class='black  subtitle-1 white--text darken'>{{portfoglioValue()}}</th>
+            </tr>
+          </thead>
         </template>
       </v-simple-table>
     </v-card-text>
@@ -52,6 +58,7 @@ export default {
   data: () => ({}),
   created() {},
   computed: {
+       ...mapGetters(['portfoglioValue']),
     ...mapState(["stocks"]),
     stocksForHoldings() {
       return _.map(this.stocks, (i) => {
