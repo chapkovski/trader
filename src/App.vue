@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar color="#6A76AB" dark app height="95">
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      
 
       <account-info> </account-info>
       <days-left :day="dayNumber"></days-left>
