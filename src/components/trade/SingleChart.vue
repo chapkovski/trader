@@ -1,6 +1,6 @@
 <template>
   <v-card class="">
-    <v-card-title>{{stockName}}</v-card-title>
+    
 
     <v-card-text>
       <highcharts
