@@ -175,7 +175,7 @@ const store = new Vuex.Store({
             // TODO: we dont' need to send so many requests; it makes sense to request them in a bunch
             const price = Math.random();
             const obj = context.getters.getStockByName(stock)
-            obj.price = _.round(price, 2);
+            obj.price = _.round(price, 2).toFixed(2);
             obj.previous = _.last(obj.history);
             obj.history = [...obj.history,  price];
             const ind = context.getters.getStockIndexByName(stock);

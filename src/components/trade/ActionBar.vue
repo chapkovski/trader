@@ -33,11 +33,11 @@ import StockRow from "./StockRow";
 import { mapState } from "vuex";
 const formatDown = {
   color: "red",
-  icon: "mdi-arrow-down-bold-outline",
+  icon: "mdi-arrow-down-bold",
 };
 const formatUp = {
-  color: "blue",
-  icon: "mdi-arrow-up-bold-outline",
+  color: "green darken-3",
+  icon: "mdi-arrow-up-bold",
 };
 export default {
   components: { StockRow },
@@ -47,7 +47,7 @@ export default {
     ...mapState(["stocks"]),
     stocksForActions() {
       return _.map(this.stocks, (i) => {
-        console.log(format, i.price, i.previous, 'JOPA----')
+        
         const format = i.price >= i.previous ? formatUp : formatDown;
         return {
           name: i.publicName,
