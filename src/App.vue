@@ -1,5 +1,30 @@
+
+
 <template>
   <v-app>
+    <transition
+      enter-active-class="animate__animated animate__bounce animate__slow"
+      leave-active-class="animate__animated animate__fadeOutTopRight animate__slow"
+    >
+      <v-overlay
+        :value="awardGiven"
+        v-if="isAwardGiven"
+        :dark="false"
+        :opacity="0"
+        z-index="10000"
+      >
+        <v-img
+          contain
+          max-height="300"
+          max-width="300"
+          :src="awardGiven.img"
+        ></v-img>
+        <v-sheet width="300">
+          <h4>{{ awardGiven.name }}</h4>
+          <h5>{{ awardGiven.desc }}</h5>
+        </v-sheet>
+      </v-overlay>
+    </transition>
     <v-app-bar color="#6A76AB" dark app height="95">
       <account-info> </account-info>
       <days-left :day="dayNumber"></days-left>
@@ -9,42 +34,38 @@
         <div>{{ secSpentOnTrade }}</div>
         <div>{{ numTransactions }}</div>
         <div class="m-3">
-          <v-tooltip bottom v-if='timeAwardExists'>
+          <v-tooltip bottom v-if="timeAwardExists">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
                 <v-badge avatar bordered overlap color="error">
                   <template v-slot:badge>
-                    {{awardForTime.name}} 
+                    {{ awardForTime.name }}
                   </template>
 
                   <v-avatar size="60">
-                    <v-img
-                        :src="awardForTime.img"
-                    ></v-img>
+                    <v-img :src="awardForTime.img"></v-img>
                   </v-avatar>
                 </v-badge>
               </div>
             </template>
-            <span>{{awardForTime.desc}}</span>
+            <span>{{ awardForTime.desc }}</span>
           </v-tooltip>
         </div>
-        <v-tooltip bottom v-if='transactionAwardExists'>
+        <v-tooltip bottom v-if="transactionAwardExists">
           <template v-slot:activator="{ on, attrs }">
             <div v-bind="attrs" v-on="on">
-              <v-badge  bordered overlap>
+              <v-badge bordered overlap>
                 <template v-slot:badge>
-                   {{awardForTransaction.name}} 
+                  {{ awardForTransaction.name }}
                 </template>
 
                 <v-avatar size="60">
-                  <v-img
-                    :src="awardForTransaction.img"
-                  ></v-img>
+                  <v-img :src="awardForTransaction.img"></v-img>
                 </v-avatar>
               </v-badge>
             </div>
           </template>
-          <span>{{awardForTransaction.desc}}</span>
+          <span>{{ awardForTransaction.desc }}</span>
         </v-tooltip>
       </div>
     </v-app-bar>
@@ -90,7 +111,7 @@ import _ from "lodash";
 import AccountInfo from "bank/AccountInfo";
 import DaysLeft from "./components/DaysLeft";
 import TimeLeft from "./components/TimeLeft";
-import { mapActions, mapMutations, mapState , mapGetters} from "vuex";
+import { mapActions, mapMutations, mapState, mapGetters } from "vuex";
 import gameParams from "./params";
 export default {
   components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft },
@@ -98,6 +119,7 @@ export default {
     return {
       day: 1,
       monitorInterval: null,
+      awardGiven: {},
       items: [
         { title: "Trading", icon: "mdi-bank", to: { name: "Trade" } },
         { title: "Work", icon: "mdi-account-hard-hat", to: { name: "Work" } },
@@ -110,24 +132,52 @@ export default {
     this.monitorTime();
   },
   computed: {
-    ...mapState(["stocks", "dayNumber", "secSpentOnTrade", "numTransactions", "awardForTime", "awardForTransaction"]),
-    ...mapGetters(['getCurrentTransactionNum']),
-    transactionAwardExists(){
-      return !_.isEmpty(this.awardForTransaction)
+    ...mapState([
+      "stocks",
+      "dayNumber",
+      "secSpentOnTrade",
+      "numTransactions",
+      "awardForTime",
+      "awardForTransaction",
+    ]),
+    ...mapGetters(["getCurrentTransactionNum"]),
+    transactionAwardExists() {
+      return !_.isEmpty(this.awardForTransaction);
     },
-    timeAwardExists(){    
-      return !_.isEmpty(this.awardForTime)
+    timeAwardExists() {
+      return !_.isEmpty(this.awardForTime);
+    },
+    isAwardGiven() {
+      return !_.isEmpty(this.awardGiven);
     },
     inTrade() {
       return this.$route.name == "Trade";
     },
   },
   watch: {
-    numTransactions(val){
-      const numsAward=gameParams.awards.nums[val]
-        if (numsAward) {
-         this.setNumAward(numsAward)
-        }
+    awardGiven(val) {
+      if (this.isAwardGiven) {
+        this.$confetti.start({
+          particles: [
+            {
+              type: "heart",
+            },
+          ],
+          defaultColors: ["red", "pink", "#ba0000"],
+        });
+      }
+      this.isAwardGiven &&
+        setTimeout(() => {
+          this.awardGiven = {};
+          this.$confetti.stop()
+        }, 3000);
+    },
+    numTransactions(val) {
+      const numsAward = gameParams.awards.nums[val];
+      if (numsAward) {
+        this.setNumAward(numsAward);
+        this.awardGiven = numsAward;
+      }
     },
     $route(to, from) {
       if (to.name) {
@@ -136,16 +186,23 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["setTab", "requestPriceUpdate", "setNumAward", 'setTimeAward']),
+    ...mapActions([
+      "setTab",
+      "requestPriceUpdate",
+      "setNumAward",
+      "setTimeAward",
+    ]),
     // TODO: we don't need the day increase in production. most likely.
-    ...mapMutations(["INC_TICK", "DAY_INCREASE", "SEC_ON_TRADE_INCREASE",]),
+    ...mapMutations(["INC_TICK", "DAY_INCREASE", "SEC_ON_TRADE_INCREASE"]),
     monitorTime() {
       this.monitorInterval = setInterval(() => {
-        if (this.inTrade) {this.SEC_ON_TRADE_INCREASE();
-        const timeAward=gameParams.awards.time[this.secSpentOnTrade]
-        if (timeAward) {
-          this.setTimeAward(timeAward)
-        }
+        if (this.inTrade) {
+          this.SEC_ON_TRADE_INCREASE();
+          const timeAward = gameParams.awards.time[this.secSpentOnTrade];
+          if (timeAward) {
+            this.setTimeAward(timeAward);
+            this.awardGiven = timeAward;
+          }
         }
       }, 1000);
     },
