@@ -5,7 +5,28 @@ const gameParams = {
     dayLength: 30,
     tickFrequency: 3,
     numTicks: 30,
-    taskFee:20
+    taskFee:20,
+    awards: {
+        time:{
+            10:{
+                img:'',
+                name:'bronze',
+                desc:'Hooray, you have got your first award for staying 10 secs on trade page'
+            },
+            13: {
+                img:'',
+                name:'silver',
+                desc:'Hooray, you have got your first award for staying 13 secs on trade page'
+            },
+        },
+        nums:{
+            1: {
+                img:'',
+                name:'bronze',
+                desc:'Hooray, you have got your first award for first transaction. congrats!'
+            }
+        }
+    }
 }
 
 export const lastKnownState = {

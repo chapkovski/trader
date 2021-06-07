@@ -28,6 +28,8 @@ const store = new Vuex.Store({
         currentTab: null,
         secSpentOnTrade:0,
         numTransactions:0,
+        awardForTime: {},
+        awardForTransaction:{},
         transactions: [
 
         ],
@@ -78,6 +80,8 @@ const store = new Vuex.Store({
         },
     },
     getters: {
+        getCurrentTransactionNum: (state)=> ()=> {return state.numTransactions},
+        getCurrentTimeInTrade: (state)=> ()=> {return state.secSpentOnTrade},
         getCashBalance: (state) => () => { return state.cashBalance },
         portfoglioValue: (state)=> ()=>{
             return (_.sumBy(state.stocks, (i)=>{return i.quantity*i.price})).toFixed(2);
@@ -92,6 +96,8 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
+        SET_NUM_AWARD:(state, obj)=>{state.awardForTime=obj},
+        SET_TIME_AWARD:(state, obj)=>{state.awardForTransaction=obj},
         SEC_ON_TRADE_INCREASE:(state)=>{
             state.secSpentOnTrade++;
         },
@@ -140,6 +146,8 @@ const store = new Vuex.Store({
         },
     },
     actions: {
+        setNumAward(context, obj) {context.commit('SET_NUM_AWARD', obj)},
+        setTimeAward(context, obj) {context.commit('SET_TIME_AWARD', obj)},
         setTab(context, tab) {
             context.commit('SET_TAB', tab)
         },

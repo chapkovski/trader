@@ -90,7 +90,7 @@ import _ from "lodash";
 import AccountInfo from "bank/AccountInfo";
 import DaysLeft from "./components/DaysLeft";
 import TimeLeft from "./components/TimeLeft";
-import { mapActions, mapMutations, mapState } from "vuex";
+import { mapActions, mapMutations, mapState , mapGetters} from "vuex";
 import gameParams from "./params";
 export default {
   components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft },
@@ -111,11 +111,18 @@ export default {
   },
   computed: {
     ...mapState(["stocks", "dayNumber", "secSpentOnTrade", "numTransactions"]),
+    ...mapGetters(['getCurrentTransactionNum']),
     inTrade() {
       return this.$route.name == "Trade";
     },
   },
   watch: {
+    numTransactions(val){
+      const numsAward=gameParams.awards.nums[val]
+        if (numsAward) {
+         this.setNumAward(numsAward)
+        }
+    },
     $route(to, from) {
       if (to.name) {
         this.setTab(to.name);
@@ -123,12 +130,17 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["setTab", "requestPriceUpdate"]),
+    ...mapActions(["setTab", "requestPriceUpdate", "setNumAward", 'setTimeAward']),
     // TODO: we don't need the day increase in production. most likely.
-    ...mapMutations(["INC_TICK", "DAY_INCREASE", "SEC_ON_TRADE_INCREASE"]),
+    ...mapMutations(["INC_TICK", "DAY_INCREASE", "SEC_ON_TRADE_INCREASE",]),
     monitorTime() {
       this.monitorInterval = setInterval(() => {
-        this.SEC_ON_TRADE_INCREASE();
+        if (this.inTrade) {this.SEC_ON_TRADE_INCREASE();
+        const timeAward=gameParams.awards.time[this.secSpentOnTrade]
+        if (timeAward) {
+          this.setTimeAward(timeAward)
+        }
+        }
       }, 1000);
     },
     updShares: function () {
