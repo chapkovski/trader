@@ -26,6 +26,8 @@ const store = new Vuex.Store({
         correctTasksSubmitted: 0,
         currentTask: generateTask(),
         currentTab: null,
+        secSpentOnTrade:0,
+        numTransactions:0,
         transactions: [
 
         ],
@@ -90,6 +92,12 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
+        SEC_ON_TRADE_INCREASE:(state)=>{
+            state.secSpentOnTrade++;
+        },
+        TRANSACTION_NUM_INCREASE:(state)=>{
+            state.numTransactions++
+        },
         DAY_INCREASE: (state)=> {
             state.dayNumber++;
             // TODO: we don't need it in production because we'll get the date in new rounds aka  new pages 
@@ -168,6 +176,7 @@ const store = new Vuex.Store({
             const ind = context.getters.getStockIndexByName(stock);
             context.commit('STOCK_UPDATE', { ind, obj });
             context.commit('CHANGE_CASH', finalAmount);
+            context.commit('TRANSACTION_NUM_INCREASE');
         },
 
         requestPriceUpdate(context, stock) {
