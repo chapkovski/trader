@@ -9,42 +9,42 @@
         <div>{{ secSpentOnTrade }}</div>
         <div>{{ numTransactions }}</div>
         <div class="m-3">
-          <v-tooltip bottom>
+          <v-tooltip bottom v-if='timeAwardExists'>
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
                 <v-badge avatar bordered overlap color="error">
                   <template v-slot:badge>
-                    <v-avatar> 2 </v-avatar>
+                    {{awardForTime.name}} 
                   </template>
 
                   <v-avatar size="60">
                     <v-img
-                      src="https://cdn1.iconfinder.com/data/icons/web-design-18/50/86-512.png"
+                        :src="awardForTime.img"
                     ></v-img>
                   </v-avatar>
                 </v-badge>
               </div>
             </template>
-            <span>Amount of trade > 1000</span>
+            <span>{{awardForTime.desc}}</span>
           </v-tooltip>
         </div>
-        <v-tooltip bottom>
+        <v-tooltip bottom v-if='transactionAwardExists'>
           <template v-slot:activator="{ on, attrs }">
             <div v-bind="attrs" v-on="on">
-              <v-badge avatar bordered overlap>
+              <v-badge  bordered overlap>
                 <template v-slot:badge>
-                  <v-avatar> 2 </v-avatar>
+                   {{awardForTransaction.name}} 
                 </template>
 
                 <v-avatar size="60">
                   <v-img
-                    src="https://previews.123rf.com/images/pikepicture/pikepicture1807/pikepicture180700221/104970298-best-worker-employee-vector-european-woman-award-of-the-year-gold-wreath-leader-business-cartoon-ill.jpg"
+                    :src="awardForTransaction.img"
                   ></v-img>
                 </v-avatar>
               </v-badge>
             </div>
           </template>
-          <span>Best trader of the day</span>
+          <span>{{awardForTransaction.desc}}</span>
         </v-tooltip>
       </div>
     </v-app-bar>
@@ -110,8 +110,14 @@ export default {
     this.monitorTime();
   },
   computed: {
-    ...mapState(["stocks", "dayNumber", "secSpentOnTrade", "numTransactions"]),
+    ...mapState(["stocks", "dayNumber", "secSpentOnTrade", "numTransactions", "awardForTime", "awardForTransaction"]),
     ...mapGetters(['getCurrentTransactionNum']),
+    transactionAwardExists(){
+      return !_.isEmpty(this.awardForTransaction)
+    },
+    timeAwardExists(){    
+      return !_.isEmpty(this.awardForTime)
+    },
     inTrade() {
       return this.$route.name == "Trade";
     },

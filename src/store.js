@@ -96,8 +96,8 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
-        SET_NUM_AWARD:(state, obj)=>{state.awardForTime=obj},
-        SET_TIME_AWARD:(state, obj)=>{state.awardForTransaction=obj},
+        SET_NUM_AWARD:(state, obj)=>{state.awardForTransaction=obj},
+        SET_TIME_AWARD:(state, obj)=>{state.awardForTime=obj},
         SEC_ON_TRADE_INCREASE:(state)=>{
             state.secSpentOnTrade++;
         },
