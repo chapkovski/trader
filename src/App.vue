@@ -31,13 +31,12 @@
       <time-left @dayDone="DAY_INCREASE()"></time-left>
       <v-spacer></v-spacer>
       <div :class="{ 'd-flex': true }" v-if="inTrade">
-        <div>{{ secSpentOnTrade }}</div>
-        <div>{{ numTransactions }}</div>
+        
         <div class="m-3">
           <v-tooltip bottom v-if="timeAwardExists">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
-                <v-badge avatar bordered overlap color="error">
+                <v-badge  bordered overlap color="error" bottom left>
                   <template v-slot:badge>
                     {{ awardForTime.name }}
                   </template>
@@ -53,8 +52,8 @@
         </div>
         <v-tooltip bottom v-if="transactionAwardExists">
           <template v-slot:activator="{ on, attrs }">
-            <div v-bind="attrs" v-on="on">
-              <v-badge bordered overlap>
+            <div v-bind="attrs" v-on="on" class='mx-5'>
+              <v-badge bordered overlap bottom left>
                 <template v-slot:badge>
                   {{ awardForTransaction.name }}
                 </template>
