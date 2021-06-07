@@ -11,17 +11,17 @@ const gameParams = {
             10:{
                 img:'https://cdn3.iconfinder.com/data/icons/cyber-monday-astute-vol-1-1/512/Early_Start-512.png',
                 name:'bronze',
-                desc:'Hooray, you have got your first award for staying 5 secs on trade page'
+                desc:'Hooray, you have got your first award for staying 10 seconds on trade page'
             },
             20: {
                 img:'https://cdn1.iconfinder.com/data/icons/scenarium-vol-9/128/001_award_cup_winner_silver-512.png',
                 name:'silver',
-                desc:'Hooray, you have got your silver award for staying 20 secs on trade page'
+                desc:'Hooray, you have got your silver award for staying 20 seconds on trade page'
             },
             30: {
                 img:'https://cdn1.iconfinder.com/data/icons/sport-fitness-vol-2/512/z5-champion-award-cup-winner-512.png',
                 name:'gold',
-                desc:'Hooray, you have got your golden award for staying 30 secs on trade page'
+                desc:'Hooray, you have got your golden award for staying 30 seconds on trade page'
             },
         },
         nums:{
