@@ -38,7 +38,7 @@ export default {
           {
             text: 'Stock name',
           
-            value: 'name',
+            value: 'publicName',
           },
           { text: 'Action', value: 'action' },
           { text: 'Quantity', value: 'quantity' },

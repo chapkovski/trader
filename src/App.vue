@@ -129,6 +129,8 @@ export default {
     this.updShares();
     this.initializeStock();
     this.monitorTime();
+    
+    
   },
   computed: {
     ...mapState([
@@ -139,7 +141,7 @@ export default {
       "awardForTime",
       "awardForTransaction",
     ]),
-    ...mapGetters(["getCurrentTransactionNum"]),
+    ...mapGetters(["getCurrentTransactionNum", "pandle"]),
     transactionAwardExists() {
       return !_.isEmpty(this.awardForTransaction);
     },
@@ -195,6 +197,7 @@ export default {
     // TODO: we don't need the day increase in production. most likely.
     ...mapMutations(["INC_TICK", "DAY_INCREASE", "SEC_ON_TRADE_INCREASE"]),
     initializeStock() {
+      // TODO: do it less ugly!
       this.makeTransaction({
         stock: "a",
         quantity: 10,

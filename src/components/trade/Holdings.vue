@@ -37,6 +37,7 @@
               <td>{{ item.units }}</td>
 
               <td>{{ item.rate_return }}</td>
+              <td>{{ item.pandle.toFixed(2) }}</td>
             </tr>
           </tbody>
           <thead>
@@ -58,7 +59,7 @@ export default {
   data: () => ({}),
   created() {},
   computed: {
-       ...mapGetters(['portfoglioValue']),
+       ...mapGetters(['portfoglioValue', 'pandle']),
     ...mapState(["stocks"]),
     stocksForHoldings() {
       return _.map(this.stocks, (i) => {
@@ -67,6 +68,7 @@ export default {
           value: _.round(i.quantity * i.price,2).toFixed(2),
           units: i.quantity,
           rate_return: i.rate_return,
+          pandle: this.pandle(i.innerName)
         };
       });
     },

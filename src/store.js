@@ -81,6 +81,15 @@ const store = new Vuex.Store({
         },
     },
     getters: {
+        pandle: (state) => (name) => {
+            const sells = _.filter(state.transactions, (i) => (i.innerName === name && i.inner_action == 'sell'))
+            const buys = _.filter(state.transactions, (i) => (i.innerName === name && i.inner_action == 'buy'))
+            const totSells = _.sumBy(sells, function (o) { return o.price * o.quantity; });
+            const totBuys = _.sumBy(buys, function (o) { return o.price * o.quantity; });
+            const stock = state.stocks.find(stock => stock.innerName === name)
+            const outstandingPos = stock.quantity * stock.price
+            return totBuys - totSells + outstandingPos
+        },
         getAllTransactions: (state) => () => { return state.transactions },
         getCurrentTransactionNum: (state) => () => { return state.numTransactions },
         getCurrentTimeInTrade: (state) => () => { return state.secSpentOnTrade },
@@ -187,7 +196,7 @@ const store = new Vuex.Store({
             const obj = context.getters.getStockByName(stock)
 
             const price = obj.price;
-            
+
             obj.quantity += quantity;
             // we inverse final amount to be added/withdrawn from cash reserves because it is inversly related to the
             // transaction direction (negative quantity means byuing etc. )
@@ -208,15 +217,17 @@ const store = new Vuex.Store({
                 trans_price = obj.price;
             }
             const formatted_trans = {
-                name: obj.publicName,
+                innerName: obj.innerName,
+                publicName: obj.publicName,
                 inner_action: inner_action,
+
                 action: transaction_dir,
                 quantity: Math.abs(quantity),
                 price: trans_price,
                 time: new Date(),
 
             }
-            console.debug("PIZDA", formatted_trans)
+            
             context.commit('NEW_TRANSACTION', { trans: formatted_trans });
         },
 

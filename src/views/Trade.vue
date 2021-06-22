@@ -26,7 +26,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" md="12">
-        <history />
+        <!-- <history /> -->
       </v-col>
     </v-row>
     <v-row>
