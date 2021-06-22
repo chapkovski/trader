@@ -129,16 +129,9 @@ const store = new Vuex.Store({
         TRANSACTION_NUM_INCREASE:(state)=>{
             state.numTransactions++
         },
-        NEW_TRANSACTION:(state)=>{
+        NEW_TRANSACTION:(state, {trans})=>{
             state.transactions.push(
-                {
-                    name: 'Stock B',
-                    action: 'Sell',
-                    quantity: 6.0,
-                    price: 24,
-                    time: new Date(),
-                    
-                  },
+               trans
             )
         },
         DAY_INCREASE: (state)=> {
@@ -222,7 +215,15 @@ const store = new Vuex.Store({
             context.commit('STOCK_UPDATE', { ind, obj });
             context.commit('CHANGE_CASH', finalAmount);
             context.commit('TRANSACTION_NUM_INCREASE');
-            context.commit('NEW_TRANSACTION');
+            const formatted_trans= {
+                name: obj.publicName,
+                action: 'Sell',
+                quantity: quantity,
+                price: obj.price,
+                time: new Date(),
+                
+              }
+            context.commit('NEW_TRANSACTION', {trans:formatted_trans});
         },
 
         requestPriceUpdate(context, stock) {
