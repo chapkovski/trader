@@ -5,14 +5,20 @@
     :headers="headers"
     :items="transactions"
     :items-per-page="5"
-    class="elevation-1"
-  ></v-data-table>
+    class="elevation-1">
+      <template v-slot:item.time="{ item }">
+     
+        {{ formatTime(item.time) }}
+     
+    </template>
+    </v-data-table>
 
   </div>
   
 </template>
 
 <script>
+import { format } from 'date-fns'
 export default {
     data () {
       return {
@@ -35,12 +41,15 @@ export default {
             action: 'Initial purchase',
             quantity: 6.0,
             price: 24,
-            time: 4.0,
+            time: new Date(),
             
           },
           
         ],
       }
     },
+    methods:{
+      formatTime(v){return format(v, "HH:MM:ss.S")}
+    }
   }
 </script>

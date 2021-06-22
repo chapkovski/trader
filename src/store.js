@@ -31,7 +31,22 @@ const store = new Vuex.Store({
         awardForTime: {},
         awardForTransaction:{},
         transactions: [
-
+            {
+                name: 'Stock A',
+                action: 'Initial purchase',
+                quantity: 6.0,
+                price: 24,
+                time: new Date(),
+                
+              },
+              {
+                name: 'Stock B',
+                action: 'Initial purchase',
+                quantity: 6.0,
+                price: 24,
+                time: new Date(),
+                
+              },
         ],
         stocks:
             [
