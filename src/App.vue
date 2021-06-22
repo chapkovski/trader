@@ -31,12 +31,11 @@
       <time-left @dayDone="DAY_INCREASE()"></time-left>
       <v-spacer></v-spacer>
       <div :class="{ 'd-flex': true }" v-if="inTrade">
-        
         <div class="m-3">
           <v-tooltip bottom v-if="timeAwardExists">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
-                <v-badge  bordered overlap color="error" bottom left>
+                <v-badge bordered overlap color="error" bottom left>
                   <template v-slot:badge>
                     {{ awardForTime.name }}
                   </template>
@@ -52,7 +51,7 @@
         </div>
         <v-tooltip bottom v-if="transactionAwardExists">
           <template v-slot:activator="{ on, attrs }">
-            <div v-bind="attrs" v-on="on" class='mx-5'>
+            <div v-bind="attrs" v-on="on" class="mx-5">
               <v-badge bordered overlap bottom left>
                 <template v-slot:badge>
                   {{ awardForTransaction.name }}
@@ -128,6 +127,7 @@ export default {
   created() {
     this.addRecord();
     this.updShares();
+    this.initializeStock();
     this.monitorTime();
   },
   computed: {
@@ -168,7 +168,7 @@ export default {
       this.isAwardGiven &&
         setTimeout(() => {
           this.awardGiven = {};
-          this.$confetti.stop()
+          this.$confetti.stop();
         }, 3000);
     },
     numTransactions(val) {
@@ -190,9 +190,32 @@ export default {
       "requestPriceUpdate",
       "setNumAward",
       "setTimeAward",
+      "makeTransaction",
     ]),
     // TODO: we don't need the day increase in production. most likely.
     ...mapMutations(["INC_TICK", "DAY_INCREASE", "SEC_ON_TRADE_INCREASE"]),
+    initializeStock() {
+      this.makeTransaction({
+        stock: "a",
+        quantity: 10,
+        initial: true,
+      });
+      this.makeTransaction({
+        stock: "b",
+        quantity: 10,
+        initial: true,
+      });
+      this.makeTransaction({
+        stock: "c",
+        quantity: 10,
+        initial: true,
+      });
+      this.makeTransaction({
+        stock: "d",
+        quantity: 10,
+        initial: true,
+      });
+    },
     monitorTime() {
       this.monitorInterval = setInterval(() => {
         if (this.inTrade) {

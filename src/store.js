@@ -18,7 +18,7 @@ const generateTask = () => {
 const store = new Vuex.Store({
     state: {
         ...lastKnownState,
-        dayNumber:1,
+        dayNumber: 1,
         dayStart: new Date(),
         cashBalance: 0,
         salary: 0,
@@ -26,36 +26,13 @@ const store = new Vuex.Store({
         correctTasksSubmitted: 0,
         currentTask: generateTask(),
         currentTab: null,
-        secSpentOnTrade:0,
-        numTransactions:0,
+        secSpentOnTrade: 0,
+        numTransactions: 0,
         awardForTime: {},
-        awardForTransaction:{},
+        awardForTransaction: {},
         transactions: [
-            {
-                name: 'Stock A',
-                action: 'Initial purchase',
-                quantity: 6.0,
-                price: 24,
-                time: new Date(),
-                
-              },
-              {
-                name: 'Stock B',
-                action: 'Initial purchase',
-                quantity: 6.0,
-                price: 24,
-                time: new Date(),
-                
-              },
-              {
-                name: 'Stock B',
-                action: 'Sell',
-                quantity: 6.0,
-                price: 24,
-                time: new Date(),
-                
-              },
-              
+
+
         ],
         stocks:
             [
@@ -64,7 +41,7 @@ const store = new Vuex.Store({
                     publicName: 'Stock A',
                     price: 0,
                     previous: 0,
-                    quantity: 10,
+                    quantity: 0,
                     history: [],
                     rate_return: 0
                 },
@@ -73,7 +50,7 @@ const store = new Vuex.Store({
                     publicName: 'Stock B',
                     price: 0,
                     previous: 0,
-                    quantity: 2,
+                    quantity: 0,
                     history: [],
                     rate_return: 0
                 },
@@ -82,7 +59,7 @@ const store = new Vuex.Store({
                     publicName: 'Leveraged ETF 2XA',
                     price: 0,
                     previous: 0,
-                    quantity: 2,
+                    quantity: 0,
                     history: [],
                     rate_return: 0
                 },
@@ -91,7 +68,7 @@ const store = new Vuex.Store({
                     publicName: 'Leveraged ETF 2XB',
                     price: 0,
                     previous: 0,
-                    quantity: 2,
+                    quantity: 0,
                     history: [],
                     rate_return: 0
                 },
@@ -104,12 +81,12 @@ const store = new Vuex.Store({
         },
     },
     getters: {
-        getAllTransactions: (state)=> ()=> {return state.transactions},
-        getCurrentTransactionNum: (state)=> ()=> {return state.numTransactions},
-        getCurrentTimeInTrade: (state)=> ()=> {return state.secSpentOnTrade},
+        getAllTransactions: (state) => () => { return state.transactions },
+        getCurrentTransactionNum: (state) => () => { return state.numTransactions },
+        getCurrentTimeInTrade: (state) => () => { return state.secSpentOnTrade },
         getCashBalance: (state) => () => { return state.cashBalance },
-        portfoglioValue: (state)=> ()=>{
-            return (_.sumBy(state.stocks, (i)=>{return i.quantity*i.price})).toFixed(2);
+        portfoglioValue: (state) => () => {
+            return (_.sumBy(state.stocks, (i) => { return i.quantity * i.price })).toFixed(2);
         },
         getStockByName: (state) => (name) => {
 
@@ -121,20 +98,20 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
-        SET_NUM_AWARD:(state, obj)=>{state.awardForTransaction=obj},
-        SET_TIME_AWARD:(state, obj)=>{state.awardForTime=obj},
-        SEC_ON_TRADE_INCREASE:(state)=>{
+        SET_NUM_AWARD: (state, obj) => { state.awardForTransaction = obj },
+        SET_TIME_AWARD: (state, obj) => { state.awardForTime = obj },
+        SEC_ON_TRADE_INCREASE: (state) => {
             state.secSpentOnTrade++;
         },
-        TRANSACTION_NUM_INCREASE:(state)=>{
+        TRANSACTION_NUM_INCREASE: (state) => {
             state.numTransactions++
         },
-        NEW_TRANSACTION:(state, {trans})=>{
+        NEW_TRANSACTION: (state, { trans }) => {
             state.transactions.push(
-               trans
+                trans
             )
         },
-        DAY_INCREASE: (state)=> {
+        DAY_INCREASE: (state) => {
             state.dayNumber++;
             // TODO: we don't need it in production because we'll get the date in new rounds aka  new pages 
             // TODO: we'll set the day data (number, start from backend, will be immutable)
@@ -176,8 +153,8 @@ const store = new Vuex.Store({
         },
     },
     actions: {
-        setNumAward(context, obj) {context.commit('SET_NUM_AWARD', obj)},
-        setTimeAward(context, obj) {context.commit('SET_TIME_AWARD', obj)},
+        setNumAward(context, obj) { context.commit('SET_NUM_AWARD', obj) },
+        setTimeAward(context, obj) { context.commit('SET_TIME_AWARD', obj) },
         setTab(context, tab) {
             context.commit('SET_TAB', tab)
         },
@@ -201,29 +178,46 @@ const store = new Vuex.Store({
             context.commit('INCREASE_TOTAL_TASKS_COUNTER')
             context.commit('SET_NEW_TASK', generateTask())
         },
-        makeTransaction(context, { stock, quantity }) {
+
+
+        makeTransaction(context, { stock, quantity, initial = false }) {
             // negative quantity means selling, positive quanitity means buying
             // Somewhere here we also register transaction and send it back via socket to server
             // we may consider to register the full history of transactions somewhere
             const obj = context.getters.getStockByName(stock)
+
             const price = obj.price;
+            
             obj.quantity += quantity;
             // we inverse final amount to be added/withdrawn from cash reserves because it is inversly related to the
             // transaction direction (negative quantity means byuing etc. )
             const finalAmount = -price * quantity
             const ind = context.getters.getStockIndexByName(stock);
             context.commit('STOCK_UPDATE', { ind, obj });
-            context.commit('CHANGE_CASH', finalAmount);
-            context.commit('TRANSACTION_NUM_INCREASE');
-            const formatted_trans= {
+            if (!initial) {
+                context.commit('CHANGE_CASH', finalAmount);
+                context.commit('TRANSACTION_NUM_INCREASE');
+            }
+            let inner_action = quantity > 0 ? 'buy' : 'sell'
+            let transaction_dir, trans_price;
+            if (initial) {
+                transaction_dir = 'Initial amount';
+                trans_price = obj.history[0]
+            } else {
+                transaction_dir = quantity > 0 ? 'Buy' : 'Sell';
+                trans_price = obj.price;
+            }
+            const formatted_trans = {
                 name: obj.publicName,
-                action: 'Sell',
-                quantity: quantity,
-                price: obj.price,
+                inner_action: inner_action,
+                action: transaction_dir,
+                quantity: Math.abs(quantity),
+                price: trans_price,
                 time: new Date(),
-                
-              }
-            context.commit('NEW_TRANSACTION', {trans:formatted_trans});
+
+            }
+            console.debug("PIZDA", formatted_trans)
+            context.commit('NEW_TRANSACTION', { trans: formatted_trans });
         },
 
         requestPriceUpdate(context, stock) {
@@ -233,7 +227,7 @@ const store = new Vuex.Store({
             const obj = context.getters.getStockByName(stock)
             obj.price = _.round(price, 2).toFixed(2);
             obj.previous = _.last(obj.history);
-            obj.history = [...obj.history,  price];
+            obj.history = [...obj.history, price];
             const ind = context.getters.getStockIndexByName(stock);
             context.commit('STOCK_UPDATE', { ind, obj });
 

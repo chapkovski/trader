@@ -14,6 +14,11 @@
         {{ formatTime(item.time) }}
      
     </template>
+      <template v-slot:item.price="{ item }">
+     
+        {{ formatPrice(item.price)}}
+     
+    </template>
     </v-data-table>
 
   </div>
@@ -22,7 +27,7 @@
 
 <script>
 import { format } from 'date-fns'
-
+import _ from 'lodash'
 import { mapGetters } from "vuex";
 export default {
     data () {
@@ -49,7 +54,13 @@ export default {
     ...mapGetters(["getAllTransactions"]),
     },
     methods:{
-      formatTime(v){return format(v, "HH:mm:ss.S")}
+      formatTime(v){return format(v, "HH:mm:ss.S")},
+      formatPrice(v){
+        if  (_.isNumber(v) ){
+          return v.toFixed(2)
+        }
+        return v
+        }
     }
   }
 </script>

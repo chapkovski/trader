@@ -26,7 +26,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" md="12">
-        <!-- <history /> -->
+        <history />
       </v-col>
     </v-row>
     <v-row>
@@ -62,17 +62,7 @@ export default {
   },
 
   methods: {
-    congratulate: function () {
-      this.intervalid1 = setInterval(() => {
-        this.$confetti.start();
-        this.successfulTrade = true;
-        const self = this;
-        setTimeout(function () {
-          self.$confetti.stop();
-          self.successfulTrade = false;
-        }, 2000);
-      }, 15000);
-    },
+ 
   },
 };
 </script>
