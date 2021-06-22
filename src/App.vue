@@ -127,7 +127,7 @@ export default {
   created() {
     this.addRecord();
     this.updShares();
-    this.initializeStock();
+    // this.initializeStock();
     this.monitorTime();
     
     

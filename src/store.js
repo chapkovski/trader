@@ -20,7 +20,7 @@ const store = new Vuex.Store({
         ...lastKnownState,
         dayNumber: 1,
         dayStart: new Date(),
-        cashBalance: 0,
+        cashBalance: 100,
         salary: 0,
         tasksSubmitted: 0,
         correctTasksSubmitted: 0,
@@ -84,11 +84,14 @@ const store = new Vuex.Store({
         pandle: (state) => (name) => {
             const sells = _.filter(state.transactions, (i) => (i.innerName === name && i.inner_action == 'sell'))
             const buys = _.filter(state.transactions, (i) => (i.innerName === name && i.inner_action == 'buy'))
-            const totSells = _.sumBy(sells, function (o) { return o.price * o.quantity; });
+            const totSells = _.sumBy(sells, function (o) { return o.price * o.quantity; });            
+            const avSellPrice = totSells/(sells.length||1)
             const totBuys = _.sumBy(buys, function (o) { return o.price * o.quantity; });
+            const avBuyPrice = totBuys/(buys.length||1)
+            const realized  =(avSellPrice-avBuyPrice)*sells.length
             const stock = state.stocks.find(stock => stock.innerName === name)
             const outstandingPos = stock.quantity * stock.price
-            return totBuys - totSells + outstandingPos
+            return realized + outstandingPos
         },
         getAllTransactions: (state) => () => { return state.transactions },
         getCurrentTransactionNum: (state) => () => { return state.numTransactions },
