@@ -4,7 +4,8 @@ import Holdings from './Holdings'
 import History from './History'
 import Margin from './Margin'
 import Information from './Information'
+import Transactions from './Transactions'
 
 export { ActionBar, Holdings, 
     // Charts,
-     History, Margin, Information }
+     History, Margin, Information, Transactions }

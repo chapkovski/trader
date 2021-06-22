@@ -1,7 +1,5 @@
 <template>
   <v-container>
-     
-
     <transition name="fade">
       <v-row if="successfulTrade" :key="successfulTrade">
         <v-col cols="12">
@@ -19,57 +17,57 @@
       </v-row>
     </transition>
     <v-row flex>
-      <v-col cols="12" md=6>
+      <v-col cols="12" md="6">
         <action-bar />
       </v-col>
-      <v-col cols="12" md=6>
+      <v-col cols="12" md="6">
         <holdings />
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" md=6>
-        
-      </v-col>
-      <v-col cols="12" md=12>
-        <history />
+      <v-col cols="12" md="12">
+        <!-- <history /> -->
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12" md="12">
+        <transactions />
+      </v-col>
+    </v-row>
+    
   </v-container>
 </template>
 
 <script>
 // @ is an alias to /src
-import { ActionBar, Holdings, 
-
- History, Information } from "trade";
+import { ActionBar, Holdings, History, Transactions } from "trade";
 
 export default {
   name: "Trade",
   components: {
     ActionBar,
     Holdings,
-    
+
     History,
 
-    Information,
+    Transactions,
   },
   data() {
     return {
       successfulTrade: false,
-      
     };
   },
   created() {
     // this.congratulate();
   },
-  
+
   methods: {
-    congratulate: function() {
+    congratulate: function () {
       this.intervalid1 = setInterval(() => {
         this.$confetti.start();
         this.successfulTrade = true;
         const self = this;
-        setTimeout(function() {
+        setTimeout(function () {
           self.$confetti.stop();
           self.successfulTrade = false;
         }, 2000);
