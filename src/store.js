@@ -47,6 +47,15 @@ const store = new Vuex.Store({
                 time: new Date(),
                 
               },
+              {
+                name: 'Stock B',
+                action: 'Sell',
+                quantity: 6.0,
+                price: 24,
+                time: new Date(),
+                
+              },
+              
         ],
         stocks:
             [
@@ -95,6 +104,7 @@ const store = new Vuex.Store({
         },
     },
     getters: {
+        getAllTransactions: (state)=> ()=> {return state.transactions},
         getCurrentTransactionNum: (state)=> ()=> {return state.numTransactions},
         getCurrentTimeInTrade: (state)=> ()=> {return state.secSpentOnTrade},
         getCashBalance: (state) => () => { return state.cashBalance },
@@ -118,6 +128,18 @@ const store = new Vuex.Store({
         },
         TRANSACTION_NUM_INCREASE:(state)=>{
             state.numTransactions++
+        },
+        NEW_TRANSACTION:(state)=>{
+            state.transactions.push(
+                {
+                    name: 'Stock B',
+                    action: 'Sell',
+                    quantity: 6.0,
+                    price: 24,
+                    time: new Date(),
+                    
+                  },
+            )
         },
         DAY_INCREASE: (state)=> {
             state.dayNumber++;
@@ -200,6 +222,7 @@ const store = new Vuex.Store({
             context.commit('STOCK_UPDATE', { ind, obj });
             context.commit('CHANGE_CASH', finalAmount);
             context.commit('TRANSACTION_NUM_INCREASE');
+            context.commit('NEW_TRANSACTION');
         },
 
         requestPriceUpdate(context, stock) {

@@ -3,9 +3,12 @@
     <h3>Transactions:</h3>
      <v-data-table
     :headers="headers"
-    :items="transactions"
+    :items="getAllTransactions()"
     :items-per-page="5"
-    class="elevation-1">
+    class="elevation-1"
+          :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
+      >
       <template v-slot:item.time="{ item }">
      
         {{ formatTime(item.time) }}
@@ -19,14 +22,17 @@
 
 <script>
 import { format } from 'date-fns'
+
+import { mapGetters } from "vuex";
 export default {
     data () {
       return {
+        sortBy: 'time',
+        sortDesc: true,
         headers: [
           {
             text: 'Stock name',
-            align: 'start',
-            sortable: false,
+          
             value: 'name',
           },
           { text: 'Action', value: 'action' },
@@ -35,21 +41,15 @@ export default {
           { text: 'Time', value: 'time' },
          
         ],
-        transactions: [
-          {
-            name: 'Stock A',
-            action: 'Initial purchase',
-            quantity: 6.0,
-            price: 24,
-            time: new Date(),
-            
-          },
-          
-        ],
+       
       }
     },
+    computed:{
+
+    ...mapGetters(["getAllTransactions"]),
+    },
     methods:{
-      formatTime(v){return format(v, "HH:MM:ss.S")}
+      formatTime(v){return format(v, "HH:mm:ss.S")}
     }
   }
 </script>
