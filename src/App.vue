@@ -28,7 +28,7 @@
     <v-app-bar color="#6A76AB" dark app height="95">
       <account-info> </account-info>
       <days-left :day="dayNumber"></days-left>
-      <time-left @dayDone="DAY_INCREASE()"></time-left>
+      <time-left @dayDone="nextDay()"></time-left>
       <v-spacer></v-spacer>
       <div :class="{ 'd-flex': true }" v-if="inTrade">
         <div class="m-3">
@@ -125,12 +125,10 @@ export default {
     };
   },
   created() {
-    this.addRecord();
+    this.nextDay();
+    this.getNewTick();
     this.updShares();
-    // this.initializeStock();
     this.monitorTime();
-    
-    
   },
   computed: {
     ...mapState([
@@ -193,32 +191,12 @@ export default {
       "setNumAward",
       "setTimeAward",
       "makeTransaction",
+      "getNewTick",
+      "nextDay"
     ]),
     // TODO: we don't need the day increase in production. most likely.
-    ...mapMutations(["INC_TICK", "DAY_INCREASE", "SEC_ON_TRADE_INCREASE"]),
-    initializeStock() {
-      // TODO: do it less ugly!
-      this.makeTransaction({
-        stock: "a",
-        quantity: 10,
-        initial: true,
-      });
-      this.makeTransaction({
-        stock: "b",
-        quantity: 10,
-        initial: true,
-      });
-      this.makeTransaction({
-        stock: "c",
-        quantity: 10,
-        initial: true,
-      });
-      this.makeTransaction({
-        stock: "d",
-        quantity: 10,
-        initial: true,
-      });
-    },
+    ...mapMutations([ "SEC_ON_TRADE_INCREASE"]),
+
     monitorTime() {
       this.monitorInterval = setInterval(() => {
         if (this.inTrade) {
@@ -233,16 +211,8 @@ export default {
     },
     updShares: function () {
       this.intervalid1 = setInterval(() => {
-        this.addRecord();
+        this.getNewTick();
       }, gameParams.tickFrequency * 1000);
-    },
-    addRecord() {
-      _.forEach(this.stocks, (i) => this.requestPriceUpdate(i.innerName));
-
-      this.INC_TICK();
-    },
-    newDay() {
-      console.debug("NEW DAY!!!");
     },
   },
 };

@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 import _ from 'lodash'
 import VueNativeSock from 'vue-native-websocket'
-import gameParams, { lastKnownState } from './params'
+import gameParams from './params'
+
 Vue.use(Vuex)
 // all this bullshit with task generation should move to server side later
 
@@ -17,7 +19,8 @@ const generateTask = () => {
 }
 const store = new Vuex.Store({
     state: {
-        ...lastKnownState,
+        currentTick: 0,
+        numTicks: parseInt(gameParams.dayLength / gameParams.tickFrequency),
         dayNumber: 1,
         dayStart: new Date(),
         cashBalance: 100,
@@ -30,6 +33,7 @@ const store = new Vuex.Store({
         numTransactions: 0,
         awardForTime: {},
         awardForTransaction: {},
+        priceData: [],
         transactions: [
 
 
@@ -43,7 +47,7 @@ const store = new Vuex.Store({
                     previous: 0,
                     quantity: 0,
                     history: [],
-                    rate_return: 0
+                    
                 },
                 {
                     innerName: 'b',
@@ -52,7 +56,7 @@ const store = new Vuex.Store({
                     previous: 0,
                     quantity: 0,
                     history: [],
-                    rate_return: 0
+                    
                 },
                 {
                     innerName: 'c',
@@ -61,7 +65,7 @@ const store = new Vuex.Store({
                     previous: 0,
                     quantity: 0,
                     history: [],
-                    rate_return: 0
+                
                 },
                 {
                     innerName: 'd',
@@ -70,7 +74,7 @@ const store = new Vuex.Store({
                     previous: 0,
                     quantity: 0,
                     history: [],
-                    rate_return: 0
+                   
                 },
             ]
         ,
@@ -110,6 +114,10 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
+        PRICE_DATA_UPDATE: (state, obj) => { 
+
+            state.priceData = obj; 
+        },
         SET_NUM_AWARD: (state, obj) => { state.awardForTransaction = obj },
         SET_TIME_AWARD: (state, obj) => { state.awardForTime = obj },
         SEC_ON_TRADE_INCREASE: (state) => {
@@ -233,17 +241,41 @@ const store = new Vuex.Store({
 
             context.commit('NEW_TRANSACTION', { trans: formatted_trans });
         },
+        async nextDay({ commit, state }) {
+            // We trigger the next day, send a request to an api (for demo purposes, later on
+            // we ll use the web socker with the same thing. )
+            // we get prices for the entire day, it'll save the load at the websocket. 
+            // in production we'll send there the participant code and the day number. Now 
+            // just number of ticks
+            const n = state.numTicks;
+            const {priceUrl} = gameParams
+            const r = await axios.get(`${priceUrl}?n=${n}`)
+            
+            commit('PRICE_DATA_UPDATE', r.data );
+            commit('DAY_INCREASE');
 
-        requestPriceUpdate(context, stock) {
-            // TODO: somewhere here we'll send a socket request to get a new tick
-            // TODO: we dont' need to send so many requests; it makes sense to request them in a bunch
-            const price = Math.random();
-            const obj = context.getters.getStockByName(stock)
-            obj.price = _.round(price, 2).toFixed(2);
-            obj.previous = _.last(obj.history);
-            obj.history = [...obj.history, price];
-            const ind = context.getters.getStockIndexByName(stock);
-            context.commit('STOCK_UPDATE', { ind, obj });
+
+        },
+
+        getNewTick({ commit, state, getters, dispatch }) {
+            const { currentTick, numTicks, prices } = state;
+            if (currentTick >= numTicks) {
+                dispatch('nextDay')
+            }
+            else {
+                _.forEach(prices, (i) => {
+                    const obj = getters.getStockByName(i.name)
+                    const price = i.prices[currentTick]
+                    obj.price = _.round(price, 2);
+                    obj.previous = _.last(obj.history);
+                    obj.history = [...obj.history, price];
+                    const ind = getters.getStockIndexByName(i.name);
+                    commit('STOCK_UPDATE', { ind, obj });
+
+                });
+                commit('INC_TICK')
+            }
+
 
         }
 

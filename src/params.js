@@ -2,7 +2,9 @@
 // gameParams is something that is un-updatable from server. 
 // while lastKnownState is just a current state mutable in a store, store uses it as an initial state
 const gameParams = {
+    priceUrl:'https://uppsi22mf2.execute-api.us-east-1.amazonaws.com/Prod/price/',
     dayLength: 30,
+    SEC:1000,
     tickFrequency: 3,
     numTicks: 30,
     taskFee:20,
@@ -66,9 +68,5 @@ const gameParams = {
     }
 }
 
-export const lastKnownState = {
-    currentTick: 0,
-
-    
-}
+ 
 export default gameParams
