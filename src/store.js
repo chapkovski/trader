@@ -33,50 +33,13 @@ const store = new Vuex.Store({
         numTransactions: 0,
         awardForTime: {},
         awardForTransaction: {},
-        priceData: [],
+
         transactions: [
 
 
         ],
         stocks:
-            [
-                {
-                    innerName: 'a',
-                    publicName: 'Stock A',
-                    price: 0,
-                    previous: 0,
-                    quantity: 0,
-                    history: [],
-                    
-                },
-                {
-                    innerName: 'b',
-                    publicName: 'Stock B',
-                    price: 0,
-                    previous: 0,
-                    quantity: 0,
-                    history: [],
-                    
-                },
-                {
-                    innerName: 'c',
-                    publicName: 'Leveraged ETF 2XA',
-                    price: 0,
-                    previous: 0,
-                    quantity: 0,
-                    history: [],
-                
-                },
-                {
-                    innerName: 'd',
-                    publicName: 'Leveraged ETF 2XB',
-                    price: 0,
-                    previous: 0,
-                    quantity: 0,
-                    history: [],
-                   
-                },
-            ]
+            []
         ,
         socket: {
             isConnected: false,
@@ -114,9 +77,8 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
-        PRICE_DATA_UPDATE: (state, obj) => { 
-
-            state.priceData = obj; 
+        PRICE_DATA_UPDATE: (state, obj) => {
+            state.stocks = obj;
         },
         SET_NUM_AWARD: (state, obj) => { state.awardForTransaction = obj },
         SET_TIME_AWARD: (state, obj) => { state.awardForTime = obj },
@@ -130,6 +92,9 @@ const store = new Vuex.Store({
             state.transactions.push(
                 trans
             )
+        },
+        TRANSACTIONS_RESET: (state, { trans }) => {
+            state.transactions = []
         },
         DAY_INCREASE: (state) => {
             state.dayNumber++;
@@ -150,6 +115,7 @@ const store = new Vuex.Store({
             state.currentTab = tab
         },
         INC_TICK: (state) => (state.currentTick++),
+        TICK_RESET: (state) => (state.currentTick = 0),
         SOCKET_ONOPEN(state, event) {
             Vue.prototype.$socket = event.currentTarget
             state.socket.isConnected = true
@@ -248,28 +214,28 @@ const store = new Vuex.Store({
             // in production we'll send there the participant code and the day number. Now 
             // just number of ticks
             const n = state.numTicks;
-            const {priceUrl} = gameParams
+            const { priceUrl } = gameParams
             const r = await axios.get(`${priceUrl}?n=${n}`)
-            
-            commit('PRICE_DATA_UPDATE', r.data );
+            const stocks = _.map(r.data, (i) => ({ ...i, quantity: 0 }))
+            commit('PRICE_DATA_UPDATE', stocks);
             commit('DAY_INCREASE');
+            commit('TICK_RESET');
+            commit('TRANSACTIONS_RESET');
 
 
         },
 
         getNewTick({ commit, state, getters, dispatch }) {
-            const { currentTick, numTicks, prices } = state;
+            const { currentTick, numTicks, stocks } = state;
             if (currentTick >= numTicks) {
                 dispatch('nextDay')
             }
             else {
-                _.forEach(prices, (i) => {
-                    const obj = getters.getStockByName(i.name)
-                    const price = i.prices[currentTick]
+                _.forEach(stocks, (obj, ind) => {
+                    const price = obj.prices[currentTick]
                     obj.price = _.round(price, 2);
+                    obj.history = obj.prices.slice(0, currentTick)
                     obj.previous = _.last(obj.history);
-                    obj.history = [...obj.history, price];
-                    const ind = getters.getStockIndexByName(i.name);
                     commit('STOCK_UPDATE', { ind, obj });
 
                 });

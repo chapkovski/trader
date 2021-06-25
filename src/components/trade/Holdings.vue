@@ -63,6 +63,7 @@ export default {
     ...mapState(["stocks"]),
     stocksForHoldings() {
       return _.map(this.stocks, (i) => {
+        
         return {
           publicName: i.publicName,
           value: _.round(i.quantity * i.price,2).toFixed(2),
