@@ -2,6 +2,7 @@
 
 <template>
   <v-app>
+    <new-day-dialog></new-day-dialog>
     <transition
       enter-active-class="animate__animated animate__bounce animate__slow"
       leave-active-class="animate__animated animate__fadeOutTopRight animate__slow"
@@ -108,11 +109,12 @@ import TradeFooter from "trade/TradeFooter";
 import _ from "lodash";
 import AccountInfo from "bank/AccountInfo";
 import DaysLeft from "./components/DaysLeft";
+import NewDayDialog from "./components/NewDayDialog";
 import TimeLeft from "./components/TimeLeft";
 import { mapActions, mapMutations, mapState, mapGetters } from "vuex";
 import gameParams from "./params";
 export default {
-  components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft },
+  components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft , NewDayDialog    },
   data() {
     return {
       day: 1,
@@ -192,10 +194,10 @@ export default {
       "setTimeAward",
       "makeTransaction",
       "getNewTick",
-      "nextDay"
+      "nextDay",
     ]),
     // TODO: we don't need the day increase in production. most likely.
-    ...mapMutations([ "SEC_ON_TRADE_INCREASE"]),
+    ...mapMutations(["SEC_ON_TRADE_INCREASE"]),
 
     monitorTime() {
       this.monitorInterval = setInterval(() => {

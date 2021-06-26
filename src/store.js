@@ -17,30 +17,29 @@ const generateTask = () => {
     })
     return { matrix1, matrix2 }
 }
+
+const dayResetabbleParams = () => ({
+    currentTick: 0,
+    dayStart: new Date(),
+    cashBalance: gameParams.endowment,
+    tasksSubmitted: 0,
+    correctTasksSubmitted: 0,
+    currentTask: generateTask(),
+    currentTab: null,
+    secSpentOnTrade: 0,
+    numTransactions: 0,
+    awardForTime: {},
+    awardForTransaction: {},
+    transactions: [],
+    stocks: []
+})
 const store = new Vuex.Store({
     state: {
-        currentTick: 0,
         numTicks: parseInt(gameParams.dayLength / gameParams.tickFrequency),
-        dayNumber: 1,
-        dayStart: new Date(),
-        cashBalance: 100,
-        salary: 0,
-        tasksSubmitted: 0,
-        correctTasksSubmitted: 0,
-        currentTask: generateTask(),
-        currentTab: null,
-        secSpentOnTrade: 0,
-        numTransactions: 0,
-        awardForTime: {},
-        awardForTransaction: {},
-
-        transactions: [
-
-
-        ],
-        stocks:
-            []
-        ,
+        dayNumber: 0,
+        priceDataLoaded: false,
+        priceDataLoading: false,
+        ...dayResetabbleParams(),
         socket: {
             isConnected: false,
             message: '',
@@ -48,6 +47,9 @@ const store = new Vuex.Store({
         },
     },
     getters: {
+        dataInLoading: (state) => () => {
+            return (!state.priceDataLoaded && state.priceDataLoading);
+        },
         pandle: (state) => (name) => {
             const sells = _.filter(state.transactions, (i) => (i.innerName === name && i.inner_action == 'sell'))
             const buys = _.filter(state.transactions, (i) => (i.innerName === name && i.inner_action == 'buy'))
@@ -72,11 +74,29 @@ const store = new Vuex.Store({
             return state.stocks.find(stock => stock.innerName === name)
         },
         getStockIndexByName: (state) => (name) => {
-
             return _.findIndex(state.stocks, (i) => i.innerName === name)
         }
     },
     mutations: {
+        RESET_ALL: (state) => {
+            const newDayData = dayResetabbleParams();
+            for (const i of Object.keys(newDayData)) {
+                state[i] = newDayData[i]
+            }
+        },
+        SET_LOADING: (state, v) => {
+            console.debug("WRE THERE", v)
+            state.priceDataLoading = v
+        },
+        DATA_LOADED: (state) => {
+            state.priceDataLoaded = true;
+            state.priceDataLoading = false;
+
+        },
+        DATA_LOADING: (state) => {
+            state.priceDataLoaded = false;
+            state.priceDataLoading = true;
+        },
         PRICE_DATA_UPDATE: (state, obj) => {
             state.stocks = obj;
         },
@@ -207,7 +227,7 @@ const store = new Vuex.Store({
 
             context.commit('NEW_TRANSACTION', { trans: formatted_trans });
         },
-        async nextDay({ commit, state }) {
+        async nextDay({ commit, state, dispatch }) {
             // We trigger the next day, send a request to an api (for demo purposes, later on
             // we ll use the web socker with the same thing. )
             // we get prices for the entire day, it'll save the load at the websocket. 
@@ -215,30 +235,34 @@ const store = new Vuex.Store({
             // just number of ticks
             const n = state.numTicks;
             const { priceUrl } = gameParams
+            commit('DATA_LOADING');
             const r = await axios.get(`${priceUrl}?n=${n}`)
             const stocks = _.map(r.data, (i) => ({ ...i, quantity: 0 }))
+            commit('RESET_ALL');
             commit('PRICE_DATA_UPDATE', stocks);
             commit('DAY_INCREASE');
-            commit('TICK_RESET');
-            commit('TRANSACTIONS_RESET');
+            commit('DATA_LOADED');
+            dispatch('updStocks')
+        },
+        updStocks({ commit, state }) {
+            const { currentTick, stocks } = state;
+            _.forEach(stocks, (obj, ind) => {
+                const price = obj.prices[currentTick]
+                obj.price = _.round(price, 2);
+                obj.history = obj.prices.slice(0, currentTick)
+                obj.previous = _.last(obj.history);
+                commit('STOCK_UPDATE', { ind, obj });
 
-
+            });
         },
 
-        getNewTick({ commit, state, getters, dispatch }) {
+        async getNewTick({ commit, state, getters, dispatch }) {
             const { currentTick, numTicks, stocks } = state;
             if (currentTick >= numTicks) {
-                dispatch('nextDay')
+                await dispatch('nextDay')
             }
             else {
-                _.forEach(stocks, (obj, ind) => {
-                    const price = obj.prices[currentTick]
-                    obj.price = _.round(price, 2);
-                    obj.history = obj.prices.slice(0, currentTick)
-                    obj.previous = _.last(obj.history);
-                    commit('STOCK_UPDATE', { ind, obj });
-
-                });
+                dispatch('updStocks')
                 commit('INC_TICK')
             }
 

@@ -4,7 +4,7 @@
         <v-card-text>
             Bank account balance:
             <v-chip class="ma-2" color="primary">
-                {{getCashBalance()}}
+                {{getCashBalance().toFixed(2)}}
             </v-chip>
         </v-card-text>
     

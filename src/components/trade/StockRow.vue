@@ -6,7 +6,7 @@
       
         <div :key="price" class="d-flex ">
           <div class="mr-3" :style="{ color: color }">
-            {{ price }}
+            {{ price.toFixed(2) }}
           </div>
           <div>
             <span :style="{ color: 'red' }">
