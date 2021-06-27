@@ -85,7 +85,7 @@ const store = new Vuex.Store({
             }
         },
         SET_LOADING: (state, v) => {
-            console.debug("WRE THERE", v)
+
             state.priceDataLoading = v
         },
         DATA_LOADED: (state) => {
@@ -249,6 +249,10 @@ const store = new Vuex.Store({
             _.forEach(stocks, (obj, ind) => {
                 const price = obj.prices[currentTick]
                 obj.price = _.round(price, 2);
+
+                console.debug("UPD STOCKS CALLED", currentTick)
+                console.debug("UPD STOCKS CALLED", obj.prices.slice(0, currentTick + 1))
+
                 obj.history = obj.prices.slice(0, currentTick)
                 obj.previous = _.last(obj.history);
                 commit('STOCK_UPDATE', { ind, obj });
