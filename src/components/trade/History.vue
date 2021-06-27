@@ -16,6 +16,7 @@
         </v-tabs>
    <v-tabs-items v-model="currentTab">
       <v-tab-item
+         eager
         v-for="i in stocks"
         :key="i.innerName"
         :value="`${i.innerName}`"
@@ -32,7 +33,7 @@
 </template>
 <script>
 import _ from 'lodash'
-import { mapState, mapMutations, mapActions } from "vuex";
+import { mapState } from "vuex";
 import Chart from './SingleChart' 
 export default {
   components:{Chart},

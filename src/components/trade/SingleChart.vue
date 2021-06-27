@@ -52,7 +52,7 @@ export default {
     };
   },
   mounted() {
-    console.debug("PIZCA", this.stockName);
+    console.debug("CHART MOUNTED", this.stockName);
     this.chartOptions.series[0].pointStart = this.dayStart.getTime();
   },
 
@@ -70,6 +70,8 @@ export default {
   methods: {},
   watch: {
     stocks(newV, oldV) {
+      console.debug("HERE IS THE ERROR souRcE In chARtS")
+      console.debug('WHATS GOIN ON WITH CHARTS DATA', newV.history)
       this.chartOptions.series[0].data = newV.history;
       // this.chartOptions.series = _.map(newV, (i) => ({
       //   name: i.publicName,
