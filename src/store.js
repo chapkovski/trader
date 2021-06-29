@@ -19,6 +19,7 @@ const generateTask = () => {
 }
 
 const dayResetabbleParams = () => ({
+    
     currentTick: 0,
     dayStart: new Date(),
     cashBalance: gameParams.endowment,
@@ -35,6 +36,7 @@ const dayResetabbleParams = () => ({
 })
 const store = new Vuex.Store({
     state: {
+        formSubmittable:false, 
         numTicks: parseInt(gameParams.dayLength / gameParams.tickFrequency),
         dayNumber: 0,
         priceDataLoaded: false,
@@ -78,6 +80,9 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
+        ALLOW_FORM_SUBMIT:(state)=> {
+            state.formSubmittable=true
+        },
         RESET_ALL: (state) => {
             const newDayData = dayResetabbleParams();
             for (const i of Object.keys(newDayData)) {
@@ -233,8 +238,16 @@ const store = new Vuex.Store({
             // we get prices for the entire day, it'll save the load at the websocket. 
             // in production we'll send there the participant code and the day number. Now 
             // just number of ticks
+            // does it make sense to increase the day if there is no day info? lets try to find the day param in day_params of gameParams 
+            const { priceUrl, day_params } = gameParams
+            const next_one = state.dayNumber + 1;
+            const specificDayParams = _.find(day_params, (i) => (i.round === next_one.toString()))
+            console.debug("JOPA?", specificDayParams, next_one.toString(),day_params)
+            if (specificDayParams!==undefined) {
+                commit('ALLOW_FORM_SUBMIT')
+            }
             const n = state.numTicks;
-            const { priceUrl } = gameParams
+
             commit('DATA_LOADING');
             const r = await axios.get(`${priceUrl}?n=${n}`)
             const stocks = _.map(r.data, (i) => ({ ...i, quantity: 0 }))
@@ -250,7 +263,7 @@ const store = new Vuex.Store({
                 const price = obj.prices[currentTick]
                 obj.price = _.round(price, 2);
 
-                
+
                 obj.history = obj.prices.slice(0, currentTick)
                 obj.previous = _.last(obj.history);
                 commit('STOCK_UPDATE', { ind, obj });

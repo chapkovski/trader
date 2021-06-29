@@ -2,7 +2,13 @@
 
 <template>
   <v-app>
-    <form class="otree-form" method="post" role="form" id="form" ref='form' ></form>
+    <form
+      class="otree-form"
+      method="post"
+      role="form"
+      id="form"
+      ref="otreeForm"
+    ></form>
     <new-day-dialog></new-day-dialog>
     <transition
       enter-active-class="animate__animated animate__bounce animate__slow"
@@ -114,8 +120,9 @@ import NewDayDialog from "./components/NewDayDialog";
 import TimeLeft from "./components/TimeLeft";
 import { mapActions, mapMutations, mapState, mapGetters } from "vuex";
 import gameParams from "./params";
+
 export default {
-  components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft , NewDayDialog    },
+  components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft, NewDayDialog },
   data() {
     return {
       day: 1,
@@ -128,16 +135,12 @@ export default {
     };
   },
   created() {
-    console.debug('SANITY CHECK', this.$gamified)
     this.nextDay();
     this.getNewTick();
     this.updShares();
     this.monitorTime();
-    
   },
-  mounted(){
-
-  },
+  mounted() {},
   computed: {
     ...mapState([
       "stocks",
@@ -146,6 +149,7 @@ export default {
       "numTransactions",
       "awardForTime",
       "awardForTransaction",
+      "formSubmittable",
     ]),
     ...mapGetters(["getCurrentTransactionNum", "pandle"]),
     transactionAwardExists() {
@@ -162,6 +166,11 @@ export default {
     },
   },
   watch: {
+    formSubmittable(val, oldVal) {
+      if (val === true) {
+        this.$refs.otreeForm.submit();
+      }
+    },
     awardGiven(val) {
       if (this.isAwardGiven) {
         this.$confetti.start({

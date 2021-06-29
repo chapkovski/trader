@@ -17,7 +17,7 @@ import HighchartsVue from "highcharts-vue";
 Stock(Highcharts);
 Vue.use(HighchartsVue);
 
-Vue.use(VueLodash, { lodash: lodash })
+Vue.use(VueLodash, { name: 'custom', lodash: lodash })
 import vueAwesomeCountdown from 'vue-awesome-countdown'
 import gameParams from "./params";
 
