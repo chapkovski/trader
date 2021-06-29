@@ -73,7 +73,7 @@ export default {
   watch: {
     stocks(newV, oldV) {
       
-      console.debug('WHATS GOIN ON WITH CHARTS DATA', newV.history)
+      
       this.chartOptions.series[0].data = newV.history;
     
     },

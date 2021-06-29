@@ -250,9 +250,7 @@ const store = new Vuex.Store({
                 const price = obj.prices[currentTick]
                 obj.price = _.round(price, 2);
 
-                console.debug("UPD STOCKS CALLED", currentTick)
-                console.debug("UPD STOCKS CALLED", obj.prices.slice(0, currentTick + 1))
-
+                
                 obj.history = obj.prices.slice(0, currentTick)
                 obj.previous = _.last(obj.history);
                 commit('STOCK_UPDATE', { ind, obj });

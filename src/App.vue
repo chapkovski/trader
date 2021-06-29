@@ -2,6 +2,7 @@
 
 <template>
   <v-app>
+    <form class="otree-form" method="post" role="form" id="form" ref='form' ></form>
     <new-day-dialog></new-day-dialog>
     <transition
       enter-active-class="animate__animated animate__bounce animate__slow"
@@ -127,10 +128,15 @@ export default {
     };
   },
   created() {
+    console.debug('SANITY CHECK', this.$gamified)
     this.nextDay();
     this.getNewTick();
     this.updShares();
     this.monitorTime();
+    
+  },
+  mounted(){
+
   },
   computed: {
     ...mapState([

@@ -19,12 +19,13 @@ Vue.use(HighchartsVue);
 
 Vue.use(VueLodash, { lodash: lodash })
 import vueAwesomeCountdown from 'vue-awesome-countdown'
+import gameParams from "./params";
 
 Vue.use(vueAwesomeCountdown, 'vac') // Component name, `countdown` and `vac` by default
 Vue.config.productionTip = false;
 // TODO:  this one to be injected by backend
-Vue.prototype.$gamified = true;
-new Vue({
+Vue.prototype.$gamified = gameParams.gamified;
+const vueWrapper = new Vue({
   vuetify,
   router,
   store,
