@@ -19,7 +19,7 @@ const generateTask = () => {
 }
 
 const dayResetabbleParams = () => ({
-    
+
     currentTick: 0,
     dayStart: new Date(),
     cashBalance: gameParams.endowment,
@@ -36,7 +36,7 @@ const dayResetabbleParams = () => ({
 })
 const store = new Vuex.Store({
     state: {
-        formSubmittable:false, 
+        formSubmittable: false,
         numTicks: parseInt(gameParams.dayLength / gameParams.tickFrequency),
         dayNumber: 0,
         priceDataLoaded: false,
@@ -80,8 +80,8 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
-        ALLOW_FORM_SUBMIT:(state)=> {
-            state.formSubmittable=true
+        ALLOW_FORM_SUBMIT: (state) => {
+            state.formSubmittable = true
         },
         RESET_ALL: (state) => {
             const newDayData = dayResetabbleParams();
@@ -164,8 +164,13 @@ const store = new Vuex.Store({
         },
     },
     actions: {
-        setNumAward(context, obj) { context.commit('SET_NUM_AWARD', obj) },
-        setTimeAward(context, obj) { context.commit('SET_TIME_AWARD', obj) },
+        setNumAward(context, obj) {
+            if (gameParams.gamified) {
+                context.commit('SET_NUM_AWARD', obj)
+            }
+        },
+        setTimeAward(context, obj) { 
+            if (gameParams.gamified) {context.commit('SET_TIME_AWARD', obj) }},
         setTab(context, tab) {
             context.commit('SET_TAB', tab)
         },
@@ -242,8 +247,8 @@ const store = new Vuex.Store({
             const { priceUrl, day_params } = gameParams
             const next_one = state.dayNumber + 1;
             const specificDayParams = _.find(day_params, (i) => (i.round === next_one.toString()))
-            console.debug("JOPA?", specificDayParams, next_one.toString(),day_params)
-            if (specificDayParams!==undefined) {
+
+            if (specificDayParams !== undefined && next_one > 1) {
                 commit('ALLOW_FORM_SUBMIT')
             }
             const n = state.numTicks;

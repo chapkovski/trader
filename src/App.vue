@@ -8,7 +8,9 @@
       role="form"
       id="form"
       ref="otreeForm"
-    ></form>
+    >
+    <input type="hidden" name='secSpentOnTrade' :value='secSpentOnTrade' id='id_secSpentOnTrade'>
+    </form>
     <new-day-dialog></new-day-dialog>
     <transition
       enter-active-class="animate__animated animate__bounce animate__slow"
@@ -190,7 +192,7 @@ export default {
     },
     numTransactions(val) {
       const numsAward = gameParams.awards.nums[val];
-      if (numsAward) {
+      if (numsAward && this.$gamified) {
         this.setNumAward(numsAward);
         this.awardGiven = numsAward;
       }
@@ -219,7 +221,7 @@ export default {
         if (this.inTrade) {
           this.SEC_ON_TRADE_INCREASE();
           const timeAward = gameParams.awards.time[this.secSpentOnTrade];
-          if (timeAward) {
+          if (timeAward  && this.$gamified) {
             this.setTimeAward(timeAward);
             this.awardGiven = timeAward;
           }
