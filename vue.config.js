@@ -34,7 +34,7 @@ module.exports = {
         config.devServer
             .public('http://localhost:6666')
             .host('localhost')
-            .port(8080)
+            .port(7777)
             .hotOnly(true)
             .watchOptions({poll: 1000})
             .https(false)
