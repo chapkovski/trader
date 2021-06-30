@@ -203,7 +203,7 @@ const store = new Vuex.Store({
         },
 
 
-        makeTransaction({commit, state, getters}, { stock, quantity, initial = false }) {
+        makeTransaction({ commit, state, getters }, { stock, quantity, initial = false }) {
             // negative quantity means selling, positive quanitity means buying
             // Somewhere here we also register transaction and send it back via socket to server
             // we may consider to register the full history of transactions somewhere
@@ -215,6 +215,10 @@ const store = new Vuex.Store({
             // we inverse final amount to be added/withdrawn from cash reserves because it is inversly related to the
             // transaction direction (negative quantity means byuing etc. )
             const finalAmount = -price * quantity - state.commission
+            console.debug('GONNA SPENT WITHOUT COMMISSION', -price * quantity)
+            console.debug('COMMISSION', state.commission * 1)
+            console.debug('GONNA SPENT TOTOAL', -price * quantity - state.commission)
+
             const ind = getters.getStockIndexByName(stock);
             commit('STOCK_UPDATE', { ind, obj });
             if (!initial) {
