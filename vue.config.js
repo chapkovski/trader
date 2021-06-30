@@ -8,7 +8,7 @@ module.exports = {
     productionSourceMap: false,
     publicPath: process.env.NODE_ENV === 'production'
         ? '/static/vue'
-        : '/static/vue',
+        : 'http://localhost:8080/',
     outputDir: '../_static/vue/',
 
 
@@ -32,9 +32,9 @@ module.exports = {
             .set('__STATIC__', 'static');
 
         config.devServer
-            .public('http://localhost:6666')
+            .public('http://localhost:8080')
             .host('localhost')
-            .port(7777)
+            .port(8080)
             .hotOnly(true)
             .watchOptions({poll: 1000})
             .https(false)

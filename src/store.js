@@ -84,8 +84,8 @@ const store = new Vuex.Store({
     },
     mutations: {
         SET_DAY_PARAMS: (state, { wage, commission }) => {
-            state.wage = wage;
-            state.commission = commission;
+            state.wage = parseInt(wage);
+            state.commission = parseInt(commission);
         },
         ALLOW_FORM_SUBMIT: (state) => {
             state.formSubmittable = true
@@ -172,21 +172,24 @@ const store = new Vuex.Store({
         },
     },
     actions: {
-        setNumAward(context, obj) {
+        setNumAward({ commit, state, dispatch }, obj) {
             if (gameParams.gamified) {
-                context.commit('SET_NUM_AWARD', obj)
+                commit('SET_NUM_AWARD', obj);
+                dispatch('sendEventToServer', { name: 'awardForTransaction', award_type: obj, numTransactions: state.numTransactions })
             }
         },
-        setTimeAward(context, obj) {
-            if (gameParams.gamified) { context.commit('SET_TIME_AWARD', obj) }
+        setTimeAward({ commit, state, dispatch }, obj) {
+            if (gameParams.gamified) {
+                commit('SET_TIME_AWARD', obj);
+                dispatch('sendEventToServer', { name: 'awardForTime', secSpentOnTrade: state.secSpentOnTrade, award_type: obj })
+            }
         },
-        setTab(context, tab) {
-            context.commit('SET_TAB', tab)
+        setTab({ commit, state, dispatch }, tab) {
+            commit('SET_TAB', tab);
+            dispatch('sendEventToServer', { name: 'tabChanged', new_tab: state.currentTab })
         },
-        processTaskAnswer({ commit, state }, answer) {
-            // somewhere here we send task asnwer for checking on a server side, and get a new task to work on
-            // as soon as we get the answer we increase the counter of total tasks by 1, and 
-            // if correct we increase the salary, number of crrect task and total number of money avaialbe
+        processTaskAnswer({ commit, state, dispatch }, answer) {
+
             function isAnswerCorrect(task, answer) {
                 const m1 = _.max(task.matrix1)
                 const m2 = _.max(task.matrix2)
@@ -194,18 +197,28 @@ const store = new Vuex.Store({
                 return parseInt(correctAnswer) === parseInt(answer)
             }
             const currentTask = state.currentTask
-            if (isAnswerCorrect(currentTask, answer)) {
+            const isCorrect = isAnswerCorrect(currentTask, answer);
+            if (isCorrect) {
                 commit('INCREASE_CORRECT_TASKS_COUNTER')
                 commit('CHANGE_CASH', state.wage)
             }
 
+            commit('INCREASE_TOTAL_TASKS_COUNTER');
+            dispatch('sendEventToServer', {
+                name: 'taskSubmitted',
+                correct: isCorrect,
+                wage: state.wage,
+                balance: state.cashBalance,
+                totalCorrect: state.correctTasksSubmitted,
+                totalSubmitted: state.totalSubmitted
+            })
 
-            commit('INCREASE_TOTAL_TASKS_COUNTER')
+
             commit('SET_NEW_TASK', generateTask())
         },
 
 
-        makeTransaction({ commit, state, getters }, { stock, quantity, initial = false }) {
+        makeTransaction({ commit, state, getters, dispatch }, { stock, quantity, initial = false }) {
             // negative quantity means selling, positive quanitity means buying
             // Somewhere here we also register transaction and send it back via socket to server
             // we may consider to register the full history of transactions somewhere
@@ -244,6 +257,7 @@ const store = new Vuex.Store({
                 time: new Date(),
 
             }
+            dispatch('sendEventToServer', { name: 'newTransaction', ...formatted_trans, balance: state.cashBalance })
 
             commit('NEW_TRANSACTION', { trans: formatted_trans });
         },
@@ -259,9 +273,9 @@ const store = new Vuex.Store({
             const specificDayParams = _.find(day_params, (i) => (i.round === next_one.toString()))
 
             if (specificDayParams === undefined) {
+                dispatch('sendEventToServer', { name: 'gameEnded',  balance: state.cashBalance })
                 commit('ALLOW_FORM_SUBMIT')
             } else {
-                console.debug('GONNA SET THE FOLLOWING DAY PARAMS:', specificDayParams)
                 commit('SET_DAY_PARAMS', specificDayParams)
                 const n = state.numTicks;
 
@@ -273,26 +287,27 @@ const store = new Vuex.Store({
                 commit('DAY_INCREASE');
                 commit('DATA_LOADED');
                 dispatch('updStocks')
-                dispatch('sendEventToServer', { jopa: 'mira' , name:'dayStarted'})
+                dispatch('sendEventToServer', { name: 'dayStarted', dayNumber: state.dayNumber, balance: state.cashBalance, ...specificDayParams })
             }
         },
-        updStocks({ commit, state }) {
+        updStocks({ commit, state, dispatch }) {
             const { currentTick, stocks } = state;
             _.forEach(stocks, (obj, ind) => {
                 const price = obj.prices[currentTick]
                 obj.price = _.round(price, 2);
-
-
                 obj.history = obj.prices.slice(0, currentTick)
                 obj.previous = _.last(obj.history);
                 commit('STOCK_UPDATE', { ind, obj });
+                // dispatch('sendEventToServer', {  name: 'priceUpdate', ..._.pick(obj, ['innerName', 'publicName', 'initial', 'sigma', 'leverage', 'price', 'previous']) })
 
             });
         },
 
-        async getNewTick({ commit, state, getters, dispatch }) {
+        async getNewTick({ commit, state, dispatch }) {
             const { currentTick, numTicks, stocks } = state;
+            
             if (currentTick >= numTicks) {
+                dispatch('sendEventToServer', { name: 'dayEnded', secSpentOnTrade: state.secSpentOnTrade, balance: state.cashBalance })    
                 await dispatch('nextDay')
             }
             else {
@@ -305,7 +320,7 @@ const store = new Vuex.Store({
         getServerConfirmation(context, message) {
             console.debug('Message from server: ', message)
         },
-        sendEventToServer: function (context, message) {
+        sendEventToServer (context, message) {
             Vue.prototype.$socket.sendObj(message)
         },
 

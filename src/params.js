@@ -4,7 +4,7 @@
 const gameParams = {
    
     priceUrl:'https://uppsi22mf2.execute-api.us-east-1.amazonaws.com/Prod/price/',
-    dayLength: 60,
+    dayLength: 15,
     SEC:1000,
     tickFrequency: 3,
     numTicks: 30,
