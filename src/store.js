@@ -51,6 +51,7 @@ const store = new Vuex.Store({
         },
     },
     getters: {
+         
         dataInLoading: (state) => () => {
             return (!state.priceDataLoaded && state.priceDataLoading);
         },
@@ -215,9 +216,6 @@ const store = new Vuex.Store({
             // we inverse final amount to be added/withdrawn from cash reserves because it is inversly related to the
             // transaction direction (negative quantity means byuing etc. )
             const finalAmount = -price * quantity - state.commission
-            console.debug('GONNA SPENT WITHOUT COMMISSION', -price * quantity)
-            console.debug('COMMISSION', state.commission * 1)
-            console.debug('GONNA SPENT TOTOAL', -price * quantity - state.commission)
 
             const ind = getters.getStockIndexByName(stock);
             commit('STOCK_UPDATE', { ind, obj });
