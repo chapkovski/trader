@@ -19,7 +19,7 @@
         <v-col md="4" sm="12">
           <info-card
             title="Fee per task"
-            :value="fee"
+            :value="wage"
             img="https://www.flaticon.com/svg/static/icons/svg/3135/3135706.svg"
           ></info-card>
         </v-col>
@@ -88,14 +88,14 @@ export default {
   components: { infoCard, Matrix },
   data() {
     return {
-      fee: gameParams.taskFee,
+      
       valid: true,
       answer: '',
       rules: {required: value => !!value || 'Required.',}
     };
   },
   computed: {
-    ...mapState(["currentTask", "tasksSubmitted", "correctTasksSubmitted"]),
+    ...mapState(["currentTask", "tasksSubmitted", "correctTasksSubmitted", 'wage']),
     correctAnswer() {
       return _.max(this.currentTask.matrix1) + _.max(this.currentTask.matrix2);
     },

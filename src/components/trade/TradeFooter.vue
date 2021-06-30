@@ -10,11 +10,9 @@
       type="warning"
       :icon="false"
       class="centered-alert"
-      
     >
-    
       <div>Seconds spent on Trade tab: {{ secSpentOnTrade }}</div>
-     
+
       <span> </span>
     </v-alert>
     <v-alert
@@ -23,10 +21,18 @@
       type="warning"
       :icon="false"
       class="centered-alert"
-      
     >
-    
       <div>Number of transactions: {{ numTransactions }}</div>
+      <span> </span>
+    </v-alert>
+    <v-alert
+      outlined
+      height="42"
+      type="warning"
+      :icon="false"
+      class="centered-alert"
+    >
+      <div>Trade commission: {{ commission }}</div>
       <span> </span>
     </v-alert>
   </div>
@@ -40,7 +46,7 @@ export default {
   data: () => ({}),
   created() {},
   computed: {
-    ...mapState(["secSpentOnTrade", "numTransactions"]),
+    ...mapState(["secSpentOnTrade", "numTransactions", "commission"]),
     ...mapGetters(["portfoglioValue"]),
   },
   methods: {},

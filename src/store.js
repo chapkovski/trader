@@ -41,6 +41,8 @@ const store = new Vuex.Store({
         dayNumber: 0,
         priceDataLoaded: false,
         priceDataLoading: false,
+        wage: 0,
+        commission: 0,
         ...dayResetabbleParams(),
         socket: {
             isConnected: false,
@@ -80,6 +82,10 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
+        SET_DAY_PARAMS: (state, { wage, commission }) => {
+            state.wage = wage;
+            state.commission = commission;
+        },
         ALLOW_FORM_SUBMIT: (state) => {
             state.formSubmittable = true
         },
@@ -169,12 +175,13 @@ const store = new Vuex.Store({
                 context.commit('SET_NUM_AWARD', obj)
             }
         },
-        setTimeAward(context, obj) { 
-            if (gameParams.gamified) {context.commit('SET_TIME_AWARD', obj) }},
+        setTimeAward(context, obj) {
+            if (gameParams.gamified) { context.commit('SET_TIME_AWARD', obj) }
+        },
         setTab(context, tab) {
             context.commit('SET_TAB', tab)
         },
-        processTaskAnswer(context, answer) {
+        processTaskAnswer({ commit, state }, answer) {
             // somewhere here we send task asnwer for checking on a server side, and get a new task to work on
             // as soon as we get the answer we increase the counter of total tasks by 1, and 
             // if correct we increase the salary, number of crrect task and total number of money avaialbe
@@ -184,35 +191,35 @@ const store = new Vuex.Store({
                 const correctAnswer = m1 + m2
                 return parseInt(correctAnswer) === parseInt(answer)
             }
-            const currentTask = context.state.currentTask
+            const currentTask = state.currentTask
             if (isAnswerCorrect(currentTask, answer)) {
-                context.commit('INCREASE_CORRECT_TASKS_COUNTER')
-                context.commit('CHANGE_CASH', gameParams.taskFee)
+                commit('INCREASE_CORRECT_TASKS_COUNTER')
+                commit('CHANGE_CASH', state.wage)
             }
 
 
-            context.commit('INCREASE_TOTAL_TASKS_COUNTER')
-            context.commit('SET_NEW_TASK', generateTask())
+            commit('INCREASE_TOTAL_TASKS_COUNTER')
+            commit('SET_NEW_TASK', generateTask())
         },
 
 
-        makeTransaction(context, { stock, quantity, initial = false }) {
+        makeTransaction({commit, state, getters}, { stock, quantity, initial = false }) {
             // negative quantity means selling, positive quanitity means buying
             // Somewhere here we also register transaction and send it back via socket to server
             // we may consider to register the full history of transactions somewhere
-            const obj = context.getters.getStockByName(stock)
+            const obj = getters.getStockByName(stock)
 
             const price = obj.price;
 
             obj.quantity += quantity;
             // we inverse final amount to be added/withdrawn from cash reserves because it is inversly related to the
             // transaction direction (negative quantity means byuing etc. )
-            const finalAmount = -price * quantity
-            const ind = context.getters.getStockIndexByName(stock);
-            context.commit('STOCK_UPDATE', { ind, obj });
+            const finalAmount = -price * quantity - state.commission
+            const ind = getters.getStockIndexByName(stock);
+            commit('STOCK_UPDATE', { ind, obj });
             if (!initial) {
-                context.commit('CHANGE_CASH', finalAmount);
-                context.commit('TRANSACTION_NUM_INCREASE');
+                commit('CHANGE_CASH', finalAmount);
+                commit('TRANSACTION_NUM_INCREASE');
             }
             let inner_action = quantity > 0 ? 'buy' : 'sell'
             let transaction_dir, trans_price;
@@ -235,7 +242,7 @@ const store = new Vuex.Store({
 
             }
 
-            context.commit('NEW_TRANSACTION', { trans: formatted_trans });
+            commit('NEW_TRANSACTION', { trans: formatted_trans });
         },
         async nextDay({ commit, state, dispatch }) {
             // We trigger the next day, send a request to an api (for demo purposes, later on
@@ -248,19 +255,22 @@ const store = new Vuex.Store({
             const next_one = state.dayNumber + 1;
             const specificDayParams = _.find(day_params, (i) => (i.round === next_one.toString()))
 
-            if (specificDayParams !== undefined && next_one > 1) {
+            if (specificDayParams === undefined) {
                 commit('ALLOW_FORM_SUBMIT')
-            }
-            const n = state.numTicks;
+            } else {
+                console.debug('GONNA SET THE FOLLOWING DAY PARAMS:', specificDayParams)
+                commit('SET_DAY_PARAMS', specificDayParams)
+                const n = state.numTicks;
 
-            commit('DATA_LOADING');
-            const r = await axios.get(`${priceUrl}?n=${n}`)
-            const stocks = _.map(r.data, (i) => ({ ...i, quantity: 0 }))
-            commit('RESET_ALL');
-            commit('PRICE_DATA_UPDATE', stocks);
-            commit('DAY_INCREASE');
-            commit('DATA_LOADED');
-            dispatch('updStocks')
+                commit('DATA_LOADING');
+                const r = await axios.get(`${priceUrl}?n=${n}`)
+                const stocks = _.map(r.data, (i) => ({ ...i, quantity: 0 }))
+                commit('RESET_ALL');
+                commit('PRICE_DATA_UPDATE', stocks);
+                commit('DAY_INCREASE');
+                commit('DATA_LOADED');
+                dispatch('updStocks')
+            }
         },
         updStocks({ commit, state }) {
             const { currentTick, stocks } = state;

@@ -8,7 +8,6 @@ const gameParams = {
     SEC:1000,
     tickFrequency: 3,
     numTicks: 30,
-    taskFee:20,
     endowment:100,
     awards: {
         time:{
