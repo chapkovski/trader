@@ -51,7 +51,7 @@ const store = new Vuex.Store({
         },
     },
     getters: {
-         
+        status: (state) => state.socket.isConnected,
         dataInLoading: (state) => () => {
             return (!state.priceDataLoaded && state.priceDataLoading);
         },
@@ -149,6 +149,7 @@ const store = new Vuex.Store({
         INC_TICK: (state) => (state.currentTick++),
         TICK_RESET: (state) => (state.currentTick = 0),
         SOCKET_ONOPEN(state, event) {
+            console.debug("IS IT EVEN CALLED??")
             Vue.prototype.$socket = event.currentTarget
             state.socket.isConnected = true
         },
@@ -272,6 +273,7 @@ const store = new Vuex.Store({
                 commit('DAY_INCREASE');
                 commit('DATA_LOADED');
                 dispatch('updStocks')
+                dispatch('sendEventToServer', { jopa: 'mira' , name:'dayStarted'})
             }
         },
         updStocks({ commit, state }) {
@@ -299,18 +301,23 @@ const store = new Vuex.Store({
             }
 
 
-        }
+        },
+        getServerConfirmation(context, message) {
+            console.debug('Message from server: ', message)
+        },
+        sendEventToServer: function (context, message) {
+            Vue.prototype.$socket.sendObj(message)
+        },
 
     }
 })
 const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
 const ws_path = ws_scheme + '://' + window.location.host + window.socket_path;
-// TODO: connection to backend
-// Vue.use(VueNativeSock, ws_path, {
-//     store: store,
-//     format: 'json',
-//     reconnection: true, // (Boolean) whether to reconnect automatically (false)
-//     reconnectionAttempts: 5, // (Number) number of reconnection attempts before giving up (Infinity),
-//     reconnectionDelay: 3000,
-// });
+Vue.use(VueNativeSock, ws_path, {
+    store: store,
+    format: 'json',
+    reconnection: true, // (Boolean) whether to reconnect automatically (false)
+    reconnectionAttempts: 5, // (Number) number of reconnection attempts before giving up (Infinity),
+    reconnectionDelay: 3000,
+});
 export default store;
