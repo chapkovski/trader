@@ -10,9 +10,15 @@
             outlined
             :disabled="!passInitialCheck"
             class="my-3"
-            min-height=50
+            min-height="50"
           >
-            <v-img :src="btnimage" max-height="50" max-width="50"  class='mr-1' v-if='$gamified'/>
+            <v-img
+              :src="btnimage"
+              max-height="50"
+              max-width="50"
+              class="mr-1"
+              v-if="$gamified"
+            />
             {{ action }}
           </v-btn>
         </template>
@@ -45,23 +51,23 @@
                   <v-text-field
                     type="number"
                     v-model="q"
-                    @change="validate"
+                    @keyup="updQ"
                     @keyup.enter="processingTransaction"
-                    :rules="[rules.amountValidated]"
+                    :rules="[rules.qValidated]"
                     :label="`How many shares you would like to ${action}?`"
                     autofocus
                   ></v-text-field>
                 </v-list-item-content>
               </v-list-item>
-                              <v-list-item-content>
+              <v-list-item>
+                <v-list-item-content>
                   <v-text-field
                     type="number"
                     v-model="v"
-                    @change="validate"
+                    @keyup="updV"
                     @keyup.enter="processingTransaction"
-                    :rules="[rules.amountValidated]"
-                    :label="`How much money youd like to spent  to ${action} ${ capAction } ${ stockName }?  `"
-                    
+                    :rules="[rules.vValidated]"
+                    :label="`Estimated value in E$`"
                   ></v-text-field>
                 </v-list-item-content>
               </v-list-item>
@@ -89,17 +95,18 @@
 <script>
 import _ from "lodash";
 
-import { mapGetters, mapActions , mapState} from "vuex";
+import { mapGetters, mapActions, mapState } from "vuex";
 export default {
   props: ["action", "stockName", "actionIcon", "name"],
   data() {
     return {
       dialog: false,
       q: null,
-      v:null,
+      v: null,
       valid: true,
       rules: {
-        amountValidated: (v) => this.validateTransaction(v),
+        qValidated: (v) => this.validateQTransaction(v),
+        vValidated: (v) => this.validateVTransaction(v),
       },
     };
   },
@@ -151,15 +158,19 @@ export default {
     getCurrentPrice() {
       this.validate();
     },
-    q() {
-      this.v = this.q*this.getCurrentPrice + this.commission
-    }
   },
 
   methods: {
     ...mapActions(["makeTransaction"]),
     validate() {
       this.$refs.form.validate();
+    },
+    updQ() {
+      this.v =
+        Math.round((this.q * this.getCurrentPrice + this.commission) * 100) / 100;
+    },
+    updV() {
+      this.q = Math.floor((this.v - this.commission) / this.getCurrentPrice);
     },
     processingTransaction() {
       if (this.valid) {
@@ -171,13 +182,29 @@ export default {
         this.dialog = false;
       }
     },
-    validateTransaction(v) {
-      if (v<=0) {return 'Please insert any number larger than 0'}
+    validateVTransaction(v) {
+      if (v <= 0) {
+        return "Please insert any number larger than 0";
+      }
+      switch (this.action) {
+        case "buy":
+          return v <= this.getCashBalance() || "Not enough funds";
+        case "sell":
+          return (
+            Math.floor((v - this.commission) / this.getCurrentPrice) <=
+              this.getAvailableQuantity || "Not enough items to sell"
+          );
+      }
+    },
+    validateQTransaction(v) {
+      if (v <= 0) {
+        return "Please insert any number larger than 0";
+      }
       switch (this.action) {
         case "buy":
           return (
-            v * this.getCurrentPrice + this.commission <= this.getCashBalance() ||
-            "Not enough funds"
+            v * this.getCurrentPrice + this.commission <=
+              this.getCashBalance() || "Not enough funds"
           );
         case "sell":
           return v <= this.getAvailableQuantity || "Not enough items to sell";

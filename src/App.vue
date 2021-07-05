@@ -9,7 +9,12 @@
       id="form"
       ref="otreeForm"
     >
-    <input type="hidden" name='secSpentOnTrade' :value='secSpentOnTrade' id='id_secSpentOnTrade'>
+      <input
+        type="hidden"
+        name="secSpentOnTrade"
+        :value="secSpentOnTrade"
+        id="id_secSpentOnTrade"
+      />
     </form>
     <new-day-dialog></new-day-dialog>
     <transition
@@ -136,13 +141,17 @@ export default {
       ],
     };
   },
-  created() {
+  async created() {
     this.nextDay();
+
     this.getNewTick();
     this.updShares();
+
     this.monitorTime();
   },
-  mounted() {},
+  mounted() {
+   
+  },
   computed: {
     ...mapState([
       "stocks",
@@ -221,14 +230,26 @@ export default {
         if (this.inTrade) {
           this.SEC_ON_TRADE_INCREASE();
           const timeAward = gameParams.awards.time[this.secSpentOnTrade];
-          if (timeAward  && this.$gamified) {
+          if (timeAward && this.$gamified) {
             this.setTimeAward(timeAward);
             this.awardGiven = timeAward;
           }
         }
       }, 1000);
     },
-    updShares: function () {
+    initializeStock() {
+      this.makeTransaction({
+        stock: "b",
+        quantity: 10,
+        initial: true,
+      });
+      // this.makeTransaction({
+      //   stock: "b",
+      //   quantity: 10,
+      //   initial: true,
+      // });
+    },
+    async updShares() {
       this.intervalid1 = setInterval(() => {
         this.getNewTick();
       }, gameParams.tickFrequency * 1000);

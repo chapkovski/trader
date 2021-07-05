@@ -56,24 +56,30 @@ const store = new Vuex.Store({
             return (!state.priceDataLoaded && state.priceDataLoading);
         },
         pandle: (state) => (name) => {
+            let avBuyPrice = 0, avSellPrice = 0
             const sells = _.filter(state.transactions, (i) => (i.innerName === name && i.inner_action == 'sell'))
             const buys = _.filter(state.transactions, (i) => (i.innerName === name && i.inner_action == 'buy'))
             const totSells = _.sumBy(sells, function (o) { return o.price * o.quantity; });
-            const avSellPrice = totSells / (sells.length || 1)
+            const totSellsQ = _.sumBy(sells, function (o) { return o.quantity; });
+            if (sells.length > 0) {
+                avSellPrice = totSells / totSellsQ
+            }
+
             const totBuys = _.sumBy(buys, function (o) { return o.price * o.quantity; });
-            const avBuyPrice = totBuys / (buys.length || 1)
-            const realized = (avSellPrice - avBuyPrice) * sells.length
+            const totBuysQ = _.sumBy(buys, function (o) { return o.quantity; });
+
+            if (buys.length > 0) {
+                 avBuyPrice = totBuys / totBuysQ;
+            }
+
+            const realized = (avSellPrice - avBuyPrice) * totSellsQ
             const stock = state.stocks.find(stock => stock.innerName === name)
-            const outstandingPos = stock.quantity * stock.price
-            console.debug("GONNA RETURN WHAT?", {
-                realized: totSells - totBuys,
-                unrealized: outstandingPos,
-                total: totSells - totBuys + outstandingPos
-            })
+            const unrealized = stock.quantity * (stock.price - avBuyPrice)
+
             return {
-                realized: totSells - totBuys,
-                unrealized: outstandingPos,
-                total: totSells - totBuys + outstandingPos
+                realized: realized,
+                unrealized: unrealized,
+                total: realized + unrealized
             }
         },
         getAllTransactions: (state) => () => { return state.transactions },
@@ -158,7 +164,7 @@ const store = new Vuex.Store({
         INC_TICK: (state) => (state.currentTick++),
         TICK_RESET: (state) => (state.currentTick = 0),
         SOCKET_ONOPEN(state, event) {
-            console.debug("IS IT EVEN CALLED??")
+
             Vue.prototype.$socket = event.currentTarget
             state.socket.isConnected = true
         },
@@ -231,6 +237,7 @@ const store = new Vuex.Store({
             // negative quantity means selling, positive quanitity means buying
             // Somewhere here we also register transaction and send it back via socket to server
             // we may consider to register the full history of transactions somewhere
+
             const obj = getters.getStockByName(stock)
 
             const price = obj.price;
@@ -239,7 +246,7 @@ const store = new Vuex.Store({
             // we inverse final amount to be added/withdrawn from cash reserves because it is inversly related to the
             // transaction direction (negative quantity means byuing etc. )
             const finalAmount = -price * quantity - state.commission
-            if (state.cashBalance + finalAmount > 0) {
+            if (initial || (state.cashBalance + finalAmount > 0)) {
 
 
                 const ind = getters.getStockIndexByName(stock);
@@ -253,6 +260,7 @@ const store = new Vuex.Store({
                 if (initial) {
                     transaction_dir = 'Initial amount';
                     trans_price = obj.history[0]
+
                 } else {
                     transaction_dir = quantity > 0 ? 'Buy' : 'Sell';
                     trans_price = obj.price;
@@ -296,12 +304,24 @@ const store = new Vuex.Store({
 
                 commit('DATA_LOADING');
                 const r = await axios.get(`${priceUrl}?n=${n}`)
-                const stocks = _.map(r.data, (i) => ({ ...i, quantity: 0 }))
+                const stocks = _.map(r.data, (i) => ({ ...i, quantity: 0, history: [i.initial] }))
+                console.debug("STOCKS", stocks)
                 commit('RESET_ALL');
                 commit('PRICE_DATA_UPDATE', stocks);
                 commit('DAY_INCREASE');
                 commit('DATA_LOADED');
-                dispatch('updStocks')
+
+                dispatch('makeTransaction', {
+                    stock: "a",
+                    quantity: 10,
+                    initial: true,
+                });
+                dispatch('makeTransaction', {
+                    stock: "b",
+                    quantity: 10,
+                    initial: true,
+                });
+                dispatch('updStocks');
                 dispatch('sendEventToServer', { name: 'dayStarted', dayNumber: state.dayNumber, balance: state.cashBalance, ...specificDayParams })
             }
         },

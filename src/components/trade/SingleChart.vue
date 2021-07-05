@@ -52,10 +52,9 @@ export default {
     };
   },
   mounted() {
-    
     this.chartOptions.series[0].pointStart = this.dayStart.getTime();
-    console.debug("WHAT IS IN HISTORY", this.stockName, this.stocks.history)
-     this.chartOptions.series[0].data = this.stocks.history;
+
+    this.chartOptions.series[0].data = this.stocks.history;
   },
 
   computed: {
@@ -72,10 +71,7 @@ export default {
   methods: {},
   watch: {
     stocks(newV, oldV) {
-      
-      
       this.chartOptions.series[0].data = newV.history;
-    
     },
   },
 };
