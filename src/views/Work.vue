@@ -18,8 +18,8 @@
         </v-col>
         <v-col md="4" sm="12">
           <info-card
-            title="Fee per task"
-            :value="wage"
+            title="For each correct task you earn:"
+            :value="`E$${wage}`"
             img="https://www.flaticon.com/svg/static/icons/svg/3135/3135706.svg"
           ></info-card>
         </v-col>

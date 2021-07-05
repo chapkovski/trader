@@ -78,7 +78,7 @@
       </div>
     </v-app-bar>
 
-    <v-navigation-drawer permanent expand-on-hover app>
+    <v-navigation-drawer permanent app>
       <template v-slot:prepend>
         <v-list-item two-line>
           <v-list-item-avatar> </v-list-item-avatar>

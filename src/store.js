@@ -65,7 +65,16 @@ const store = new Vuex.Store({
             const realized = (avSellPrice - avBuyPrice) * sells.length
             const stock = state.stocks.find(stock => stock.innerName === name)
             const outstandingPos = stock.quantity * stock.price
-            return totSells - totBuys + outstandingPos
+            console.debug("GONNA RETURN WHAT?", {
+                realized: totSells - totBuys,
+                unrealized: outstandingPos,
+                total: totSells - totBuys + outstandingPos
+            })
+            return {
+                realized: totSells - totBuys,
+                unrealized: outstandingPos,
+                total: totSells - totBuys + outstandingPos
+            }
         },
         getAllTransactions: (state) => () => { return state.transactions },
         getCurrentTransactionNum: (state) => () => { return state.numTransactions },
@@ -230,36 +239,42 @@ const store = new Vuex.Store({
             // we inverse final amount to be added/withdrawn from cash reserves because it is inversly related to the
             // transaction direction (negative quantity means byuing etc. )
             const finalAmount = -price * quantity - state.commission
+            if (state.cashBalance + finalAmount > 0) {
 
-            const ind = getters.getStockIndexByName(stock);
-            commit('STOCK_UPDATE', { ind, obj });
-            if (!initial) {
-                commit('CHANGE_CASH', finalAmount);
-                commit('TRANSACTION_NUM_INCREASE');
+
+                const ind = getters.getStockIndexByName(stock);
+                commit('STOCK_UPDATE', { ind, obj });
+                if (!initial) {
+                    commit('CHANGE_CASH', finalAmount);
+                    commit('TRANSACTION_NUM_INCREASE');
+                }
+                let inner_action = quantity > 0 ? 'buy' : 'sell'
+                let transaction_dir, trans_price;
+                if (initial) {
+                    transaction_dir = 'Initial amount';
+                    trans_price = obj.history[0]
+                } else {
+                    transaction_dir = quantity > 0 ? 'Buy' : 'Sell';
+                    trans_price = obj.price;
+                }
+                const formatted_trans = {
+                    innerName: obj.innerName,
+                    publicName: obj.publicName,
+                    inner_action: inner_action,
+
+                    action: transaction_dir,
+                    quantity: Math.abs(quantity),
+                    price: trans_price,
+                    time: new Date(),
+
+                }
+                dispatch('sendEventToServer', { name: 'newTransaction', ...formatted_trans, balance: state.cashBalance })
+
+                commit('NEW_TRANSACTION', { trans: formatted_trans });
             }
-            let inner_action = quantity > 0 ? 'buy' : 'sell'
-            let transaction_dir, trans_price;
-            if (initial) {
-                transaction_dir = 'Initial amount';
-                trans_price = obj.history[0]
-            } else {
-                transaction_dir = quantity > 0 ? 'Buy' : 'Sell';
-                trans_price = obj.price;
+            else {
+                console.debug('transaction impossible')
             }
-            const formatted_trans = {
-                innerName: obj.innerName,
-                publicName: obj.publicName,
-                inner_action: inner_action,
-
-                action: transaction_dir,
-                quantity: Math.abs(quantity),
-                price: trans_price,
-                time: new Date(),
-
-            }
-            dispatch('sendEventToServer', { name: 'newTransaction', ...formatted_trans, balance: state.cashBalance })
-
-            commit('NEW_TRANSACTION', { trans: formatted_trans });
         },
         async nextDay({ commit, state, dispatch }) {
             // We trigger the next day, send a request to an api (for demo purposes, later on
@@ -273,7 +288,7 @@ const store = new Vuex.Store({
             const specificDayParams = _.find(day_params, (i) => (i.round === next_one.toString()))
 
             if (specificDayParams === undefined) {
-                dispatch('sendEventToServer', { name: 'gameEnded',  balance: state.cashBalance })
+                dispatch('sendEventToServer', { name: 'gameEnded', balance: state.cashBalance })
                 commit('ALLOW_FORM_SUBMIT')
             } else {
                 commit('SET_DAY_PARAMS', specificDayParams)
@@ -305,9 +320,9 @@ const store = new Vuex.Store({
 
         async getNewTick({ commit, state, dispatch }) {
             const { currentTick, numTicks, stocks } = state;
-            
+
             if (currentTick >= numTicks) {
-                dispatch('sendEventToServer', { name: 'dayEnded', secSpentOnTrade: state.secSpentOnTrade, balance: state.cashBalance })    
+                dispatch('sendEventToServer', { name: 'dayEnded', secSpentOnTrade: state.secSpentOnTrade, balance: state.cashBalance })
                 await dispatch('nextDay')
             }
             else {
@@ -320,7 +335,7 @@ const store = new Vuex.Store({
         getServerConfirmation(context, message) {
             console.debug('Message from server: ', message)
         },
-        sendEventToServer (context, message) {
+        sendEventToServer(context, message) {
             Vue.prototype.$socket.sendObj(message)
         },
 

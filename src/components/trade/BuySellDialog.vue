@@ -53,6 +53,18 @@
                   ></v-text-field>
                 </v-list-item-content>
               </v-list-item>
+                              <v-list-item-content>
+                  <v-text-field
+                    type="number"
+                    v-model="v"
+                    @change="validate"
+                    @keyup.enter="processingTransaction"
+                    :rules="[rules.amountValidated]"
+                    :label="`How much money youd like to spent  to ${action} ${ capAction } ${ stockName }?  `"
+                    
+                  ></v-text-field>
+                </v-list-item-content>
+              </v-list-item>
             </v-list>
           </v-card-text>
 
@@ -77,13 +89,14 @@
 <script>
 import _ from "lodash";
 
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions , mapState} from "vuex";
 export default {
   props: ["action", "stockName", "actionIcon", "name"],
   data() {
     return {
       dialog: false,
       q: null,
+      v:null,
       valid: true,
       rules: {
         amountValidated: (v) => this.validateTransaction(v),
@@ -93,6 +106,7 @@ export default {
   created() {},
   computed: {
     ...mapGetters(["getStockByName", "getCashBalance"]),
+    ...mapState(["commission"]),
     btnimage() {
       const sell = require("@/assets/sell_trans.png");
       const buy = require("@/assets/buy_trans.png");
@@ -137,6 +151,9 @@ export default {
     getCurrentPrice() {
       this.validate();
     },
+    q() {
+      this.v = this.q*this.getCurrentPrice + this.commission
+    }
   },
 
   methods: {
@@ -155,10 +172,11 @@ export default {
       }
     },
     validateTransaction(v) {
+      if (v<=0) {return 'Please insert any number larger than 0'}
       switch (this.action) {
         case "buy":
           return (
-            v * this.getCurrentPrice <= this.getCashBalance() ||
+            v * this.getCurrentPrice + this.commission <= this.getCashBalance() ||
             "Not enough funds"
           );
         case "sell":

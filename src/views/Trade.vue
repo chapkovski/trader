@@ -17,23 +17,20 @@
       </v-row>
     </transition>
     <v-row flex>
-      <v-col cols="12" md="6">
-        <action-bar />
-      </v-col>
-      <v-col cols="12" md="6">
+      
+      <v-col cols="12" md="12">
         <holdings />
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" md="12">
+      <v-col cols="6" md="6">
         <history />
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="12">
+      <v-col cols="6" md="6">
         <transactions />
       </v-col>
     </v-row>
+    
     
   </v-container>
 </template>
