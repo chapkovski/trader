@@ -72,7 +72,11 @@ export default {
       return this.priceDataLoading;
     },
   },
-
+  mounted() {
+    setTimeout(() => {
+      this.dialog = false;
+    }, 5000);
+  },
   watch: {
     altDataLoading(v, o) {
       this.dialog = true;

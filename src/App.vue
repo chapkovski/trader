@@ -56,7 +56,7 @@
                   </template>
 
                   <v-avatar size="60">
-                    <v-img :src="awardForTime.img"></v-img>
+                    <v-img :src="awardForTime.img" class='gray'></v-img>
                   </v-avatar>
                 </v-badge>
               </div>
@@ -69,11 +69,11 @@
             <div v-bind="attrs" v-on="on" class="mx-5">
               <v-badge bordered overlap bottom left>
                 <template v-slot:badge>
-                  {{ awardForTransaction.name }}
+                    <v-icon>mdi-lock</v-icon>
                 </template>
 
                 <v-avatar size="60">
-                  <v-img :src="awardForTransaction.img"></v-img>
+                  <v-img :src="awardForTransaction.img" class='gray'></v-img>
                 </v-avatar>
               </v-badge>
             </div>
@@ -83,7 +83,7 @@
       </div>
     </v-app-bar>
 
-    <v-navigation-drawer permanent app>
+    <v-navigation-drawer permanent expand-on-hover app>
       <template v-slot:prepend>
         <v-list-item two-line>
           <v-list-item-avatar> </v-list-item-avatar>
@@ -265,6 +265,11 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+.gray {
+  filter: gray; /* IE6-9 */
+  -webkit-filter: grayscale(1); /* Google Chrome, Safari 6+ & Opera 15+ */
+  filter: grayscale(1); /* Microsoft Edge and Firefox 35+ */
 }
 
 #nav {

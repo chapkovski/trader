@@ -3,44 +3,55 @@
     <v-card-title>Current holdings</v-card-title>
 
     <v-card-text>
-      <v-simple-table>
+      <v-simple-table >
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-center">Stock name</th>
+              <th class="text-left" :style="{ 'min-width': '100px' }">Stock name</th>
 
-              <th class="text-center" :style="{ width: '15%' }">Price</th>
-              <th class="text-center">Market value</th>
-              <th class="text-left">Quantity</th>
-              <th class="text-center">Realized P&L</th>
-              <th class="text-center">Unrealized P&L</th>
-              <th class="text-center">Total P&L</th>
+              <th class="text-center" :style="{ width: '15%' }" colspan="2">
+                Price
+              </th>
 
-              <th class="text-center">Share Portfolio</th>
+              <th class="text-right">Market value</th>
+              <th class="text-right">Quantity</th>
+              <th class="text-right">Realized P&L</th>
+              <th class="text-right">Unrealized P&L</th>
+              <th class="text-right">Total P&L</th>
+
+              <th class="text-right">Portfolio weight</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in stocksForHoldings" :key="item.name">
-              <td>{{ item.publicName }}</td>
+            <tr
+              v-for="item in stocksForHoldings"
+              :key="item.name"
+              class="text-right"
+            >
+              <td class="text-left">{{ item.publicName }}</td>
               <td>
-                <div class="d-flex align-items-center justify-center">
+                <div class="d-flex align-items-end justify-end">
                   <div>E$</div>
                   <div>{{ item.price.toFixed(2) }}</div>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex align-items-end justify-end">
                   <div class="ml-1 d-flex">
-                    (<v-icon :color="item.format.color">
+                    <v-icon :color="item.format.color">
                       {{ item.format.icon }}
                     </v-icon>
-                    {{ item.diff }})
+                    ({{ item.diff }})
                   </div>
                 </div>
               </td>
 
-              <td>E$ {{ item.value }}</td>
+              <td>E${{ item.value.toFixed(2) }}</td>
               <td>{{ item.units }}</td>
-              <td>{{ item.pandle.realized.toFixed(2) }}</td>
-              <td>{{ item.pandle.unrealized.toFixed(2) }}</td>
-              <td>{{ item.pandle.total.toFixed(2) }}</td>
+              <td>E${{ item.pandle.realized.toFixed(2) }}</td>
+              <td>E${{ item.pandle.unrealized.toFixed(2) }}</td>
+              <td>E${{ item.pandle.total.toFixed(2) }}</td>
 
               <td>{{ parseFloat(item.share * 100).toFixed(2) + "%" }}</td>
               <td>
@@ -60,18 +71,30 @@
                 </div>
               </td>
             </tr>
-          </tbody>
-          <thead>
-            <tr class="blue lighten-4 caption">
-              <th colspan="2" class="subtitle-1 font-weight-bold">
+            <tr class="blue lighten-4">
+              <td colspan="3" class="text-left" >
                 Current portfolio value
-              </th>
-              <th class="subtitle-1 font-weight-bold d-flex align-items-center justify-center">
+              </td>
+              <td colspan="1"
+                class="
+                  
+                  d-flex
+                  align-items-center
+                  justify-center
+                "
+              >
                 <div>E$</div>
                 <div>{{ portfoglioValue() }}</div>
-              </th>
+              </td>
+               
+              <td></td>
+              <td class="text-right">E${{ totRealizedPL }}</td>
+              <td class="text-right">E${{ totUnrealizedPL }}</td>
+              <td class="text-right">E${{ totPL }}</td>
+                  <td></td>
+                      <td></td>
             </tr>
-          </thead>
+          </tbody>
         </template>
       </v-simple-table>
     </v-card-text>
@@ -91,7 +114,6 @@ import BuySellDialog from "./BuySellDialog";
 import { mapGetters, mapState } from "vuex";
 import _ from "lodash";
 const diffFun = (newV, oldV) => {
-  if (!oldV) return;
   const perc = (newV - oldV) / oldV;
   return parseFloat(perc * 100).toFixed(2) + "%";
 };
@@ -113,7 +135,7 @@ export default {
           value: _.round(i.quantity * i.price, 2),
           units: i.quantity,
           pandle: this.pandle(i.innerName),
-          diff: diffFun(i.price, i.previous),
+          diff: diffFun(i.price, i.initial),
         };
       });
       let sumPortfolio = _.sumBy(t, (i) => {
@@ -124,6 +146,21 @@ export default {
       }
 
       return _.map(t, (i) => ({ ...i, share: i.value / sumPortfolio }));
+    },
+    totPL() {
+      return _.sumBy(this.stocksForHoldings, (i) => {
+        return i.pandle.total;
+      }).toFixed(2);
+    },
+    totRealizedPL() {
+      return _.sumBy(this.stocksForHoldings, (i) => {
+        return i.pandle.realized;
+      }).toFixed(2);
+    },
+    totUnrealizedPL() {
+      return _.sumBy(this.stocksForHoldings, (i) => {
+        return i.pandle.unrealized;
+      }).toFixed(2);
     },
   },
 
