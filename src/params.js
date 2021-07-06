@@ -76,6 +76,7 @@ export const listAwards = (() => {
     const lAs = []
     _.forOwn(gameParams.awards, function (value, key) {
         _.forOwn(value, function (v, k) {
+            v['id']=`${key}-${k}`
             lAs.push(v)
         })
     });

@@ -170,10 +170,11 @@ export default {
         Math.round((this.q * this.getCurrentPrice + this.commission) * 100) / 100;
     },
     updV() {
-      this.q = Math.floor((this.v - this.commission) / this.getCurrentPrice);
+      this.q = Math.round((this.v - this.commission) / this.getCurrentPrice);
     },
     processingTransaction() {
       if (this.valid) {
+        
         this.makeTransaction({
           stock: this.name,
           quantity: this.actionSign * this.q,

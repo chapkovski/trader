@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import _ from 'lodash'
 import VueNativeSock from 'vue-native-websocket'
-import gameParams, {listAwards} from './params'
+import gameParams, { listAwards } from './params'
 
 Vue.use(Vuex)
 
@@ -31,7 +31,7 @@ const dayResetabbleParams = () => ({
     currentTab: null,
     secSpentOnTrade: 0,
     numTransactions: 0,
-    awardsGiven:[],
+    awardsGiven: [],
     awardForTime: {},
     awardForTransaction: {},
     transactions: [],
@@ -72,7 +72,7 @@ const store = new Vuex.Store({
             const totBuysQ = _.sumBy(buys, function (o) { return o.quantity; });
 
             if (buys.length > 0) {
-                 avBuyPrice = totBuys / totBuysQ;
+                avBuyPrice = totBuys / totBuysQ;
             }
 
             const realized = (avSellPrice - avBuyPrice) * totSellsQ
@@ -130,8 +130,16 @@ const store = new Vuex.Store({
         PRICE_DATA_UPDATE: (state, obj) => {
             state.stocks = obj;
         },
-        SET_NUM_AWARD: (state, obj) => { state.awardForTransaction = obj },
-        SET_TIME_AWARD: (state, obj) => { state.awardForTime = obj },
+        SET_NUM_AWARD: (state, obj) => {
+            
+            state.awardForTransaction = obj;
+            state.awardsGiven.push(obj)
+            
+        },
+        SET_TIME_AWARD: (state, obj) => {
+            state.awardForTime = obj;
+            state.awardsGiven.push(obj)
+        },
         SEC_ON_TRADE_INCREASE: (state) => {
             state.secSpentOnTrade++;
         },
@@ -284,6 +292,9 @@ const store = new Vuex.Store({
                 commit('NEW_TRANSACTION', { trans: formatted_trans });
             }
             else {
+                console.debug('what do we get here', initial)
+                console.debug('what do we get here', finalAmount)
+                console.debug('what do we get here', state.cashBalance)
                 console.debug('transaction impossible')
             }
         },
@@ -308,7 +319,7 @@ const store = new Vuex.Store({
                 commit('DATA_LOADING');
                 const r = await axios.get(`${priceUrl}?n=${n}`)
                 const stocks = _.map(r.data, (i) => ({ ...i, quantity: 0, history: [i.initial] }))
-                
+
                 commit('RESET_ALL');
                 commit('PRICE_DATA_UPDATE', stocks);
                 commit('DAY_INCREASE');

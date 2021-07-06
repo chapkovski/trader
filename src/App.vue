@@ -46,25 +46,27 @@
       <time-left @dayDone="nextDay()"></time-left>
       <v-spacer></v-spacer>
       <div :class="{ 'd-flex': true }" v-if="inTrade">
-        <div class="m-1" v-for='award in awards' :key='award.id'>
-          <v-tooltip bottom >
+        <div class="m-1" v-for="award in awards" :key="award.id">
+          <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
                 <v-badge bordered overlap color="secondary" bottom left>
                   <template v-slot:badge>
-                 <v-icon>mdi-lock</v-icon>
+                    <v-icon v-if='locked(award.id)'>mdi-lock</v-icon>
                   </template>
 
                   <v-avatar size="60">
-                    <v-img :src="award.img" class='gray'></v-img>
+                    <v-img
+                      :src="award.img"
+                      :class="classAward(award.id)"
+                    ></v-img>
                   </v-avatar>
                 </v-badge>
               </div>
             </template>
-            <span>{{award.desc }}</span>
+            <span>{{ award.desc }}</span>
           </v-tooltip>
         </div>
-      
       </div>
     </v-app-bar>
 
@@ -111,13 +113,13 @@ import DaysLeft from "./components/DaysLeft";
 import NewDayDialog from "./components/NewDayDialog";
 import TimeLeft from "./components/TimeLeft";
 import { mapActions, mapMutations, mapState, mapGetters } from "vuex";
-import gameParams, {listAwards} from "./params";
+import gameParams, { listAwards } from "./params";
 
 export default {
   components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft, NewDayDialog },
   data() {
     return {
-      awards:listAwards,
+      awards: listAwards,
       day: 1,
       monitorInterval: null,
       awardGiven: {},
@@ -135,9 +137,7 @@ export default {
 
     this.monitorTime();
   },
-  mounted() {
-   
-  },
+  mounted() {},
   computed: {
     ...mapState([
       "stocks",
@@ -147,6 +147,7 @@ export default {
       "awardForTime",
       "awardForTransaction",
       "formSubmittable",
+      "awardsGiven",
     ]),
     ...mapGetters(["getCurrentTransactionNum", "pandle"]),
     transactionAwardExists() {
@@ -161,7 +162,6 @@ export default {
     inTrade() {
       return this.$route.name == "Trade";
     },
-
   },
   watch: {
     formSubmittable(val, oldVal) {
@@ -211,7 +211,16 @@ export default {
     ]),
     // TODO: we don't need the day increase in production. most likely.
     ...mapMutations(["SEC_ON_TRADE_INCREASE"]),
-
+    classAward(award_id) {
+      const award = _.find(this.awardsGiven, (i) => i.id === award_id);
+      if (award) return "";
+      return "gray";
+    },
+    locked(award_id) {
+      const award = _.find(this.awardsGiven, (i) => i.id === award_id);
+      if (award) return false;
+      return true;
+    },
     monitorTime() {
       this.monitorInterval = setInterval(() => {
         if (this.inTrade) {
@@ -224,7 +233,7 @@ export default {
         }
       }, 1000);
     },
-   
+
     async updShares() {
       this.intervalid1 = setInterval(() => {
         this.getNewTick();
