@@ -3,9 +3,11 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import _ from 'lodash'
 import VueNativeSock from 'vue-native-websocket'
-import gameParams from './params'
+import gameParams, {listAwards} from './params'
 
 Vue.use(Vuex)
+
+
 // all this bullshit with task generation should move to server side later
 
 const generateTask = () => {
@@ -29,6 +31,7 @@ const dayResetabbleParams = () => ({
     currentTab: null,
     secSpentOnTrade: 0,
     numTransactions: 0,
+    awardsGiven:[],
     awardForTime: {},
     awardForTransaction: {},
     transactions: [],
@@ -305,7 +308,7 @@ const store = new Vuex.Store({
                 commit('DATA_LOADING');
                 const r = await axios.get(`${priceUrl}?n=${n}`)
                 const stocks = _.map(r.data, (i) => ({ ...i, quantity: 0, history: [i.initial] }))
-                console.debug("STOCKS", stocks)
+                
                 commit('RESET_ALL');
                 commit('PRICE_DATA_UPDATE', stocks);
                 commit('DAY_INCREASE');

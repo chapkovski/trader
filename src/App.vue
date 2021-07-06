@@ -46,40 +46,25 @@
       <time-left @dayDone="nextDay()"></time-left>
       <v-spacer></v-spacer>
       <div :class="{ 'd-flex': true }" v-if="inTrade">
-        <div class="m-3">
-          <v-tooltip bottom v-if="timeAwardExists">
+        <div class="m-1" v-for='award in awards' :key='award.id'>
+          <v-tooltip bottom >
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
-                <v-badge bordered overlap color="error" bottom left>
+                <v-badge bordered overlap color="secondary" bottom left>
                   <template v-slot:badge>
-                    {{ awardForTime.name }}
+                 <v-icon>mdi-lock</v-icon>
                   </template>
 
                   <v-avatar size="60">
-                    <v-img :src="awardForTime.img" class='gray'></v-img>
+                    <v-img :src="award.img" class='gray'></v-img>
                   </v-avatar>
                 </v-badge>
               </div>
             </template>
-            <span>{{ awardForTime.desc }}</span>
+            <span>{{award.desc }}</span>
           </v-tooltip>
         </div>
-        <v-tooltip bottom v-if="transactionAwardExists">
-          <template v-slot:activator="{ on, attrs }">
-            <div v-bind="attrs" v-on="on" class="mx-5">
-              <v-badge bordered overlap bottom left>
-                <template v-slot:badge>
-                    <v-icon>mdi-lock</v-icon>
-                </template>
-
-                <v-avatar size="60">
-                  <v-img :src="awardForTransaction.img" class='gray'></v-img>
-                </v-avatar>
-              </v-badge>
-            </div>
-          </template>
-          <span>{{ awardForTransaction.desc }}</span>
-        </v-tooltip>
+      
       </div>
     </v-app-bar>
 
@@ -126,12 +111,13 @@ import DaysLeft from "./components/DaysLeft";
 import NewDayDialog from "./components/NewDayDialog";
 import TimeLeft from "./components/TimeLeft";
 import { mapActions, mapMutations, mapState, mapGetters } from "vuex";
-import gameParams from "./params";
+import gameParams, {listAwards} from "./params";
 
 export default {
   components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft, NewDayDialog },
   data() {
     return {
+      awards:listAwards,
       day: 1,
       monitorInterval: null,
       awardGiven: {},
@@ -175,6 +161,7 @@ export default {
     inTrade() {
       return this.$route.name == "Trade";
     },
+
   },
   watch: {
     formSubmittable(val, oldVal) {
@@ -237,18 +224,7 @@ export default {
         }
       }, 1000);
     },
-    initializeStock() {
-      this.makeTransaction({
-        stock: "b",
-        quantity: 10,
-        initial: true,
-      });
-      // this.makeTransaction({
-      //   stock: "b",
-      //   quantity: 10,
-      //   initial: true,
-      // });
-    },
+   
     async updShares() {
       this.intervalid1 = setInterval(() => {
         this.getNewTick();
