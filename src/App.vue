@@ -50,9 +50,10 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
-                <v-badge bordered overlap color="secondary" bottom left>
+                <v-badge bordered overlap :color="locked(award.id)?'secondary':'success'" bottom left>
                   <template v-slot:badge>
                     <v-icon v-if='locked(award.id)'>mdi-lock</v-icon>
+                    <v-icon v-else>mdi-check-outline</v-icon>
                   </template>
 
                   <v-avatar size="60">
@@ -64,7 +65,7 @@
                 </v-badge>
               </div>
             </template>
-            <span>{{ award.desc }}</span>
+            <span>{{ award.brief }}</span>
           </v-tooltip>
         </div>
       </div>
