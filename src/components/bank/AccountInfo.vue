@@ -1,9 +1,9 @@
 
 <template>
-    <v-card raised>
+    <v-card class="ma-1"  >
         <v-card-text>
-            Bank account balance:
-            <v-chip class="ma-2" color="primary">
+            E$:
+            <v-chip color="primary">
                 {{getCashBalance().toFixed(2)}}
             </v-chip>
         </v-card-text>

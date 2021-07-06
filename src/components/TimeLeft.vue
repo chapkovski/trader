@@ -1,8 +1,8 @@
 <template>
-  <v-card raised color="red">
+  <v-card class="ma-1" color="red">
     <v-card-text>
-      Time left till the end of the round:
-      <v-chip class="ma-2" color="primary">
+      Time left:
+      <v-chip  color="primary">
         <countdown :left-time="timeLeft" @finish="restartTimer" ref="timer">
           <template v-slot:process="anyYouWantedScopName">
             <span>{{
