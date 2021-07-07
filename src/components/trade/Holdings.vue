@@ -3,18 +3,20 @@
     <v-card-title>Current holdings</v-card-title>
 
     <v-card-text>
-      <v-simple-table >
+      <v-simple-table>
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-left" :style="{ 'min-width': '100px' }">Stock name</th>
+              <th class="text-left" :style="{ 'min-width': '100px' }">
+                Stock name
+              </th>
 
               <th class="text-center" :style="{ width: '15%' }" colspan="2">
                 Price
               </th>
 
-              <th class="text-right">Market value</th>
               <th class="text-right">Quantity</th>
+              <th class="text-right">Market value</th>
               <th class="text-right">Realized P&L</th>
               <th class="text-right">Unrealized P&L</th>
               <th class="text-right">Total P&L</th>
@@ -38,17 +40,17 @@
               </td>
               <td>
                 <div class="d-flex align-items-end justify-end">
-                  <div class="ml-1 d-flex">
+                  <div class="mr-auto">
                     <v-icon :color="item.format.color">
                       {{ item.format.icon }}
                     </v-icon>
-                    ({{ item.diff }})
                   </div>
+                  <div class="ml-auto">({{ item.sign }}{{ item.diff }})</div>
                 </div>
               </td>
 
-              <td>E${{ item.value.toFixed(2) }}</td>
               <td>{{ item.units }}</td>
+              <td>E${{ item.value.toFixed(2) }}</td>
               <td>E${{ item.pandle.realized.toFixed(2) }}</td>
               <td>E${{ item.pandle.unrealized.toFixed(2) }}</td>
               <td>E${{ item.pandle.total.toFixed(2) }}</td>
@@ -72,27 +74,18 @@
               </td>
             </tr>
             <tr class="blue lighten-4">
-              <td colspan="3" class="text-left" >
-                Current portfolio value
-              </td>
-              <td colspan="1"
-                class="
-                  
-                  d-flex
-                  align-items-center
-                  justify-center
-                "
-              >
+              <td colspan="3" class="text-left">Current portfolio value</td>
+              <td colspan="1" class="d-flex align-items-center justify-center">
                 <div>E$</div>
                 <div>{{ portfoglioValue() }}</div>
               </td>
-               
+
               <td></td>
               <td class="text-right">E${{ totRealizedPL }}</td>
               <td class="text-right">E${{ totUnrealizedPL }}</td>
               <td class="text-right">E${{ totPL }}</td>
-                  <td></td>
-                      <td></td>
+              <td></td>
+              <td></td>
             </tr>
           </tbody>
         </template>
@@ -131,7 +124,8 @@ export default {
           name: i.innerName,
           publicName: i.publicName,
           price: i.price,
-          format: i.price >= i.previous ? formatUp : formatDown,
+          sign: i.price >= i.initial ? "+" : "",
+          format: i.price >= i.initial ? formatUp : formatDown,
           value: _.round(i.quantity * i.price, 2),
           units: i.quantity,
           pandle: this.pandle(i.innerName),
