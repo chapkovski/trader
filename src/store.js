@@ -370,6 +370,8 @@ const store = new Vuex.Store({
             console.debug('Message from server: ', message)
         },
         sendEventToServer(context, message) {
+            const round_number = context.state.dayNumber;
+            message= {...message, round_number}
             Vue.prototype.$socket.sendObj(message)
         },
 

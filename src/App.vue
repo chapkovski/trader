@@ -46,7 +46,7 @@
       <time-left @dayDone="nextDay()"></time-left>
       <v-spacer></v-spacer>
       <div :class="{ 'd-flex': true }" v-if="inTrade">
-        <div class="m-1" v-for="award in awards" :key="award.id">
+        <div class="m-1" v-for="award in awards" :key="award.id" v-if='$gamified'>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
