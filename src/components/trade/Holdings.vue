@@ -34,8 +34,8 @@
               <td class="text-left">{{ item.publicName }}</td>
               <td>
                 <div class="d-flex align-items-end justify-end">
-                  <div>E$</div>
-                  <div>{{ item.price.toFixed(2) }}</div>
+                  
+                  <div>{{ item.price }}</div>
                 </div>
               </td>
               <td>
@@ -50,10 +50,10 @@
               </td>
 
               <td>{{ item.units }}</td>
-              <td>E${{ item.value.toFixed(2) }}</td>
-              <td>E${{ item.pandle.realized.toFixed(2) }}</td>
-              <td>E${{ item.pandle.unrealized.toFixed(2) }}</td>
-              <td>E${{ item.pandle.total.toFixed(2) }}</td>
+              <td>{{ num(item.value) }}</td>
+              <td>{{ num(item.pandle.realized) }}</td>
+              <td>{{ num(item.pandle.unrealized) }}</td>
+              <td>{{ num(item.pandle.total) }}</td>
 
               <td>{{ parseFloat(item.share * 100).toFixed(2) + "%" }}</td>
               <td>
@@ -76,14 +76,13 @@
             <tr class="blue lighten-4">
               <td colspan="3" class="text-left">Current portfolio value</td>
               <td colspan="1" class="d-flex align-items-center justify-center">
-                <div>E$</div>
-                <div>{{ portfoglioValue() }}</div>
+                <div>{{ num(portfoglioValue()) }}</div>
               </td>
 
               <td></td>
-              <td class="text-right">E${{ totRealizedPL }}</td>
-              <td class="text-right">E${{ totUnrealizedPL }}</td>
-              <td class="text-right">E${{ totPL }}</td>
+              <td class="text-right">{{ num(totRealizedPL) }}</td>
+              <td class="text-right">{{ num(totUnrealizedPL) }}</td>
+              <td class="text-right">{{ num(totPL) }}</td>
               <td></td>
               <td></td>
             </tr>
@@ -123,10 +122,10 @@ export default {
         return {
           name: i.innerName,
           publicName: i.publicName,
-          price: i.price,
+          price: this.num(i.price),
           sign: i.price >= i.initial ? "+" : "",
           format: i.price >= i.initial ? formatUp : formatDown,
-          value: _.round(i.quantity * i.price, 2),
+          value: i.quantity * i.price,
           units: i.quantity,
           pandle: this.pandle(i.innerName),
           diff: diffFun(i.price, i.initial),
@@ -159,6 +158,18 @@ export default {
   },
 
   watch: {},
-  methods: {},
+  methods: {
+    num(v) {
+      const sign = v < 0 ? "-" : "";
+      const currency = "E$";
+      const absV = Math.abs(v).toFixed(2);
+      return `${sign}${currency}${absV}`;
+    },
+  },
 };
 </script>
+<style scoped>
+td{
+  white-space: nowrap;
+}
+</style>
