@@ -39,7 +39,7 @@ export default {
         },
 
         rangeSelector: {
-          selected: 0,
+          // selected: 0,
         },
         series: [
           {

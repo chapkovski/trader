@@ -9,17 +9,20 @@
             v-on="on"
             outlined
             :disabled="!passInitialCheck"
-            class="my-3"
+            class="my-0"
             min-height="50"
           >
             <v-img
               :src="btnimage"
               max-height="50"
               max-width="50"
-              class="mr-1"
+              class=""
               v-if="$gamified"
             />
-            {{ action }}
+
+            <div :class="{ spec: !showFull }">
+              <v-chip class="opa">{{ action }} </v-chip>
+            </div>
           </v-btn>
         </template>
 
@@ -97,7 +100,7 @@ import _ from "lodash";
 
 import { mapGetters, mapActions, mapState } from "vuex";
 export default {
-  props: ["action", "stockName", "actionIcon", "name"],
+  props: ["action", "stockName", "actionIcon", "name", "showFull"],
   data() {
     return {
       dialog: false,
@@ -167,14 +170,14 @@ export default {
     },
     updQ() {
       this.v =
-        Math.round((this.q * this.getCurrentPrice + this.commission) * 100) / 100;
+        Math.round((this.q * this.getCurrentPrice + this.commission) * 100) /
+        100;
     },
     updV() {
       this.q = Math.round((this.v - this.commission) / this.getCurrentPrice);
     },
     processingTransaction() {
       if (this.valid) {
-        
         this.makeTransaction({
           stock: this.name,
           quantity: this.actionSign * this.q,
@@ -214,3 +217,10 @@ export default {
   },
 };
 </script>
+<style scoped>
+.spec {
+  position: absolute;
+  color: black;
+}
+.opa{opacity: 0.6;}
+</style>

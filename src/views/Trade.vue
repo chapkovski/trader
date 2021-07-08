@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <transition name="fade">
       <v-row if="successfulTrade" :key="successfulTrade">
         <v-col cols="12">

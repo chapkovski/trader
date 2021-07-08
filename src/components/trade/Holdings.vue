@@ -7,13 +7,10 @@
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-left" :style="{ 'min-width': '100px' }">
-                Stock name
-              </th>
+              <th></th>
+              <th class="text-left">Stock name</th>
 
-              <th class="text-center" :style="{ width: '15%' }" colspan="2">
-                Price
-              </th>
+              <th class="text-center" colspan="">Price</th>
 
               <th class="text-right">Quantity</th>
               <th class="text-right">Market value</th>
@@ -31,21 +28,36 @@
               :key="item.name"
               class="text-right"
             >
-              <td class="text-left">{{ item.publicName }}</td>
               <td>
-                <div class="d-flex align-items-end justify-end">
+                <div class="d-flex flex-lg-row flex-md-column">
                   
-                  <div>{{ item.price }}</div>
+                  <buy-sell-dialog
+                    :showFull="isLG"
+                    action="buy"
+                    :stockName="item.publicName"
+                    :name="item.name"
+                    actionIcon="mdi-cart-arrow-down"
+                  ></buy-sell-dialog>
+                  <buy-sell-dialog
+                    :showFull="isLG"
+                    action="sell"
+                    :stockName="item.publicName"
+                    :name="item.name"
+                    :actionIcon="'mdi-trash-can-outline'"
+                  ></buy-sell-dialog>
+                  
                 </div>
               </td>
+              <td class="text-left">{{ item.publicName }}</td>
               <td>
-                <div class="d-flex align-items-end justify-end">
-                  <div class="mr-auto">
+                <div class="d-flex justify-center">
+                  <div>{{ item.price }}</div>
+                  <div>
                     <v-icon :color="item.format.color">
                       {{ item.format.icon }}
                     </v-icon>
                   </div>
-                  <div class="ml-auto">({{ item.sign }}{{ item.diff }})</div>
+                  <div>({{ item.sign }}{{ item.diff }})</div>
                 </div>
               </td>
 
@@ -56,22 +68,6 @@
               <td>{{ num(item.pandle.total) }}</td>
 
               <td>{{ parseFloat(item.share * 100).toFixed(2) + "%" }}</td>
-              <td>
-                <div class="d-flex">
-                  <buy-sell-dialog
-                    action="buy"
-                    :stockName="item.publicName"
-                    :name="item.name"
-                    actionIcon="mdi-cart-arrow-down"
-                  ></buy-sell-dialog>
-                  <buy-sell-dialog
-                    action="sell"
-                    :stockName="item.publicName"
-                    :name="item.name"
-                    :actionIcon="'mdi-trash-can-outline'"
-                  ></buy-sell-dialog>
-                </div>
-              </td>
             </tr>
             <tr class="blue lighten-4">
               <td colspan="3" class="text-left">Current portfolio value</td>
@@ -115,6 +111,9 @@ export default {
   data: () => ({}),
   created() {},
   computed: {
+    isLG() {
+      return this.$vuetify.breakpoint.name === "lg";
+    },
     ...mapGetters(["portfoglioValue", "pandle"]),
     ...mapState(["stocks"]),
     stocksForHoldings() {
@@ -169,7 +168,9 @@ export default {
 };
 </script>
 <style scoped>
-td{
+td {
   white-space: nowrap;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
 }
 </style>
