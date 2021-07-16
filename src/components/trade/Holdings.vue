@@ -70,8 +70,8 @@
               <td>{{ parseFloat(item.share * 100).toFixed(2) + "%" }}</td>
             </tr>
             <tr class="blue lighten-4">
-              <td colspan="3" class="text-left">Current portfolio value</td>
-              <td colspan="1" class="d-flex align-items-center justify-center">
+              <td colspan="4" class="text-left">Current portfolio value</td>
+              <td  class="d-flex align-items-center justify-end">
                 <div>{{ num(portfoglioValue()) }}</div>
               </td>
 
