@@ -1,21 +1,20 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Bank from '../views/Bank.vue'
+
 import Work from '../views/Work.vue'
+import Start from '../views/Start.vue'
 import Trade from '../views/Trade.vue'
+
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    redirect: '/trade'
+    name:'Start',
+    component: Start
   },
-  {
-    path: '/bank',
-    name: 'Bank',
-    component: Bank
-  },
+ 
   {
     path: '/trade',
     name: 'Trade',

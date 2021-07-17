@@ -201,6 +201,9 @@ export default {
         this.awardGiven = numsAward;
       }
     },
+    dayNumber(){
+      this.$router.push({ name: 'Start' })
+    },
     $route(to, from) {
       if (to.name) {
         this.setTab(to.name);
