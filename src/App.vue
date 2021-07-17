@@ -101,7 +101,11 @@
     </v-main>
 
     <v-footer app height="50">
+<div  class="d-flex justify-content-center" >
+      <instructions-dialog></instructions-dialog>
+      
       <trade-footer v-if="inTrade" />
+      </div>
     </v-footer>
   </v-app>
 </template>
@@ -112,14 +116,17 @@ import _ from "lodash";
 import AccountInfo from "bank/AccountInfo";
 import DaysLeft from "./components/DaysLeft";
 import NewDayDialog from "./components/NewDayDialog";
+import InstructionsDialog from "./components/InstructionsDialog";
 import TimeLeft from "./components/TimeLeft";
 import { mapActions, mapMutations, mapState, mapGetters } from "vuex";
 import gameParams, { listAwards } from "./params";
 
 export default {
-  components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft, NewDayDialog },
+  components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft, NewDayDialog,InstructionsDialog },
   data() {
+    const i = document.getElementById('instructions').innerHTML;
     return {
+      i:i,
       awards: listAwards,
       day: 1,
       monitorInterval: null,
@@ -268,4 +275,12 @@ export default {
     }
   }
 }
+.centered-alert {
+  margin: 0px;
+  margin-bottom: 5px;
+  padding: 5px;
+  /* font-size: small; */
+  flex-grow: 1;
+}
 </style>
+ 
