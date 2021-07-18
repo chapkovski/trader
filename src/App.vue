@@ -2,6 +2,7 @@
 
 <template>
   <v-app>
+    <Balloons v-if='isAwardGiven'/>
     <form
       class="otree-form"
       method="post"
@@ -46,13 +47,24 @@
       <time-left @dayDone="nextDay()"></time-left>
       <v-spacer></v-spacer>
       <div :class="{ 'd-flex': true }" v-if="inTrade">
-        <div class="m-1" v-for="award in awards" :key="award.id" v-if='$gamified'>
+        <div
+          class="m-1"
+          v-for="award in awards"
+          :key="award.id"
+          v-if="$gamified"
+        >
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
-                <v-badge bordered overlap :color="locked(award.id)?'secondary':'success'" bottom left>
+                <v-badge
+                  bordered
+                  overlap
+                  :color="locked(award.id) ? 'secondary' : 'success'"
+                  bottom
+                  left
+                >
                   <template v-slot:badge>
-                    <v-icon v-if='locked(award.id)'>mdi-lock</v-icon>
+                    <v-icon v-if="locked(award.id)">mdi-lock</v-icon>
                     <v-icon v-else>mdi-check-outline</v-icon>
                   </template>
 
@@ -101,10 +113,10 @@
     </v-main>
 
     <v-footer app height="50">
-<div  class="d-flex justify-content-center" >
-      <instructions-dialog></instructions-dialog>
-      
-      <trade-footer v-if="inTrade" />
+      <div class="d-flex justify-content-center">
+        <instructions-dialog></instructions-dialog>
+
+        <trade-footer v-if="inTrade" />
       </div>
     </v-footer>
   </v-app>
@@ -112,6 +124,7 @@
 
 <script>
 import TradeFooter from "trade/TradeFooter";
+import Balloons from "trade/Balloons";
 import _ from "lodash";
 import AccountInfo from "bank/AccountInfo";
 import DaysLeft from "./components/DaysLeft";
@@ -121,12 +134,22 @@ import TimeLeft from "./components/TimeLeft";
 import { mapActions, mapMutations, mapState, mapGetters } from "vuex";
 import gameParams, { listAwards } from "./params";
 
+
 export default {
-  components: { TradeFooter, AccountInfo, DaysLeft, TimeLeft, NewDayDialog,InstructionsDialog },
+  components: {
+    TradeFooter,
+    AccountInfo,
+    DaysLeft,
+    TimeLeft,
+    NewDayDialog,
+    InstructionsDialog,
+    Balloons
+    
+  },
   data() {
-    const i = document.getElementById('instructions').innerHTML;
+    const i = document.getElementById("instructions").innerHTML;
     return {
-      i:i,
+      i: i,
       awards: listAwards,
       day: 1,
       monitorInterval: null,
@@ -178,20 +201,20 @@ export default {
       }
     },
     awardGiven(val) {
-      if (this.isAwardGiven) {
-        this.$confetti.start({
-          particles: [
-            {
-              type: "heart",
-            },
-          ],
-          defaultColors: ["red", "pink", "#ba0000"],
-        });
-      }
+      // if (this.isAwardGiven) {
+      //   this.$confetti.start({
+      //     particles: [
+      //       {
+      //         type: "heart",
+      //       },
+      //     ],
+      //     defaultColors: ["red", "pink", "#ba0000"],
+      //   });
+      // }
       this.isAwardGiven &&
         setTimeout(() => {
           this.awardGiven = {};
-          this.$confetti.stop();
+          // this.$confetti.stop();
         }, 3000);
     },
     numTransactions(val) {
@@ -201,8 +224,8 @@ export default {
         this.awardGiven = numsAward;
       }
     },
-    dayNumber(){
-      this.$router.push({ name: 'Start' }).catch(()=>{});
+    dayNumber() {
+      this.$router.push({ name: "Start" }).catch(() => {});
     },
     $route(to, from) {
       if (to.name) {
