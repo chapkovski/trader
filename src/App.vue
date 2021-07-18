@@ -202,7 +202,7 @@ export default {
       }
     },
     dayNumber(){
-      this.$router.push({ name: 'Start' })
+      this.$router.push({ name: 'Start' }).catch(()=>{});
     },
     $route(to, from) {
       if (to.name) {
