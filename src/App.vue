@@ -2,7 +2,12 @@
 
 <template>
   <v-app>
+       <transition
+      enter-active-class="animate__animated animate__fadeIn animate__slow"
+      leave-active-class="animate__animated animate__fadeOut animate__slow"
+    >
     <Balloons v-if='isAwardGiven'/>
+       </transition>
     <form
       class="otree-form"
       method="post"
