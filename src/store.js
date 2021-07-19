@@ -90,7 +90,7 @@ const store = new Vuex.Store({
         getCurrentTimeInTrade: (state) => () => { return state.secSpentOnTrade },
         getCashBalance: (state) => () => { return state.cashBalance },
         portfoglioValue: (state) => () => {
-            return (_.sumBy(state.stocks, (i) => { return i.quantity * i.price })).toFixed(2);
+            return (_.sumBy(state.stocks, (i) => { return i.quantity * i.price }));
         },
         getStockByName: (state) => (name) => {
 
@@ -131,10 +131,10 @@ const store = new Vuex.Store({
             state.stocks = obj;
         },
         SET_NUM_AWARD: (state, obj) => {
-            
+
             state.awardForTransaction = obj;
             state.awardsGiven.push(obj)
-            
+
         },
         SET_TIME_AWARD: (state, obj) => {
             state.awardForTime = obj;
@@ -298,17 +298,24 @@ const store = new Vuex.Store({
                 console.debug('transaction impossible')
             }
         },
-        async nextDay({ commit, state, dispatch }) {
+        async nextDay({ commit, state, dispatch }, { startSession = false } = {}) {
             // We trigger the next day, send a request to an api (for demo purposes, later on
             // we ll use the web socker with the same thing. )
             // we get prices for the entire day, it'll save the load at the websocket. 
             // in production we'll send there the participant code and the day number. Now 
             // just number of ticks
             // does it make sense to increase the day if there is no day info? lets try to find the day param in day_params of gameParams 
+            if (!startSession) {
+                dispatch('clearHoldings');
+                dispatch('sendEventToServer', { name: 'dayEnded', secSpentOnTrade: state.secSpentOnTrade, balance: state.cashBalance })
+            } else {
+                console.debug('Start of the session')
+            }
+
             const { priceUrl, day_params } = gameParams
             const next_one = state.dayNumber + 1;
             const specificDayParams = _.find(day_params, (i) => (i.round === next_one.toString()))
-
+            
             if (specificDayParams === undefined) {
                 dispatch('sendEventToServer', { name: 'gameEnded', balance: state.cashBalance })
                 commit('ALLOW_FORM_SUBMIT')
@@ -351,12 +358,21 @@ const store = new Vuex.Store({
 
             });
         },
+        clearHoldings({ commit, state, getters, dispatch }) {
+            const finalStockAmount = getters.portfoglioValue()
+            const stocks = _.map(state.stocks, (i) => ({
+                innerName: i.innerName,
+                price: i.price, quantity: i.quantity
+            }))
 
+            commit('CHANGE_CASH', finalStockAmount);
+            dispatch('sendEventToServer', { name: 'clearingStockBeforeDayEnds', finalStockAmount, stocksOwned: stocks, balance: state.cashBalance })
+        },
         async getNewTick({ commit, state, dispatch }) {
             const { currentTick, numTicks, stocks } = state;
-
+            console.debug('NEW ITKECKS', currentTick, numTicks)
             if (currentTick >= numTicks) {
-                dispatch('sendEventToServer', { name: 'dayEnded', secSpentOnTrade: state.secSpentOnTrade, balance: state.cashBalance })
+
                 await dispatch('nextDay')
             }
             else {
@@ -371,7 +387,7 @@ const store = new Vuex.Store({
         },
         sendEventToServer(context, message) {
             const round_number = context.state.dayNumber;
-            message= {...message, round_number}
+            message = { ...message, round_number }
             Vue.prototype.$socket.sendObj(message)
         },
 

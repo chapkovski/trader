@@ -3,12 +3,8 @@
 // while lastKnownState is just a current state mutable in a store, store uses it as an initial state
 import _ from 'lodash'
 const gameParams = {
-
     priceUrl: 'https://uppsi22mf2.execute-api.us-east-1.amazonaws.com/Prod/price/',
-    dayLength: 600,
     SEC: 1000,
-    tickFrequency: 3,
-    numTicks: 30,
     endowment: 0,
     awards: {
         time: {

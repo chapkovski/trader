@@ -49,6 +49,7 @@
     <v-app-bar color="#6A76AB" dark app height="95">
       <account-info> </account-info>
       <days-left :day="dayNumber"></days-left>
+      
       <time-left @dayDone="nextDay()"></time-left>
       <v-spacer></v-spacer>
       <div :class="{ 'd-flex': true }" v-if="inTrade">
@@ -166,7 +167,7 @@ export default {
     };
   },
   async created() {
-    this.nextDay();
+    this.nextDay({startSession:true});
 
     this.getNewTick();
     this.updShares();
