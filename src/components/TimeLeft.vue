@@ -1,5 +1,5 @@
 <template>
-  <v-card class="ma-1" color="red">
+  <v-card class="ma-1" :color="$gamified?'red':'black'">
     <v-card-text>
       Time left:
       <v-chip  color="primary">
