@@ -17,6 +17,7 @@ import { fromUnixTime, format } from "date-fns";
 import _ from "lodash";
 import { mapState, mapMutations, mapActions, mapGetters } from "vuex";
 import gameParams from "../../params";
+const {SEC, tickFrequency} = gameParams;
 export default {
   components: {
     // highcharts: Chart,
@@ -43,8 +44,8 @@ export default {
         },
         series: [
           {
-            pointStart: null,
-            pointInterval: 1000,
+            pointStart: 1,
+            pointInterval: tickFrequency*SEC,
             data: [1, 2, 3],
           },
         ],
@@ -52,7 +53,7 @@ export default {
     };
   },
   mounted() {
-    this.chartOptions.series[0].pointStart = this.dayStart.getTime();
+    // this.chartOptions.series[0].pointStart = this.dayStart.getTime();
 
     this.chartOptions.series[0].data = this.stocks.history;
   },
