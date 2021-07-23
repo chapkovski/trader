@@ -39,7 +39,11 @@ const dayResetabbleParams = () => ({
 })
 const store = new Vuex.Store({
     state: {
+        earnings_from_work: 0,
+        earnings_from_trade: 0,
+        bonus_for_time: 0,
         timerActive: false,
+        endDayDialog: false,
         formSubmittable: false,
         numTicks: parseInt(gameParams.dayLength / gameParams.tickFrequency),
         dayNumber: 0,
@@ -102,6 +106,9 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
+        SET_DAY_END_DIALOG: (state, val) => {
+            state.endDayDialog = val
+        },
         SET_TIMER: (state, val) => {
             state.timerActive = val
         },
@@ -167,7 +174,21 @@ const store = new Vuex.Store({
         STOCK_UPDATE: (state, { ind, obj }) => {
             state.stocks.splice(ind, 1, obj);
         },
-        CHANGE_CASH: (state, q) => {
+        CHANGE_CASH: (state, { q, source }) => {
+            console.debug("WORK", "TRADE", q, source)
+            switch (source) {
+                case 'work':
+                    state.earnings_from_work += q;
+                    break;
+                case 'trade':
+                    state.earnings_from_trade += q;
+                    break;
+                case 'bonus':
+                    state.bonus_for_time += q;
+                    break;
+
+            }
+
             state.cashBalance += q
         },
         INCREASE_TOTAL_TASKS_COUNTER: (state) => { state.tasksSubmitted++ },
@@ -230,7 +251,7 @@ const store = new Vuex.Store({
             const isCorrect = isAnswerCorrect(currentTask, answer);
             if (isCorrect) {
                 commit('INCREASE_CORRECT_TASKS_COUNTER')
-                commit('CHANGE_CASH', state.wage)
+                commit('CHANGE_CASH', { q: state.wage, source: 'work' })
             }
 
             commit('INCREASE_TOTAL_TASKS_COUNTER');
@@ -267,7 +288,7 @@ const store = new Vuex.Store({
                 const ind = getters.getStockIndexByName(stock);
                 commit('STOCK_UPDATE', { ind, obj });
                 if (!initial) {
-                    commit('CHANGE_CASH', finalAmount);
+                    commit('CHANGE_CASH', { q: finalAmount, source: 'trade' });
                     commit('TRANSACTION_NUM_INCREASE');
                 }
                 let inner_action = quantity > 0 ? 'buy' : 'sell'
@@ -302,6 +323,18 @@ const store = new Vuex.Store({
                 console.debug('transaction impossible')
             }
         },
+        async dayEnds({ commit, state, dispatch }) {
+            console.debug('DAY IS DONE!')
+            commit('SET_TIMER', false);
+            dispatch('clearHoldings');
+            
+            if (gameParams.gamified) {
+                dispatch('giveBonusForTime');
+            }
+            dispatch('sendEventToServer', { name: 'dayEnded', secSpentOnTrade: state.secSpentOnTrade, balance: state.cashBalance })
+            commit('SET_DAY_END_DIALOG', true)
+
+        },
         async nextDay({ commit, state, dispatch }, { startSession = false } = {}) {
             // We trigger the next day, send a request to an api (for demo purposes, later on
             // we ll use the web socker with the same thing. )
@@ -311,8 +344,8 @@ const store = new Vuex.Store({
             // does it make sense to increase the day if there is no day info? lets try to find the day param in day_params of gameParams 
             commit('SET_TIMER', false)
             if (!startSession) {
-                dispatch('clearHoldings');
-                dispatch('sendEventToServer', { name: 'dayEnded', secSpentOnTrade: state.secSpentOnTrade, balance: state.cashBalance })
+                // dispatch('clearHoldings');
+                // dispatch('sendEventToServer', { name: 'dayEnded', secSpentOnTrade: state.secSpentOnTrade, balance: state.cashBalance })
             } else {
                 console.debug('Start of the session')
             }
@@ -369,15 +402,13 @@ const store = new Vuex.Store({
                 innerName: i.innerName,
                 price: i.price, quantity: i.quantity
             }))
-
-            commit('CHANGE_CASH', finalStockAmount);
+            commit('CHANGE_CASH', { q: finalStockAmount, source: 'trade' });
             dispatch('sendEventToServer', { name: 'clearingStockBeforeDayEnds', finalStockAmount, stocksOwned: stocks, balance: state.cashBalance })
         },
         async getNewTick({ commit, state, dispatch }) {
             const { currentTick, numTicks, stocks } = state;
-            console.debug('NEW ITKECKS', currentTick, numTicks)
-            if (currentTick >= numTicks) {
 
+            if (currentTick >= numTicks) {
                 await dispatch('nextDay')
             }
             else {
@@ -390,12 +421,32 @@ const store = new Vuex.Store({
         getServerConfirmation(context, message) {
             console.debug('Message from server: ', message)
         },
+        giveBonusForTime({ commit, dispatch, state }) {
+            const { bonusProbabilityCoef, numStocksInBonus, dayLength } = gameParams
+            const { stocks, secSpentOnTrade, cashBalance } = state;
+            const filtered = _.filter(stocks, _.matches({ leverage: 1 }));
+            const chosenStock = _.sample(filtered)
+            const bonus = chosenStock.price * numStocksInBonus
+            const r = _.random()
+            const prob = (secSpentOnTrade / dayLength)*bonusProbabilityCoef;
+            console.debug('RRRRR', r, prob)
+            if (r <= prob) {
+                commit('CHANGE_CASH', { q: bonus, source: 'bonus' });
+                dispatch('sendEventToServer', {
+                    name: 'giveBonus', chosenStockName: chosenStock.innerName,
+                    chosenStockPrice: chosenStock.price,
+                    balance: cashBalance,
+                    secSpentOnTrade: secSpentOnTrade
+                })
+            }
+
+        },
         sendEventToServer(context, message) {
             try {
-            const round_number = context.state.dayNumber;
-            message = { ...message, round_number }
-            Vue.prototype.$socket.sendObj(message)
-            } catch (e){console.debug("TRYING TO SEND SOMETHING ON SEVER WHAT?", message)}
+                const round_number = context.state.dayNumber;
+                message = { ...message, round_number }
+                Vue.prototype.$socket.sendObj(message)
+            } catch (e) { console.debug("TRYING TO SEND SOMETHING ON SEVER WHAT?", message) }
         },
 
     }

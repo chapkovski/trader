@@ -23,6 +23,7 @@
       />
     </form>
     <new-day-dialog></new-day-dialog>
+    <end-day-dialog></end-day-dialog>
     <transition
       enter-active-class="animate__animated animate__bounce animate__slow"
       leave-active-class="animate__animated animate__fadeOutTopRight animate__slow"
@@ -50,7 +51,7 @@
       <account-info> </account-info>
       <days-left :day="dayNumber"></days-left>
 
-      <time-left @dayDone="nextDay()"></time-left>
+      <time-left @dayDone="dayEnds()"></time-left>
       <v-spacer></v-spacer>
       <div :class="{ 'd-flex': true }" v-if="inTrade">
         <div
@@ -133,6 +134,7 @@ import _ from "lodash";
 import AccountInfo from "bank/AccountInfo";
 import DaysLeft from "./components/DaysLeft";
 import NewDayDialog from "./components/NewDayDialog";
+import EndDayDialog from "./components/EndDayDialog";
 import InstructionsDialog from "./components/InstructionsDialog";
 import TimeLeft from "./components/TimeLeft";
 import { mapActions, mapMutations, mapState, mapGetters } from "vuex";
@@ -145,6 +147,7 @@ export default {
     DaysLeft,
     TimeLeft,
     NewDayDialog,
+    EndDayDialog,
     InstructionsDialog,
     Balloons,
   },
@@ -238,6 +241,7 @@ export default {
       "makeTransaction",
       "getNewTick",
       "nextDay",
+      "dayEnds"
     ]),
     // TODO: we don't need the day increase in production. most likely.
     ...mapMutations(["SEC_ON_TRADE_INCREASE"]),
@@ -253,13 +257,9 @@ export default {
     },
     monitorTime() {
       this.monitorInterval = setInterval(() => {
-        if (this.inTrade) {
+        if (this.inTrade && this.timerActive) {
           this.SEC_ON_TRADE_INCREASE();
-          const timeAward = gameParams.awards.time[this.secSpentOnTrade];
-          if (timeAward && this.$gamified) {
-            this.setTimeAward(timeAward);
-            this.awardGiven = timeAward;
-          }
+         
         }
       }, 1000);
     },

@@ -7,38 +7,7 @@ const gameParams = {
     SEC: 1000,
     endowment: 0,
     awards: {
-        time: {
-            30: {
-                img: 'https://cdn3.iconfinder.com/data/icons/cyber-monday-astute-vol-1-1/512/Early_Start-512.png',
-                name: 'bronze',
-                brief:'Bronze: 20 seconds on the trading platform',
-                desc: 'Bronze trophy: You have spent 20 seconds on the trading platform!'
-            },
-            60: {
-                img: 'https://cdn1.iconfinder.com/data/icons/scenarium-vol-9/128/001_award_cup_winner_silver-512.png',
-                name: 'silver',
-                brief:'Silver: 1 minute on the trading platform',
-                desc: 'Hooray, you received a Silver trophy for spending one minute on the trade page'
-            },
-            120: {
-                img: 'https://cdn0.iconfinder.com/data/icons/kameleon-free-pack-rounded/110/Gold-Cart-512.png',
-                name: 'gold',
-                brief:'Gold: 2 minutes on the trading platform!',
-                desc: 'Amazing! You are Golden: 2 minutes on the trade platform!'
-            },
-            150: {
-                img: 'https://cdn4.iconfinder.com/data/icons/banking-and-finance/500/diamond-256.png',
-                name: 'platinum',
-                brief:'Platinum: more than half the round time trading!',
-                desc: 'You are a PLATINUM trader: you spent more than half the round time trading!'
-            },
-            210: {
-                img: 'https://cdn2.iconfinder.com/data/icons/free-version/128/almaz-512.png',
-                name: 'diamond',
-                brief:'Diamond: Peak achievement!',
-                desc: 'Congratulations!! Peak achievement: You are a DIAMOND trader!'
-            },
-        },
+        
         nums: {
             1: {
                 img: 'https://cdn3.iconfinder.com/data/icons/family-member-flat-happy-family-day/512/Son-512.png',
