@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h3>Transactions:</h3>
+    <v-card class="">
+    <v-card-title>Transactions</v-card-title>
      <v-data-table
     :headers="headers"
     :items="getAllTransactions()"
@@ -21,8 +21,7 @@
     </template>
     </v-data-table>
 
-  </div>
-  
+    </v-card>
 </template>
 
 <script>

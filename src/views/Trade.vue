@@ -17,36 +17,41 @@
       </v-row>
     </transition>
     <v-row flex>
-      
       <v-col cols="12" md="12">
         <holdings />
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="6" md="6">
+      <v-col cols="12" lg="6">
         <history />
       </v-col>
-      <v-col cols="6" md="6">
-        <transactions />
+      <v-col cols="12" lg="6">
+        <v-row>
+          <v-col cols="12"><global-params /></v-col>
+          <v-col cols="12"><transactions /></v-col>
+        </v-row>
       </v-col>
     </v-row>
-    
-    
   </v-container>
 </template>
 
 <script>
 // @ is an alias to /src
-import { ActionBar, Holdings, History, Transactions } from "trade";
+import {
+  ActionBar,
+  Holdings,
+  History,
+  Transactions,
+  GlobalParams,
+} from "trade";
 
 export default {
   name: "Trade",
   components: {
     ActionBar,
     Holdings,
-
+    GlobalParams,
     History,
-
     Transactions,
   },
   data() {
@@ -58,9 +63,7 @@ export default {
     // this.congratulate();
   },
 
-  methods: {
- 
-  },
+  methods: {},
 };
 </script>
 <style>
