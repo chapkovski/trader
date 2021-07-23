@@ -9,8 +9,11 @@
       class="elevation-1"
       :hide-default-footer="true"
     >
-      <template v-slot:item.expected_return="{ item }">
-        {{ item.expected_return.toFixed(2) }}
+    <template v-slot:item.expected_return="{ item }">
+        {{ (item.expected_return*100).toFixed(0) }}%
+      </template>
+      <template v-slot:item.sigma="{ item }">
+        {{ (item.sigma*100).toFixed(0) }}%
       </template>
     </v-data-table>
   </v-card>
@@ -28,8 +31,9 @@ export default {
 
         value: "publicName",
       },
-      { text: "Stock volatility", value: "sigma" },
+    
       { text: "Expected return", value: "expected_return" },
+        { text: "Stock volatility", value: "sigma" },
     ],
   }),
   watch: {},

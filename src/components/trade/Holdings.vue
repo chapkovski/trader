@@ -75,11 +75,13 @@
                 <div>{{ num(portfoglioValue()) }}</div>
               </td>
 
-              <td></td>
+             
               <td class="text-right">{{ num(totRealizedPL) }}</td>
               <td class="text-right">{{ num(totUnrealizedPL) }}</td>
               <td class="text-right">{{ num(totPL) }}</td>
-              <td></td>
+              <td class="text-right">{{totShare}}%
+                
+              </td>
               <td></td>
             </tr>
           </tbody>
@@ -152,6 +154,11 @@ export default {
     totUnrealizedPL() {
       return _.sumBy(this.stocksForHoldings, (i) => {
         return i.pandle.unrealized;
+      }).toFixed(2);
+    },
+    totShare() {
+      return _.sumBy(this.stocksForHoldings, (i) => {
+        return i.share*100;
       }).toFixed(2);
     },
   },
