@@ -2,12 +2,12 @@
 
 <template>
   <v-app>
-       <transition
+    <transition
       enter-active-class="animate__animated animate__fadeIn animate__slow"
       leave-active-class="animate__animated animate__fadeOut animate__slow"
     >
-    <Balloons v-if='isAwardGiven'/>
-       </transition>
+      <Balloons v-if="isAwardGiven" />
+    </transition>
     <form
       class="otree-form"
       method="post"
@@ -46,10 +46,10 @@
         </v-sheet>
       </v-overlay>
     </transition>
-    <v-app-bar color="#6A76AB" dark app height="95">
+    <v-app-bar color="#6A76AB" dark app height="95" v-if="!inStart">
       <account-info> </account-info>
       <days-left :day="dayNumber"></days-left>
-      
+
       <time-left @dayDone="nextDay()"></time-left>
       <v-spacer></v-spacer>
       <div :class="{ 'd-flex': true }" v-if="inTrade">
@@ -89,7 +89,7 @@
       </div>
     </v-app-bar>
 
-    <v-navigation-drawer permanent expand-on-hover app>
+    <v-navigation-drawer permanent expand-on-hover app v-if="!inStart">
       <template v-slot:prepend>
         <v-list-item two-line>
           <v-list-item-avatar> </v-list-item-avatar>
@@ -113,9 +113,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-main>
-      
-        <router-view></router-view>
-      
+      <router-view></router-view>
     </v-main>
 
     <v-footer app height="50">
@@ -140,7 +138,6 @@ import TimeLeft from "./components/TimeLeft";
 import { mapActions, mapMutations, mapState, mapGetters } from "vuex";
 import gameParams, { listAwards } from "./params";
 
-
 export default {
   components: {
     TradeFooter,
@@ -149,8 +146,7 @@ export default {
     TimeLeft,
     NewDayDialog,
     InstructionsDialog,
-    Balloons
-    
+    Balloons,
   },
   data() {
     const i = document.getElementById("instructions").innerHTML;
@@ -167,7 +163,7 @@ export default {
     };
   },
   async created() {
-    this.nextDay({startSession:true});
+    this.nextDay({ startSession: true });
 
     this.getNewTick();
     this.updShares();
@@ -185,6 +181,7 @@ export default {
       "awardForTransaction",
       "formSubmittable",
       "awardsGiven",
+      "timerActive"
     ]),
     ...mapGetters(["getCurrentTransactionNum", "pandle"]),
     transactionAwardExists() {
@@ -199,6 +196,9 @@ export default {
     inTrade() {
       return this.$route.name == "Trade";
     },
+    inStart() {
+      return this.$route.name == "Start";
+    },
   },
   watch: {
     formSubmittable(val, oldVal) {
@@ -207,16 +207,6 @@ export default {
       }
     },
     awardGiven(val) {
-      // if (this.isAwardGiven) {
-      //   this.$confetti.start({
-      //     particles: [
-      //       {
-      //         type: "heart",
-      //       },
-      //     ],
-      //     defaultColors: ["red", "pink", "#ba0000"],
-      //   });
-      // }
       this.isAwardGiven &&
         setTimeout(() => {
           this.awardGiven = {};
@@ -276,7 +266,9 @@ export default {
 
     async updShares() {
       this.intervalid1 = setInterval(() => {
-        this.getNewTick();
+        if (this.timerActive) {
+          this.getNewTick();
+        }
       }, gameParams.tickFrequency * 1000);
     },
   },

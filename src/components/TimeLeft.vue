@@ -1,9 +1,9 @@
 <template>
-  <v-card class="ma-1" :color="$gamified?'red':'black'">
+  <v-card class="ma-1" :color="$gamified ? 'red' : 'black'">
     <v-card-text>
       Time left:
-      <v-chip  color="primary">
-        <countdown :left-time="timeLeft" @finish="restartTimer" ref="timer">
+      <v-chip color="primary">
+        <countdown :left-time="timeLeft" @finish="dayOver" ref="timer">
           <template v-slot:process="anyYouWantedScopName">
             <span>{{
               ` ${anyYouWantedScopName.timeObj.m}: ${anyYouWantedScopName.timeObj.s}`
@@ -19,16 +19,25 @@
 import gameParams from "../params";
 const { dayLength, SEC } = gameParams;
 const durationInMillisecs = dayLength * SEC;
-
+import { mapState } from "vuex";
 export default {
   data: () => ({
     timeLeft: durationInMillisecs,
     endTime: new Date().getTime() + durationInMillisecs,
   }),
-  computed: {},
+  computed: {
+    ...mapState(["timerActive"]),
+  },
+  watch: { timerActive(val) {
+    if (val){
+    this.$refs.timer.startCountdown();
+    } else {
+      this.$refs.timer.stopCountdown();
+    }
+  } },
   methods: {
-    restartTimer() {
-      this.$refs.timer.startCountdown(true);
+    dayOver() {
+      
       this.$emit("dayDone");
     },
   },

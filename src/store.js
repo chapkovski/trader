@@ -39,6 +39,7 @@ const dayResetabbleParams = () => ({
 })
 const store = new Vuex.Store({
     state: {
+        timerActive: false,
         formSubmittable: false,
         numTicks: parseInt(gameParams.dayLength / gameParams.tickFrequency),
         dayNumber: 0,
@@ -101,6 +102,9 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
+        SET_TIMER: (state, val) => {
+            state.timerActive = val
+        },
         SET_DAY_PARAMS: (state, { wage, commission }) => {
             state.wage = parseInt(wage);
             state.commission = parseInt(commission);
@@ -305,6 +309,7 @@ const store = new Vuex.Store({
             // in production we'll send there the participant code and the day number. Now 
             // just number of ticks
             // does it make sense to increase the day if there is no day info? lets try to find the day param in day_params of gameParams 
+            commit('SET_TIMER', false)
             if (!startSession) {
                 dispatch('clearHoldings');
                 dispatch('sendEventToServer', { name: 'dayEnded', secSpentOnTrade: state.secSpentOnTrade, balance: state.cashBalance })
@@ -315,7 +320,7 @@ const store = new Vuex.Store({
             const { priceUrl, day_params } = gameParams
             const next_one = state.dayNumber + 1;
             const specificDayParams = _.find(day_params, (i) => (i.round === next_one.toString()))
-            
+
             if (specificDayParams === undefined) {
                 dispatch('sendEventToServer', { name: 'gameEnded', balance: state.cashBalance })
                 commit('ALLOW_FORM_SUBMIT')
@@ -386,9 +391,11 @@ const store = new Vuex.Store({
             console.debug('Message from server: ', message)
         },
         sendEventToServer(context, message) {
+            try {
             const round_number = context.state.dayNumber;
             message = { ...message, round_number }
             Vue.prototype.$socket.sendObj(message)
+            } catch (e){console.debug("TRYING TO SEND SOMETHING ON SEVER WHAT?", message)}
         },
 
     }
