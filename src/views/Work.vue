@@ -94,7 +94,7 @@
           <v-text-field
             v-model="answer"
             single-line
-            type="number"
+            type="text"
             @keyup.enter="submit"
             autofocus
             @change="validate"
@@ -119,10 +119,25 @@ export default {
   components: { infoCard, Matrix },
   data() {
     const numbers = _.sampleSize(_.range(10), workDictLength);
+    const letters = _.sampleSize(alphabet, workDictLength);
+
+    const correspondenceDict = {};
+    let i
+    for (i = 0; i < numbers.length; i++) {
+       correspondenceDict[numbers[i]]=letters[i]
+    }
+    
+    const numsToSolve = _.sampleSize(numbers, taskLength);
+    console.debug('jjj', numsToSolve)
+    let correctAnswer = _.map(numsToSolve, (i)=>(correspondenceDict[i]))
+    correctAnswer = correctAnswer.join('')
+    
     return {
-      letters: _.sampleSize(alphabet, workDictLength),
-      numbers: numbers,
-      numsToSolve: _.sampleSize(numbers, taskLength),
+      letters,
+      numbers,
+      correspondenceDict,
+      numsToSolve,
+      correctAnswer,
       valid: true,
       answer: "",
       rules: { required: (value) => !!value || "Required." },
@@ -135,9 +150,9 @@ export default {
       "correctTasksSubmitted",
       "wage",
     ]),
-    correctAnswer() {
-      return _.max(this.currentTask.matrix1) + _.max(this.currentTask.matrix2);
-    },
+    // correctAnswer() {
+    //   return _.max(this.currentTask.matrix1) + _.max(this.currentTask.matrix2);
+    // },
   },
 
   methods: {
