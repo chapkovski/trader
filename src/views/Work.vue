@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" v-model="valid"  @submit.prevent="submit">
+  <v-form ref="form" v-model="valid" @submit.prevent="submit">
     <v-container>
       <v-row>
         <v-col md="4" sm="12">
@@ -32,24 +32,58 @@
             color="primary"
             :style="{ padding: '0px', margin: '0px' }"
           >
-            First: find in each section below a maximum number; <br />Second:
-            provide a sum of these two numbers in the field below<br />JUST FOR
-            OUR EYES ONLY: CORRECT ANSWER: {{ correctAnswer }}
+            In this task you should translate a sequence of numbers into a
+            series of letters from the English alphabet. Below you can see (1) a
+            sequence of NUMBERS (2) a KEY indicating which LETTER represents
+            each NUMBER (3) a text box in which the letter solution should be
+            typed. In each task a new sequence of numbers will appear along with
+            a new key of number to letter relationships.<br />
+            JUST FOR OUR EYES ONLY: CORRECT ANSWER: {{ correctAnswer }}
           </v-alert>
         </v-col>
       </v-row>
-      <v-row class="m-0">
-        <v-col sm="12" md="6">
+      <v-row class="m-0 d-flex align-stretch">
+        <v-col sm="12" md="6" class="d-flex align-items-center justify-center">
           <v-card>
             <v-card-text>
-              <matrix :data="currentTask.matrix1"></matrix>
+              <v-simple-table>
+                <tr>
+                  <th>Letter:</th>
+                  <td
+                    width="30px"
+                    :class="`bordered`"
+                    v-for="l in letters"
+                    :key="l"
+                  >
+                    {{ l }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Key:</th>
+                  <td :class="`bordered`" v-for="n in numbers" :key="n">
+                    {{ n }}
+                  </td>
+                </tr>
+              </v-simple-table>
             </v-card-text>
           </v-card>
         </v-col>
-        <v-col sm="12" md="6">
-          <v-card>
+        <v-col sm="12" md="6" height="100%">
+          <v-card height="100%">
+            <v-card-title>Task to solve:</v-card-title>
             <v-card-text>
-              <matrix :data="currentTask.matrix2"></matrix>
+              <v-simple-table>
+                <tr>
+                  <td
+                    width="30px"
+                    :class="`bordered`"
+                    v-for="l in numsToSolve"
+                    :key="l"
+                  >
+                    {{ l }}
+                  </td>
+                </tr>
+              </v-simple-table>
             </v-card-text>
           </v-card>
         </v-col>
@@ -59,16 +93,12 @@
           Submit your answer here and press "Enter"
           <v-text-field
             v-model="answer"
-             
             single-line
             type="number"
-            
             @keyup.enter="submit"
             autofocus
             @change="validate"
-           
             :rules="[rules.required]"
-            
           />
         </v-col>
       </v-row>
@@ -78,24 +108,33 @@
 
 <script>
 import _ from "lodash";
-
+const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 import infoCard from "work/InfoCard";
 import Matrix from "work/Matrix";
 import gameParams from "../params";
+const { workDictLength, taskLength } = gameParams;
 import { mapState, mapActions } from "vuex";
 export default {
   name: "Home",
   components: { infoCard, Matrix },
   data() {
+    const numbers = _.sampleSize(_.range(10), workDictLength);
     return {
-      
+      letters: _.sampleSize(alphabet, workDictLength),
+      numbers: numbers,
+      numsToSolve: _.sampleSize(numbers, taskLength),
       valid: true,
-      answer: '',
-      rules: {required: value => !!value || 'Required.',}
+      answer: "",
+      rules: { required: (value) => !!value || "Required." },
     };
   },
   computed: {
-    ...mapState(["currentTask", "tasksSubmitted", "correctTasksSubmitted", 'wage']),
+    ...mapState([
+      "currentTask",
+      "tasksSubmitted",
+      "correctTasksSubmitted",
+      "wage",
+    ]),
     correctAnswer() {
       return _.max(this.currentTask.matrix1) + _.max(this.currentTask.matrix2);
     },
@@ -103,19 +142,24 @@ export default {
 
   methods: {
     ...mapActions(["processTaskAnswer"]),
-    
+
     validate() {
       this.$refs.form.validate();
     },
     submit() {
-      
       if (this.valid) {
-      
         this.processTaskAnswer(this.answer);
         this.answer = null;
-        this.$refs.form.reset()
+        this.$refs.form.reset();
       }
     },
   },
 };
 </script>
+<style scoped >
+.bordered {
+  border: thick solid rgba(102, 102, 153, 0.5);
+  font-size: 2rem;
+  font-family: "Roboto Mono";
+}
+</style>
