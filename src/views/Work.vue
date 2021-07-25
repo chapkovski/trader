@@ -38,7 +38,7 @@
             each NUMBER (3) a text box in which the letter solution should be
             typed. In each task a new sequence of numbers will appear along with
             a new key of number to letter relationships.<br />
-            JUST FOR OUR EYES ONLY: CORRECT ANSWER: {{ correctAnswer }}
+            JUST FOR OUR EYES ONLY: CORRECT ANSWER: {{ currentTask.correctAnswer }}
           </v-alert>
         </v-col>
       </v-row>
@@ -52,7 +52,7 @@
                   <td
                     width="30px"
                     :class="`bordered`"
-                    v-for="l in letters"
+                    v-for="l in currentTask.letters"
                     :key="l"
                   >
                     {{ l }}
@@ -60,7 +60,7 @@
                 </tr>
                 <tr>
                   <th>Key:</th>
-                  <td :class="`bordered`" v-for="n in numbers" :key="n">
+                  <td :class="`bordered`" v-for="n in currentTask.numbers" :key="n">
                     {{ n }}
                   </td>
                 </tr>
@@ -77,7 +77,7 @@
                   <td
                     width="30px"
                     :class="`bordered`"
-                    v-for="l in numsToSolve"
+                    v-for="l in currentTask.numsToSolve"
                     :key="l"
                   >
                     {{ l }}
@@ -112,32 +112,16 @@ const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 import infoCard from "work/InfoCard";
 import Matrix from "work/Matrix";
 import gameParams from "../params";
-const { workDictLength, taskLength } = gameParams;
+
 import { mapState, mapActions } from "vuex";
 export default {
   name: "Home",
   components: { infoCard, Matrix },
   data() {
-    const numbers = _.sampleSize(_.range(10), workDictLength);
-    const letters = _.sampleSize(alphabet, workDictLength);
-
-    const correspondenceDict = {};
-    let i
-    for (i = 0; i < numbers.length; i++) {
-       correspondenceDict[numbers[i]]=letters[i]
-    }
-    
-    const numsToSolve = _.sampleSize(numbers, taskLength);
-    console.debug('jjj', numsToSolve)
-    let correctAnswer = _.map(numsToSolve, (i)=>(correspondenceDict[i]))
-    correctAnswer = correctAnswer.join('')
+     
     
     return {
-      letters,
-      numbers,
-      correspondenceDict,
-      numsToSolve,
-      correctAnswer,
+     
       valid: true,
       answer: "",
       rules: { required: (value) => !!value || "Required." },
@@ -150,9 +134,7 @@ export default {
       "correctTasksSubmitted",
       "wage",
     ]),
-    // correctAnswer() {
-    //   return _.max(this.currentTask.matrix1) + _.max(this.currentTask.matrix2);
-    // },
+    
   },
 
   methods: {

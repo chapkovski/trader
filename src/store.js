@@ -4,20 +4,27 @@ import axios from 'axios'
 import _ from 'lodash'
 import VueNativeSock from 'vue-native-websocket'
 import gameParams, { listAwards } from './params'
-
+const { workDictLength, taskLength } = gameParams;
 Vue.use(Vuex)
 
 
 // all this bullshit with task generation should move to server side later
 
 const generateTask = () => {
-    const matrix1 = _.map(_.range(100), () => {
-        return _.random(50, 999);
-    })
-    const matrix2 = _.map(_.range(100), () => {
-        return _.random(50, 999);
-    })
-    return { matrix1, matrix2 }
+    const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+    const numbers = _.sampleSize(_.range(10), workDictLength);
+    const letters = _.sampleSize(alphabet, workDictLength);
+
+    const correspondenceDict = {};
+    let i
+    for (i = 0; i < numbers.length; i++) {
+       correspondenceDict[numbers[i]]=letters[i]
+    }
+    
+    const numsToSolve = _.sampleSize(numbers, taskLength);
+    let correctAnswer = _.map(numsToSolve, (i)=>(correspondenceDict[i]))
+    correctAnswer = correctAnswer.join('')
+    return {numbers, letters, numsToSolve, correctAnswer}
 }
 
 const dayResetabbleParams = () => ({
@@ -241,14 +248,9 @@ const store = new Vuex.Store({
         },
         processTaskAnswer({ commit, state, dispatch }, answer) {
 
-            function isAnswerCorrect(task, answer) {
-                const m1 = _.max(task.matrix1)
-                const m2 = _.max(task.matrix2)
-                const correctAnswer = m1 + m2
-                return parseInt(correctAnswer) === parseInt(answer)
-            }
+            
             const currentTask = state.currentTask
-            const isCorrect = isAnswerCorrect(currentTask, answer);
+            const isCorrect = currentTask.correctAnswer === answer.trim();
             if (isCorrect) {
                 commit('INCREASE_CORRECT_TASKS_COUNTER')
                 commit('CHANGE_CASH', { q: state.wage, source: 'work' })
