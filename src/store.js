@@ -42,13 +42,14 @@ const dayResetabbleParams = () => ({
     awardForTime: {},
     awardForTransaction: {},
     transactions: [],
-    stocks: []
+    stocks: [],
+    earnings_from_work: 0,
+    earnings_from_trade: 0,
+    bonus_for_time: 0,
 })
 const store = new Vuex.Store({
     state: {
-        earnings_from_work: 0,
-        earnings_from_trade: 0,
-        bonus_for_time: 0,
+       
         timerActive: false,
         endDayDialog: false,
         formSubmittable: false,
