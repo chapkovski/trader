@@ -358,7 +358,7 @@ const store = new Vuex.Store({
                 console.debug('Start of the session')
             }
 
-            const { priceUrl, day_params } = gameParams
+            const { priceUrl, day_params,initial_stock_items } = gameParams
             const next_one = state.dayNumber + 1;
             const specificDayParams = _.find(day_params, (i) => (i.round === next_one.toString()))
 
@@ -380,12 +380,12 @@ const store = new Vuex.Store({
 
                 dispatch('makeTransaction', {
                     stock: "a",
-                    quantity: 10,
+                    quantity: initial_stock_items,
                     initial: true,
                 });
                 dispatch('makeTransaction', {
                     stock: "b",
-                    quantity: 10,
+                    quantity: initial_stock_items,
                     initial: true,
                 });
                 dispatch('updStocks');
