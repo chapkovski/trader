@@ -18,13 +18,13 @@ const generateTask = () => {
     const correspondenceDict = {};
     let i
     for (i = 0; i < numbers.length; i++) {
-       correspondenceDict[numbers[i]]=letters[i]
+        correspondenceDict[numbers[i]] = letters[i]
     }
-    
+
     const numsToSolve = _.sampleSize(numbers, taskLength);
-    let correctAnswer = _.map(numsToSolve, (i)=>(correspondenceDict[i]))
+    let correctAnswer = _.map(numsToSolve, (i) => (correspondenceDict[i]))
     correctAnswer = correctAnswer.join('')
-    return {numbers, letters, numsToSolve, correctAnswer}
+    return { numbers, letters, numsToSolve, correctAnswer }
 }
 
 const dayResetabbleParams = () => ({
@@ -67,6 +67,12 @@ const store = new Vuex.Store({
     },
     getters: {
         status: (state) => state.socket.isConnected,
+        getProb: (state) => () => {
+
+            const { dayLength, bonusProbabilityCoef } = gameParams;
+            console.debug('DAYLENGHT', dayLength, state.secSpentOnTrade)
+            return (((state.secSpentOnTrade / dayLength) * bonusProbabilityCoef) * 100).toFixed(2);
+        },
         dataInLoading: (state) => () => {
             return (!state.priceDataLoaded && state.priceDataLoading);
         },
@@ -248,7 +254,7 @@ const store = new Vuex.Store({
         },
         processTaskAnswer({ commit, state, dispatch }, answer) {
 
-            
+
             const currentTask = state.currentTask
             const isCorrect = currentTask.correctAnswer === answer.trim();
             if (isCorrect) {
@@ -329,7 +335,7 @@ const store = new Vuex.Store({
             console.debug('DAY IS DONE!')
             commit('SET_TIMER', false);
             dispatch('clearHoldings');
-            
+
             if (gameParams.gamified) {
                 dispatch('giveBonusForTime');
             }
@@ -430,8 +436,8 @@ const store = new Vuex.Store({
             const chosenStock = _.sample(filtered)
             const bonus = chosenStock.price * numStocksInBonus
             const r = _.random()
-            const prob = (secSpentOnTrade / dayLength)*bonusProbabilityCoef;
-            
+            const prob = (secSpentOnTrade / dayLength) * bonusProbabilityCoef;
+
             if (r <= prob) {
                 commit('CHANGE_CASH', { q: bonus, source: 'bonus' });
                 dispatch('sendEventToServer', {
