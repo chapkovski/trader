@@ -48,7 +48,7 @@ export default {
         { info_type: "dayNumber", text: "Round:", icon: "mdi-clock" },
         {
           info_type: "wage",
-          text: "Fee per correct task:",
+          text: "Wage per correct task:",
           icon: "mdi-account",
         },
         {
