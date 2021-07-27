@@ -436,9 +436,9 @@ const store = new Vuex.Store({
             const filtered = _.filter(stocks, _.matches({ leverage: 1 }));
             const chosenStock = _.sample(filtered)
             const bonus = chosenStock.price * numStocksInBonus
-            const r = _.random()
+            const r = _.random(1, true)
             const prob = (secSpentOnTrade / dayLength) * bonusProbabilityCoef;
-
+            console.debug("WHAT GONNA IN R",r, prob, secSpentOnTrade,dayLength,bonusProbabilityCoef)
             if (r <= prob) {
                 commit('CHANGE_CASH', { q: bonus, source: 'bonus' });
                 dispatch('sendEventToServer', {
