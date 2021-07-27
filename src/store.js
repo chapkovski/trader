@@ -127,8 +127,8 @@ const store = new Vuex.Store({
             state.timerActive = val
         },
         SET_DAY_PARAMS: (state, { wage, commission }) => {
-            state.wage = parseInt(wage);
-            state.commission = parseInt(commission);
+            state.wage = parseFloat(wage);
+            state.commission = parseFloat(commission);
         },
         ALLOW_FORM_SUBMIT: (state) => {
             state.formSubmittable = true
@@ -438,7 +438,7 @@ const store = new Vuex.Store({
             const bonus = chosenStock.price * numStocksInBonus
             const r = _.random(1, true)
             const prob = (secSpentOnTrade / dayLength) * bonusProbabilityCoef;
-            console.debug("WHAT GONNA IN R",r, prob, secSpentOnTrade,dayLength,bonusProbabilityCoef)
+            
             if (r <= prob) {
                 commit('CHANGE_CASH', { q: bonus, source: 'bonus' });
                 dispatch('sendEventToServer', {
