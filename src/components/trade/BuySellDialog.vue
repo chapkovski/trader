@@ -43,7 +43,7 @@
                     >Current price per share: {{ getCurrentPrice }}</v-sheet
                   >
                   <v-sheet
-                    >You currently owns: {{ getAvailableQuantity }}</v-sheet
+                    >You currently own: {{ getAvailableQuantity }}</v-sheet
                   >
                 </v-list-item-content>
               </v-list-item>
