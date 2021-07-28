@@ -59,4 +59,9 @@ export const listAwards = (() => {
     return lAs
 })()
 
+export const tabItems= [
+    { title: "Trading", icon: "mdi-bank", to: { name: "Trade" } },
+    { title: "Work", icon: "mdi-account-hard-hat", to: { name: "Work" } },
+  ]
+
 export default gameParams

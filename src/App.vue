@@ -151,7 +151,7 @@ import InstructionsDialog from "./components/InstructionsDialog";
 import TimeLeft from "./components/TimeLeft";
 import FreeStuff from "./components/FreeStuff";
 import { mapActions, mapMutations, mapState, mapGetters } from "vuex";
-import gameParams, { listAwards } from "./params";
+import gameParams, { listAwards, tabItems } from "./params";
 
 export default {
   components: {
@@ -173,10 +173,7 @@ export default {
       day: 1,
       monitorInterval: null,
       awardGiven: {},
-      items: [
-        { title: "Trading", icon: "mdi-bank", to: { name: "Trade" } },
-        { title: "Work", icon: "mdi-account-hard-hat", to: { name: "Work" } },
-      ],
+      items: tabItems,
     };
   },
   async created() {
