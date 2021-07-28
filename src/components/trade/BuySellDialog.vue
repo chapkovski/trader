@@ -163,7 +163,6 @@ export default {
       this.q = null;
     },
     getCurrentPrice() {
-      console.debug("CURINTENT", this.intention);
       if (this.intention === "q") {
         this.updQ();
       }
@@ -185,8 +184,10 @@ export default {
     updQ() {
       // console.debug("UPDV", this.q, this.getCurrentPrice, this.commission)
       this.v =
-        Math.round((this.q * this.getCurrentPrice + this.commission) * 100) /
-        100;
+        Math.round(
+          (this.q * this.getCurrentPrice + this.actionSign * this.commission) *
+            100
+        ) / 100;
     },
     updV() {
       this.q = Math.floor((this.v - this.commission) / this.getCurrentPrice);
