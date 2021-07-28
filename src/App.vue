@@ -49,7 +49,16 @@
     </transition>
     <v-app-bar color="#6A76AB" dark app height="95" v-if="!inStart">
       <account-info> </account-info>
-      <days-left :day="dayNumber"></days-left>
+        <v-card class="ma-1" color='blue' height="" >
+        <v-card-text>
+            Trade commission:
+            <v-chip color="primary">
+                E${{commission.toFixed(2)}}
+            </v-chip>
+        </v-card-text>
+    
+    
+    </v-card>
 
       <time-left @dayDone="dayEnds()"></time-left>
 
@@ -122,7 +131,8 @@
     <v-footer app height="50">
       <div class="d-flex justify-content-center">
         <instructions-dialog></instructions-dialog>
-
+       <days-left :day="dayNumber"></days-left>
+        
         <trade-footer v-if="inTrade" />
       </div>
     </v-footer>
@@ -189,6 +199,7 @@ export default {
       "formSubmittable",
       "awardsGiven",
       "timerActive",
+      "commission"
     ]),
     ...mapGetters(["getCurrentTransactionNum", "pandle"]),
     transactionAwardExists() {
