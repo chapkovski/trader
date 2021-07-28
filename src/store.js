@@ -71,7 +71,7 @@ const store = new Vuex.Store({
         getProb: (state) => () => {
 
             const { dayLength, bonusProbabilityCoef } = gameParams;
-            console.debug('DAYLENGHT', dayLength, state.secSpentOnTrade)
+            
             return (((state.secSpentOnTrade / dayLength) * bonusProbabilityCoef) * 100).toFixed(2);
         },
         dataInLoading: (state) => () => {

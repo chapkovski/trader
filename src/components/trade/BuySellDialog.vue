@@ -54,6 +54,7 @@
                   <v-text-field
                     type="number"
                     v-model="q"
+                    @focus="setIntention('q')"
                     @keyup="updQ"
                     @keyup.enter="processingTransaction"
                     :rules="[rules.qValidated]"
@@ -66,6 +67,7 @@
                 <v-list-item-content>
                   <v-text-field
                     type="number"
+                    @focus="setIntention('v')"
                     v-model="v"
                     @keyup="updV"
                     @keyup.enter="processingTransaction"
@@ -103,6 +105,7 @@ export default {
   props: ["action", "stockName", "actionIcon", "name", "showFull"],
   data() {
     return {
+      intention: null,
       dialog: false,
       q: null,
       v: null,
@@ -141,6 +144,7 @@ export default {
     },
     getCurrentPrice() {
       const stock = this.getStockByName(this.name);
+
       return stock.price;
     },
 
@@ -159,6 +163,13 @@ export default {
       this.q = null;
     },
     getCurrentPrice() {
+      console.debug("CURINTENT", this.intention);
+      if (this.intention === "q") {
+        this.updQ();
+      }
+      if (this.intention === "v") {
+        this.updV();
+      }
       this.validate();
     },
   },
@@ -168,13 +179,17 @@ export default {
     validate() {
       this.$refs.form.validate();
     },
+    setIntention(fieldName) {
+      this.intention = fieldName;
+    },
     updQ() {
+      // console.debug("UPDV", this.q, this.getCurrentPrice, this.commission)
       this.v =
         Math.round((this.q * this.getCurrentPrice + this.commission) * 100) /
         100;
     },
     updV() {
-      this.q = Math.round((this.v - this.commission) / this.getCurrentPrice);
+      this.q = Math.floor((this.v - this.commission) / this.getCurrentPrice);
     },
     processingTransaction() {
       if (this.valid) {
@@ -222,5 +237,7 @@ export default {
   position: absolute;
   color: black;
 }
-.opa{opacity: 0.6;}
+.opa {
+  opacity: 0.6;
+}
 </style>
