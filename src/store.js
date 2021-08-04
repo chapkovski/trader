@@ -380,7 +380,7 @@ const store = new Vuex.Store({
                 commit('PRICE_DATA_UPDATE', stocks);
                 commit('DAY_INCREASE');
                 commit('DATA_LOADED');
-                dispatch('sendEventToServer', { name: 'priceRequest', dayNumber: state.dayNumber, balance: state.cashBalance, priceData: r.data})
+                await dispatch('sendEventToServer', { name: 'priceRequest', dayNumber: state.dayNumber, balance: state.cashBalance, priceData: r.data})
                 dispatch('makeTransaction', {
                     stock: "a",
                     quantity: initial_stock_items,
@@ -392,7 +392,7 @@ const store = new Vuex.Store({
                     initial: true,
                 });
                 dispatch('updStocks');
-                dispatch('sendEventToServer', { name: 'dayStarted', dayNumber: state.dayNumber, balance: state.cashBalance, ...specificDayParams })
+                await dispatch('sendEventToServer', { name: 'dayStarted', dayNumber: state.dayNumber, balance: state.cashBalance, ...specificDayParams })
             }
         },
         updStocks({ commit, state, dispatch }) {
@@ -452,11 +452,11 @@ const store = new Vuex.Store({
             }
 
         },
-        sendEventToServer(context, message) {
+        async sendEventToServer(context, message) {
             try {
                 const round_number = context.state.dayNumber;
                 message = { ...message, round_number }
-                Vue.prototype.$socket.sendObj(message)
+                await Vue.prototype.$socket.sendObj(message)
             } catch (e) { console.debug("TRYING TO SEND SOMETHING ON SEVER WHAT?", message) }
         },
 
