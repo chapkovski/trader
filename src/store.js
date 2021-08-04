@@ -375,12 +375,12 @@ const store = new Vuex.Store({
                 commit('DATA_LOADING');
                 const r = await axios.get(`${priceUrl}?n=${n}`)
                 const stocks = _.map(r.data, (i) => ({ ...i, quantity: 0, history: [i.initial] }))
-                dispatch('sendEventToServer', { name: 'priceRequest', dayNumber: state.dayNumber, balance: state.cashBalance, priceData: r.data})
+                
                 commit('RESET_ALL');
                 commit('PRICE_DATA_UPDATE', stocks);
                 commit('DAY_INCREASE');
                 commit('DATA_LOADED');
-
+                dispatch('sendEventToServer', { name: 'priceRequest', dayNumber: state.dayNumber, balance: state.cashBalance, priceData: r.data})
                 dispatch('makeTransaction', {
                     stock: "a",
                     quantity: initial_stock_items,
