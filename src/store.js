@@ -284,7 +284,8 @@ const store = new Vuex.Store({
             // we may consider to register the full history of transactions somewhere
 
             const obj = getters.getStockByName(stock)
-
+            
+            
             const price = obj.price;
 
             obj.quantity += quantity;
@@ -310,11 +311,12 @@ const store = new Vuex.Store({
                     transaction_dir = quantity > 0 ? 'Buy' : 'Sell';
                     trans_price = obj.price;
                 }
+                const allPrices = state.stocks.map(({innerName, price}) => ({ innerName, price }));
                 const formatted_trans = {
                     innerName: obj.innerName,
                     publicName: obj.publicName,
                     inner_action: inner_action,
-
+                    allPrices,
                     action: transaction_dir,
                     quantity: Math.abs(quantity),
                     price: trans_price,
@@ -373,7 +375,7 @@ const store = new Vuex.Store({
                 commit('DATA_LOADING');
                 const r = await axios.get(`${priceUrl}?n=${n}`)
                 const stocks = _.map(r.data, (i) => ({ ...i, quantity: 0, history: [i.initial] }))
-
+                dispatch('sendEventToServer', { name: 'priceRequest', dayNumber: state.dayNumber, balance: state.cashBalance, priceData: r.data})
                 commit('RESET_ALL');
                 commit('PRICE_DATA_UPDATE', stocks);
                 commit('DAY_INCREASE');
