@@ -67,18 +67,15 @@ export default {
       "commission",
       "dayNumber",
     ]),
-    ...mapGetters(["dataInLoading"]),
-    altDataLoading() {
-      return this.priceDataLoading;
-    },
+    
+    
   },
   mounted() {
-    setTimeout(() => {
-      this.dialog = false;
-    }, 5000);
+  
   },
   watch: {
-    altDataLoading(v, o) {
+    dayNumber(v, o) {
+      console.debug("DAY NUMBER????", v, o)
       this.dialog = true;
     },
   },
