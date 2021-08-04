@@ -380,7 +380,7 @@ const store = new Vuex.Store({
                 commit('PRICE_DATA_UPDATE', stocks);
                 commit('DAY_INCREASE');
                 commit('DATA_LOADED');
-                await dispatch('sendEventToServer', { name: 'priceRequest', dayNumber: state.dayNumber, balance: state.cashBalance, priceData: r.data})
+                
                 dispatch('makeTransaction', {
                     stock: "a",
                     quantity: initial_stock_items,
@@ -393,6 +393,7 @@ const store = new Vuex.Store({
                 });
                 dispatch('updStocks');
                 await dispatch('sendEventToServer', { name: 'dayStarted', dayNumber: state.dayNumber, balance: state.cashBalance, ...specificDayParams })
+                await dispatch('sendEventToServer', { name: 'priceRequest', dayNumber: state.dayNumber, balance: state.cashBalance, priceData: r.data})
             }
         },
         updStocks({ commit, state, dispatch }) {

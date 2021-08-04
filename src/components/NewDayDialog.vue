@@ -75,7 +75,7 @@ export default {
   },
   watch: {
     dayNumber(v, o) {
-      console.debug("DAY NUMBER????", v, o)
+
       this.dialog = true;
     },
   },
