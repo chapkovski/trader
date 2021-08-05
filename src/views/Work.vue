@@ -38,7 +38,6 @@
             each NUMBER (3) a text box in which the letter solution should be
             typed. In each task a new sequence of numbers will appear along with
             a new key of number to letter relationships.<br />
-            JUST FOR OUR EYES ONLY: CORRECT ANSWER: {{ currentTask.correctAnswer }}
           </v-alert>
         </v-col>
       </v-row>
