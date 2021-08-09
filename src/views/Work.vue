@@ -38,7 +38,10 @@
             each NUMBER (3) a text box in which the letter solution should be
             typed. In each task a new sequence of numbers will appear along with
             a new key of number to letter relationships.<br />
-            JUST FOR OUR EYES ONLY: CORRECT ANSWER: {{ currentTask.correctAnswer }}
+            <div v-if="false">
+              JUST FOR OUR EYES ONLY: CORRECT ANSWER:
+              {{ currentTask.correctAnswer }}
+            </div>
           </v-alert>
         </v-col>
       </v-row>
@@ -60,7 +63,11 @@
                 </tr>
                 <tr>
                   <th>Key:</th>
-                  <td :class="`bordered`" v-for="n in currentTask.numbers" :key="n">
+                  <td
+                    :class="`bordered`"
+                    v-for="n in currentTask.numbers"
+                    :key="n"
+                  >
                     {{ n }}
                   </td>
                 </tr>
@@ -118,10 +125,7 @@ export default {
   name: "Home",
   components: { infoCard, Matrix },
   data() {
-     
-    
     return {
-     
       valid: true,
       answer: "",
       rules: { required: (value) => !!value || "Required." },
@@ -134,7 +138,6 @@ export default {
       "correctTasksSubmitted",
       "wage",
     ]),
-    
   },
 
   methods: {
