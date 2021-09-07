@@ -1,5 +1,3 @@
-
-
 <template>
   <v-app>
     <transition
@@ -47,22 +45,18 @@
         </v-sheet>
       </v-overlay>
     </transition>
-    <v-app-bar color="#6A76AB" dark app height="95" v-if="!inStart">
+    <v-app-bar :color="$gamified?`#6A76AB`:''" :dark="$gamified" app height="95" v-if="!inStart">
       <account-info> </account-info>
-        <v-card class="ma-1" color='blue' height="" >
+      <v-card class="ma-1" color="$gamified?blue:white" height="">
         <v-card-text>
-            Trade commission:
-            <v-chip color="primary">
-                E${{commission.toFixed(2)}}
-            </v-chip>
+          Trade commission:
+          <v-chip color="primary"> E${{ commission.toFixed(2) }} </v-chip>
         </v-card-text>
-    
-    
-    </v-card>
+      </v-card>
 
       <time-left @dayDone="dayEnds()"></time-left>
 
-      <free-stuff v-if='$gamified'></free-stuff>
+      <free-stuff v-if="$gamified"></free-stuff>
       <v-spacer></v-spacer>
       <div :class="{ 'd-flex': true }" v-if="inTrade">
         <div
@@ -131,8 +125,8 @@
     <v-footer app height="50">
       <div class="d-flex justify-content-center">
         <instructions-dialog></instructions-dialog>
-       <days-left :day="dayNumber"></days-left>
-        
+        <days-left :day="dayNumber"></days-left>
+
         <trade-footer v-if="inTrade" />
       </div>
     </v-footer>
@@ -196,7 +190,7 @@ export default {
       "formSubmittable",
       "awardsGiven",
       "timerActive",
-      "commission"
+      "commission",
     ]),
     ...mapGetters(["getCurrentTransactionNum", "pandle"]),
     transactionAwardExists() {
@@ -236,7 +230,8 @@ export default {
       }
     },
     dayNumber() {
-      this.$router.push({ name: "Start" }).catch(() => {});
+      const randomTab = _.sample([{ name: "Trade" }, { name: "Work" }]);
+      this.$router.push(randomTab).catch(() => {});
     },
     $route(to, from) {
       if (to.name) {
@@ -318,4 +313,3 @@ export default {
   flex-grow: 1;
 }
 </style>
- 

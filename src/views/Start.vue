@@ -3,11 +3,10 @@
     <h1>Choose one of two options</h1>
     <div class="my-3" v-for="item in tabItems" :key="item.title">
       <v-btn width="150" @click="changeTab(item.to.name)">
-          <v-icon>{{ item.icon }}</v-icon>
-        {{item.title}}
-        </v-btn>
+        <v-icon>{{ item.icon }}</v-icon>
+        {{ item.title }}
+      </v-btn>
     </div>
-    
   </div>
 </template>
 <script>
@@ -27,4 +26,3 @@ export default {
   },
 };
 </script>
- 
