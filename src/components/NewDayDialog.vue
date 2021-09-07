@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapMutations } from "vuex";
 export default {
   data() {
     return {
@@ -67,21 +67,18 @@ export default {
       "commission",
       "dayNumber",
     ]),
-    
-    
   },
-  mounted() {
-  
-  },
+  mounted() {},
   watch: {
     dayNumber(v, o) {
-
       this.dialog = true;
     },
   },
   methods: {
+    ...mapMutations(["SET_TIMER"]),
     closeDialog() {
       this.dialog = false;
+      this.SET_TIMER(true);
     },
     getInfo(info_type) {
       return this[info_type];

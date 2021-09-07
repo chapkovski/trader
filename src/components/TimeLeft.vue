@@ -3,7 +3,12 @@
     <v-card-text>
       Time left:
       <v-chip color="primary">
-        <countdown :left-time="timeLeft" @finish="dayOver" ref="timer">
+        <countdown
+          :left-time="timeLeft"
+          @finish="dayOver"
+          ref="timer"
+          :auto-start="false"
+        >
           <template v-slot:process="anyYouWantedScopName">
             <span>{{
               ` ${anyYouWantedScopName.timeObj.m}: ${anyYouWantedScopName.timeObj.s}`
@@ -28,16 +33,18 @@ export default {
   computed: {
     ...mapState(["timerActive"]),
   },
-  watch: { timerActive(val) {
-    if (val){
-    this.$refs.timer.startCountdown();
-    } else {
-      this.$refs.timer.stopCountdown();
-    }
-  } },
+  watch: {
+    timerActive(val) {
+      if (val) {
+        console.debug("PIZDA", val);
+        this.$refs.timer.startCountdown();
+      } else {
+        this.$refs.timer.stopCountdown();
+      }
+    },
+  },
   methods: {
     dayOver() {
-      
       this.$emit("dayDone");
     },
   },
