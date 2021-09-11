@@ -9,6 +9,13 @@
           ref="timer"
           :auto-start="false"
         >
+          <template v-slot:before>
+            <span>{{ formattedFullTime }}</span>
+          </template>
+
+          <template v-slot:finish>
+            <span>{{ formattedFullTime }}</span>
+          </template>
           <template v-slot:process="anyYouWantedScopName">
             <span>{{
               ` ${anyYouWantedScopName.timeObj.m}: ${anyYouWantedScopName.timeObj.s}`
@@ -32,12 +39,22 @@ export default {
   }),
   computed: {
     ...mapState(["timerActive"]),
+    formattedFullTime() {
+      const value = dayLength;
+
+      return (
+        Math.floor(value / 60)
+          .toString()
+          .padStart(2, "0") +
+        ":" +
+        (value % 60 ? value % 60 : "00").toString().padStart(2, "0")
+      );
+    },
   },
   watch: {
     timerActive(val) {
       if (val) {
-        console.debug("PIZDA", val);
-        this.$refs.timer.startCountdown();
+        this.$refs.timer.startCountdown(true);
       } else {
         this.$refs.timer.stopCountdown();
       }
