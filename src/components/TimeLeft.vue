@@ -1,5 +1,5 @@
 <template>
-  <v-card class="ma-1" :color="$gamified ? 'red' : ''">
+  <v-card class="ma-1" :color="gamified ? 'red' : ''">
     <v-card-text>
       Time left:
       <v-chip color="primary">
@@ -31,7 +31,7 @@
 import gameParams from "../params";
 const { dayLength, SEC } = gameParams;
 const durationInMillisecs = dayLength * SEC;
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 export default {
   data: () => ({
     timeLeft: durationInMillisecs,
@@ -39,6 +39,7 @@ export default {
   }),
   computed: {
     ...mapState(["timerActive"]),
+    ...mapGetters(["gamified"]),
     formattedFullTime() {
       const value = dayLength;
 

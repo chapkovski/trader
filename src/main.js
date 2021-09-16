@@ -24,7 +24,7 @@ import _ from "lodash";
 Vue.use(vueAwesomeCountdown, "vac"); // Component name, `countdown` and `vac` by default
 Vue.config.productionTip = false;
 // TODO:  this one to be injected by backend
-Vue.prototype.$gamified = gameParams.gamified;
+
 const vueWrapper = new Vue({
   vuetify,
   router,

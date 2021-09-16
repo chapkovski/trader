@@ -56,7 +56,7 @@ const generalItems = [
 export default {
   data() {
     let items = generalItems;
-    if (this.$gamified) {
+    if (this.gamified) {
       items = [...items, gamified_item];
     }
     return {
@@ -65,6 +65,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["gamified"]),
     ...mapState([
       "endDayDialog",
       "dayNumber",

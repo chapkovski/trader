@@ -46,14 +46,14 @@
       </v-overlay>
     </transition>
     <v-app-bar
-      :color="$gamified ? `#6A76AB` : ''"
-      :dark="$gamified"
+      :color="gamified ? `#6A76AB` : ''"
+      :dark="gamified"
       app
       height="95"
       v-if="!inStart"
     >
       <account-info> </account-info>
-      <v-card class="ma-1" color="$gamified?blue:white" height="">
+      <v-card class="ma-1" color="gamified?blue:white" height="">
         <v-card-text>
           Trade commission:
           <v-chip color="primary"> E${{ commission.toFixed(2) }} </v-chip>
@@ -62,14 +62,14 @@
 
       <time-left @dayDone="dayEnds()"></time-left>
 
-      <free-stuff v-if="$gamified"></free-stuff>
+      <free-stuff v-if="gamified"></free-stuff>
       <v-spacer></v-spacer>
       <div :class="{ 'd-flex': true }" v-if="inTrade">
         <div
           class="m-1"
           v-for="award in awards"
           :key="award.id"
-          v-if="$gamified"
+          v-if="gamified"
         >
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -198,7 +198,8 @@ export default {
       "timerActive",
       "commission",
     ]),
-    ...mapGetters(["getCurrentTransactionNum", "pandle"]),
+    ...mapGetters(["getCurrentTransactionNum", "pandle", "gamified"]),
+
     transactionAwardExists() {
       return !_.isEmpty(this.awardForTransaction);
     },
@@ -230,7 +231,7 @@ export default {
     },
     numTransactions(val) {
       const numsAward = gameParams.awards.nums[val];
-      if (numsAward && this.$gamified) {
+      if (numsAward && this.gamified) {
         this.setNumAward(numsAward);
         this.awardGiven = numsAward;
       }
@@ -239,7 +240,7 @@ export default {
       if (val > 1) {
         const randomTab = _.sample([{ name: "Trade" }, { name: "Work" }]);
         this.$router.push(randomTab).catch(() => {});
-      } 
+      }
     },
     $route(to, from) {
       if (to.name) {

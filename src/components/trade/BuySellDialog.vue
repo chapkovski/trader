@@ -17,7 +17,7 @@
               max-height="50"
               max-width="50"
               class=""
-              v-if="$gamified"
+              v-if="gamified"
             />
 
             <div :class="{ spec: !showFull }">
@@ -118,7 +118,7 @@ export default {
   },
   created() {},
   computed: {
-    ...mapGetters(["getStockByName", "getCashBalance"]),
+    ...mapGetters(["getStockByName", "getCashBalance",'gamified']),
     ...mapState(["commission"]),
     btnimage() {
       const sell = require("@/assets/sell_trans.png");
