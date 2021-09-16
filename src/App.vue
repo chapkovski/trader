@@ -45,7 +45,13 @@
         </v-sheet>
       </v-overlay>
     </transition>
-    <v-app-bar :color="$gamified?`#6A76AB`:''" :dark="$gamified" app height="95" v-if="!inStart">
+    <v-app-bar
+      :color="$gamified ? `#6A76AB` : ''"
+      :dark="$gamified"
+      app
+      height="95"
+      v-if="!inStart"
+    >
       <account-info> </account-info>
       <v-card class="ma-1" color="$gamified?blue:white" height="">
         <v-card-text>
@@ -229,9 +235,11 @@ export default {
         this.awardGiven = numsAward;
       }
     },
-    dayNumber() {
-      const randomTab = _.sample([{ name: "Trade" }, { name: "Work" }]);
-      this.$router.push(randomTab).catch(() => {});
+    dayNumber(val) {
+      if (val > 1) {
+        const randomTab = _.sample([{ name: "Trade" }, { name: "Work" }]);
+        this.$router.push(randomTab).catch(() => {});
+      } 
     },
     $route(to, from) {
       if (to.name) {

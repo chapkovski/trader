@@ -2,6 +2,7 @@
   <div class="text-center">
     <v-dialog :value="dialog" width="500">
       <v-card>
+        <v-card-title v-if='dayNumber===1' class="text-h5 red lighten-2 text-center d-flex justify-center"> <div>This is the training round</div> </v-card-title>
         <v-card-title class="text-h5 grey lighten-2"> New round! </v-card-title>
 
         <v-card-text>
